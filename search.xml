@@ -8,7 +8,7 @@
 
 <p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
+<a id="more"></a>
 <p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
 <h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
@@ -17,5 +17,33 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>序/Introduction</title>
+    <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
+    <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br /></center> 
+<center><font size="4">大大的船帆满满地承受着风势</font><br /></center>  
+<center><font size="4">直面前往新世界</font><br /></center>  
+<center><font color="#dd0000"> </font><br /></center>
+
+
+<center>Rewrite CANOE</center> 
+
+
+
+<center><font color="#dd0000"> </font><br /></center>
+<center><font color="#dd0000"> </font><br /></center>
+<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br /></center>                  
+
+
+
+
+<a id="more"></a>]]></content>
+      <categories>
+        <category>序章</category>
+      </categories>
+      <tags>
+        <tag>Introduction</tag>
+      </tags>
   </entry>
 </search>
