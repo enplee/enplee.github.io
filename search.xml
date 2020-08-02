@@ -1,6 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2020/04/29/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>面试问题之赛马</title>
+    <url>/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/</url>
+    <content><![CDATA[<h2 id="面试问题之赛马"><a href="#面试问题之赛马" class="headerlink" title="面试问题之赛马"></a>面试问题之赛马</h2><h4 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h4><blockquote>
+<h4 id="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"><a href="#一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？" class="headerlink" title="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"></a>一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？</h4></blockquote>
+<a id="more"></a>
+<h4 id="题目分析："><a href="#题目分析：" class="headerlink" title="题目分析："></a>题目分析：</h4><blockquote>
+<ol>
+<li><p>一次比赛可以获得不多于8数量的有序成绩数组；</p>
+</li>
+<li><p>首先进行8场比赛，可以获得8组有序的成绩数组；</p>
+</li>
+<li><p>将8组小组在比赛的第一名，再进行一次比赛，此时进行了9场比赛；</p>
+</li>
+<li><p>综合以上结果，将8个小组按照第一名排列，获得二维成绩数组。</p>
+</li>
+<li><p>显然，第一名已经确定，同时可以排除小组第一名成绩在第九次比赛后四名的小组和每组的后四名(因为前四名不可能出现在后四名)。</p>
+</li>
+<li><p>根据如下数组，可以分别划定2,3,4名的出现范围：</p>
+<blockquote>
+<p><img src="/.io//Saima.png" alt="1570703264912"> </p>
+<blockquote>
+<p>图中：每列依次排名，由左至右按第一名排名。</p>
+<ol>
+<li>第一名已经确定，途中黄色所示。</li>
+<li>第二名的范围也可确定，途中绿色标识的其中一个</li>
+<li>第三名可能的范围是绿色标识和蓝色标识相加。</li>
+<li>第四名范围需要讨论？位置的马是否入选第三名(不可能是第二名)，如果蓝色是第三名，那么第四名可能的范围就是绿色+蓝色+粉色+褐色。如果？位置的马不是第三名，第四名的范围就可排除粉色的区域(?的马一定比粉色的快)。</li>
+<li>所以，？区域是第三名，9匹候选马，跑两轮；？不是第三名，7匹马，跑一轮。</li>
+</ol>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><blockquote>
+<blockquote>
+<p>最多需要跑11轮，最少需要跑10轮。</p>
+</blockquote>
+</blockquote>
+]]></content>
+      <categories>
+        <category>面试</category>
+      </categories>
+      <tags>
+        <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>设计模式之单例模式</title>
     <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
@@ -40,71 +106,5 @@
       <tags>
         <tag>Singleton</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>面试问题之赛马</title>
-    <url>/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/</url>
-    <content><![CDATA[<h2 id="面试问题之赛马"><a href="#面试问题之赛马" class="headerlink" title="面试问题之赛马"></a>面试问题之赛马</h2><h4 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h4><blockquote>
-<h4 id="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"><a href="#一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？" class="headerlink" title="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"></a>一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？</h4></blockquote>
-<a id="more"></a>
-<h4 id="题目分析："><a href="#题目分析：" class="headerlink" title="题目分析："></a>题目分析：</h4><blockquote>
-<ol>
-<li><p>一次比赛可以获得不多于8数量的有序成绩数组；</p>
-</li>
-<li><p>首先进行8场比赛，可以获得8组有序的成绩数组；</p>
-</li>
-<li><p>将8组小组在比赛的第一名，再进行一次比赛，此时进行了9场比赛；</p>
-</li>
-<li><p>综合以上结果，将8个小组按照第一名排列，获得二维成绩数组。</p>
-</li>
-<li><p>显然，第一名已经确定，同时可以排除小组第一名成绩在第九次比赛后四名的小组和每组的后四名(因为前四名不可能出现在后四名)。</p>
-</li>
-<li><p>根据如下数组，可以分别划定2,3,4名的出现范围：</p>
-<blockquote>
-<p><img src="D:%5Csource%5CSaima.png" alt="1570703264912"> </p>
-<blockquote>
-<p>图中：每列依次排名，由左至右按第一名排名。</p>
-<ol>
-<li>第一名已经确定，途中黄色所示。</li>
-<li>第二名的范围也可确定，途中绿色标识的其中一个</li>
-<li>第三名可能的范围是绿色标识和蓝色标识相加。</li>
-<li>第四名范围需要讨论？位置的马是否入选第三名(不可能是第二名)，如果蓝色是第三名，那么第四名可能的范围就是绿色+蓝色+粉色+褐色。如果？位置的马不是第三名，第四名的范围就可排除粉色的区域(?的马一定比粉色的快)。</li>
-<li>所以，？区域是第三名，9匹候选马，跑两轮；？不是第三名，7匹马，跑一轮。</li>
-</ol>
-</blockquote>
-</blockquote>
-</li>
-</ol>
-</blockquote>
-<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><blockquote>
-<blockquote>
-<p>最多需要跑11轮，最少需要跑10轮。</p>
-</blockquote>
-</blockquote>
-]]></content>
-      <categories>
-        <category>面试</category>
-      </categories>
-      <tags>
-        <tag>面试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2020/04/29/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
   </entry>
 </search>
