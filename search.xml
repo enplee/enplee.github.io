@@ -19,6 +19,47 @@
 ]]></content>
   </entry>
   <entry>
+    <title>设计模式之单例模式</title>
+    <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
+<a id="more"></a>
+<h5 id="实现一"><a href="#实现一" class="headerlink" title="实现一:"></a>实现一:</h5><pre><code>&gt; 饿汉式
+&gt;
+&gt; 类加载到内存后就实例化一个单例,通过JVM保证了线程安全,简单实用.
+&gt;
+&gt; 缺点:无论单例是否被使用,类加载时就会被实例化(......吹毛求疵)</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt01</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Sgt01 INSTENCE = <span class="keyword">new</span> Sgt01();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span>  <span class="title">Sgt01</span><span class="params">()</span> </span>&#123; <span class="comment">// 将构造方法定义为private,杜绝new.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt01 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现二"><a href="#实现二" class="headerlink" title="实现二"></a>实现二</h5><pre><code>&gt; 懒汉式
+&gt;
+&gt; 实现了使用时才创建的要求
+&gt;
+&gt; 但是线程不安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt02</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt02 INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt02</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt02 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt02();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现三"><a href="#实现三" class="headerlink" title="实现三"></a>实现三</h5><pre><code>&gt; 懒汉式加锁
+&gt;
+&gt; 解决了线程安全,但是效率变低</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt03</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt03 INSTENCE;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt03</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt03 <span class="title">getInstence</span><span class="params">()</span></span>&#123; <span class="comment">//加锁</span></span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt03();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现四"><a href="#实现四" class="headerlink" title="实现四"></a>实现四</h5><pre><code>&gt; 双重检查式
+&gt;
+&gt; 尽可能的提升了加锁之后的效率</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt04</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Sgt04 INSTENCE; <span class="comment">//加入volatile防止JVM指令重排</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt04</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt04 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">//双重检查</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Sgt04<span class="class">.<span class="keyword">class</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">                    INSTENCE = <span class="keyword">new</span> Sgt04();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现五"><a href="#实现五" class="headerlink" title="实现五"></a>实现五</h5><pre><code>&gt; 静态内部类
+&gt;
+&gt; 原理: 虚拟机在加载外部类时候不会加载内部类,只有用到是才加载,实现了懒加载
+&gt;
+&gt; 线程安全的,和饿汉式一样,是JVM保证的线程安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt05</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05Holder</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Sgt05 INSTENCE = <span class="keyword">new</span> Sgt05();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt05 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Sgt05Holder.INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现六"><a href="#实现六" class="headerlink" title="实现六"></a>实现六</h5><pre><code>&gt; 枚举单例
+&gt;
+&gt; 不仅可以枚举单例还可以防止反序列化。</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  Sgt06 &#123;</span><br><span class="line">    </span><br><span class="line">    INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">m</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>Singleton</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>序/Introduction</title>
     <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
     <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br></center> 
@@ -92,47 +133,6 @@
       </categories>
       <tags>
         <tag>面试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>设计模式之单例模式</title>
-    <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
-<a id="more"></a>
-<h5 id="实现一"><a href="#实现一" class="headerlink" title="实现一:"></a>实现一:</h5><pre><code>&gt; 饿汉式
-&gt;
-&gt; 类加载到内存后就实例化一个单例,通过JVM保证了线程安全,简单实用.
-&gt;
-&gt; 缺点:无论单例是否被使用,类加载时就会被实例化(......吹毛求疵)</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt01</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Sgt01 INSTENCE = <span class="keyword">new</span> Sgt01();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span>  <span class="title">Sgt01</span><span class="params">()</span> </span>&#123; <span class="comment">// 将构造方法定义为private,杜绝new.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt01 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现二"><a href="#实现二" class="headerlink" title="实现二"></a>实现二</h5><pre><code>&gt; 懒汉式
-&gt;
-&gt; 实现了使用时才创建的要求
-&gt;
-&gt; 但是线程不安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt02</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt02 INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt02</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt02 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt02();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现三"><a href="#实现三" class="headerlink" title="实现三"></a>实现三</h5><pre><code>&gt; 懒汉式加锁
-&gt;
-&gt; 解决了线程安全,但是效率变低</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt03</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt03 INSTENCE;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt03</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt03 <span class="title">getInstence</span><span class="params">()</span></span>&#123; <span class="comment">//加锁</span></span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt03();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现四"><a href="#实现四" class="headerlink" title="实现四"></a>实现四</h5><pre><code>&gt; 双重检查式
-&gt;
-&gt; 尽可能的提升了加锁之后的效率</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt04</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Sgt04 INSTENCE; <span class="comment">//加入volatile防止JVM指令重排</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt04</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt04 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">//双重检查</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Sgt04<span class="class">.<span class="keyword">class</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">                    INSTENCE = <span class="keyword">new</span> Sgt04();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现五"><a href="#实现五" class="headerlink" title="实现五"></a>实现五</h5><pre><code>&gt; 静态内部类
-&gt;
-&gt; 原理: 虚拟机在加载外部类时候不会加载内部类,只有用到是才加载,实现了懒加载
-&gt;
-&gt; 线程安全的,和饿汉式一样,是JVM保证的线程安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt05</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05Holder</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Sgt05 INSTENCE = <span class="keyword">new</span> Sgt05();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt05 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Sgt05Holder.INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现六"><a href="#实现六" class="headerlink" title="实现六"></a>实现六</h5><pre><code>&gt; 枚举单例
-&gt;
-&gt; 不仅可以枚举单例还可以防止反序列化。</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  Sgt06 &#123;</span><br><span class="line">    </span><br><span class="line">    INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">m</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-      <tags>
-        <tag>Singleton</tag>
       </tags>
   </entry>
 </search>
