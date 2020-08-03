@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="设计模式之代理模式定义12给某一个对象提供一个代理，并由代理对象控制对原对象的引用。通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。  问题引入123当前实现了一个Tank类，Tank类实现了Movable接口，Movable接口定义了一个方法run();调用Tank类实现的run方法，坦克会run,&quot;Tank moving&amp;">
+  <meta name="description" content="设计模式之代理模式定义12给某一个对象提供一个代理，并由代理对象控制对原对象的引用。通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="设计模式之代理模式">
 <meta property="og:url" content="https://enplee.github.io/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Enplee&#39;s blog">
-<meta property="og:description" content="设计模式之代理模式定义12给某一个对象提供一个代理，并由代理对象控制对原对象的引用。通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。  问题引入123当前实现了一个Tank类，Tank类实现了Movable接口，Movable接口定义了一个方法run();调用Tank类实现的run方法，坦克会run,&quot;Tank moving&amp;">
+<meta property="og:description" content="设计模式之代理模式定义12给某一个对象提供一个代理，并由代理对象控制对原对象的引用。通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-08-02T14:37:41.000Z">
-<meta property="article:modified_time" content="2020-08-03T04:24:53.332Z">
+<meta property="article:modified_time" content="2020-08-03T05:08:06.725Z">
 <meta property="article:author" content="lee-zee">
 <meta property="article:tag" content="proxy">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-03 12:24:53" itemprop="dateModified" datetime="2020-08-03T12:24:53+08:00">2020-08-03</time>
+                <time title="Modified: 2020-08-03 13:08:06" itemprop="dateModified" datetime="2020-08-03T13:08:06+08:00">2020-08-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,6 +258,8 @@
 
       
         <h3 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</span><br><span class="line">通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
 
 <h5 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">当前实现了一个Tank类，Tank类实现了Movable接口，Movable接口定义了一个方法run();</span><br><span class="line">调用Tank类实现的run方法，坦克会run,&quot;Tank moving&quot;.</span><br><span class="line">现在需求是，想要对run方法做一些banchMark性能测试，需要了解run方法的运行时间。</span><br></pre></td></tr></table></figure>
 

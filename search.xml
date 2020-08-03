@@ -23,6 +23,8 @@
     <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h3 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</span><br><span class="line">通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。</span><br></pre></td></tr></table></figure>
 
+<a id="more"></a>
+
 <h5 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">当前实现了一个Tank类，Tank类实现了Movable接口，Movable接口定义了一个方法run();</span><br><span class="line">调用Tank类实现的run方法，坦克会run,&quot;Tank moving&quot;.</span><br><span class="line">现在需求是，想要对run方法做一些banchMark性能测试，需要了解run方法的运行时间。</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Movable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
