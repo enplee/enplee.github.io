@@ -20,26 +20,28 @@
     var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Enplee&#39;s blog">
-<meta property="og:url" content="https://enplee.github.io/index.html">
+  <meta name="description" content="设计模式之代理模式定义12给某一个对象提供一个代理，并由代理对象控制对原对象的引用。通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。  问题引入123当前实现了一个Tank类，Tank类实现了Movable接口，Movable接口定义了一个方法run();调用Tank类实现的run方法，坦克会run,&quot;Tank moving&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式之代理模式">
+<meta property="og:url" content="https://enplee.github.io/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Enplee&#39;s blog">
-<meta property="og:description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+<meta property="og:description" content="设计模式之代理模式定义12给某一个对象提供一个代理，并由代理对象控制对原对象的引用。通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。  问题引入123当前实现了一个Tank类，Tank类实现了Movable接口，Movable接口定义了一个方法run();调用Tank类实现的run方法，坦克会run,&quot;Tank moving&amp;">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-02T14:37:41.000Z">
+<meta property="article:modified_time" content="2020-08-03T04:24:53.332Z">
 <meta property="article:author" content="lee-zee">
-<meta property="article:tag" content="xxx">
+<meta property="article:tag" content="proxy">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://enplee.github.io/">
+<link rel="canonical" href="https://enplee.github.io/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
@@ -58,7 +60,7 @@
 <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 
 
-  <title>Enplee's blog</title>
+  <title>设计模式之代理模式 | Enplee's blog</title>
   
 
 
@@ -195,183 +197,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/05/11/%E5%BA%8F-Introduction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/11/%E5%BA%8F-Introduction/" class="post-title-link" itemprop="url">序/Introduction</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-05-11 23:05:22" itemprop="dateCreated datePublished" datetime="2020-05-11T23:05:22+08:00">2020-05-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-02 16:15:37" itemprop="dateModified" datetime="2020-08-02T16:15:37+08:00">2020-08-02</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%BA%8F/" itemprop="url" rel="index"><span itemprop="name">序</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <center><font size="4">木舟远远地越过这片海域</font><br></center> 
-<center><font size="4">大大的船帆满满地承受着风势</font><br></center>  
-<center><font size="4">直面前往新世界</font><br></center>  
-<center><font color="#dd0000"> </font><br></center>
-
-
-<center>Rewrite CANOE</center> 
-
-
-
-<center><font color="#dd0000"> </font><br></center>
-<center><font color="#dd0000"> </font><br></center>
-<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br></center>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/05/11/%E5%BA%8F-Introduction/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式之单例模式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-08-02 23:05:22 / Modified: 22:38:32" itemprop="dateCreated datePublished" datetime="2020-08-02T23:05:22+08:00">2020-08-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -387,10 +216,9 @@
       <meta itemprop="name" content="Enplee's blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式之代理模式</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          设计模式之代理模式
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -429,7 +257,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</span><br><span class="line">通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。</span><br></pre></td></tr></table></figure>
+        <h3 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</span><br><span class="line">通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。</span><br></pre></td></tr></table></figure>
 
 <h5 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">当前实现了一个Tank类，Tank类实现了Movable接口，Movable接口定义了一个方法run();</span><br><span class="line">调用Tank类实现的run方法，坦克会run,&quot;Tank moving&quot;.</span><br><span class="line">现在需求是，想要对run方法做一些banchMark性能测试，需要了解run方法的运行时间。</span><br></pre></td></tr></table></figure>
 
@@ -464,7 +292,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Proxy</span> <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> InvocationHandler h;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Proxy</span><span class="params">(InvocationHandler h)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(h);</span><br><span class="line">        <span class="keyword">this</span>.h = h;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-      
     </div>
 
     
@@ -472,174 +299,56 @@
     
     <div>
       
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/" class="post-title-link" itemprop="url">面试问题之赛马</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-08-02 15:48:00 / Modified: 16:22:42" itemprop="dateCreated datePublished" datetime="2020-08-02T15:48:00+08:00">2020-08-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%9D%A2%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">面试</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="面试问题之赛马"><a href="#面试问题之赛马" class="headerlink" title="面试问题之赛马"></a>面试问题之赛马</h2><h4 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h4><blockquote>
-<h4 id="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"><a href="#一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？" class="headerlink" title="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"></a>一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？</h4></blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
       
     </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/04/29/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/29/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-04-29 21:33:29" itemprop="dateCreated datePublished" datetime="2020-04-29T21:33:29+08:00">2020-04-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-11 23:10:18" itemprop="dateModified" datetime="2020-05-11T23:10:18+08:00">2020-05-11</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/29/hello-world/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-    <div>
-      
-    </div>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>lee-zee
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://enplee.github.io/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" title="设计模式之代理模式">https://enplee.github.io/2020/08/02/设计模式之代理模式/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          <div class="post-tags">
+              <a href="/tags/proxy/" rel="tag"># proxy</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/" rel="prev" title="面试问题之赛马">
+      <i class="fa fa-chevron-left"></i> 面试问题之赛马
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" rel="next" title="设计模式之单例模式">
+      设计模式之单例模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -692,6 +401,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式之代理模式"><span class="nav-number">1.</span> <span class="nav-text">设计模式之代理模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#定义"><span class="nav-number">1.0.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题引入"><span class="nav-number">1.0.2.</span> <span class="nav-text">问题引入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#源码修改or继承"><span class="nav-number">1.0.3.</span> <span class="nav-text">源码修改or继承</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#静态代理"><span class="nav-number">1.0.4.</span> <span class="nav-text">静态代理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#动态代理：JDK实现"><span class="nav-number">1.0.5.</span> <span class="nav-text">动态代理：JDK实现</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
