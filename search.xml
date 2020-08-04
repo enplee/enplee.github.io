@@ -19,6 +19,57 @@
 ]]></content>
   </entry>
   <entry>
+    <title>操作系统之死锁</title>
+    <url>/2020/08/04/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B9%8B%E6%AD%BB%E9%94%81/</url>
+    <content><![CDATA[<h3 id="操作系统之死锁"><a href="#操作系统之死锁" class="headerlink" title="操作系统之死锁"></a>操作系统之死锁</h3><ul>
+<li><h4 id="什么是死锁-Deadlock"><a href="#什么是死锁-Deadlock" class="headerlink" title="什么是死锁(Deadlock)"></a>什么是死锁(Deadlock)</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者相互通信而造成的一种阻塞的现象，若无外力推动，它们都无法进行下去。此时系统处于了死锁的状态或产生了死锁。</span><br></pre></td></tr></table></figure>
+
+<h6 id="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"><a href="#举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。" class="headerlink" title="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"></a>举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。</h6></li>
+<li><h4 id="死锁的四个必要条件"><a href="#死锁的四个必要条件" class="headerlink" title="死锁的四个必要条件"></a>死锁的四个必要条件</h4><h5 id="死锁的产生必须具备以下四个条件："><a href="#死锁的产生必须具备以下四个条件：" class="headerlink" title="死锁的产生必须具备以下四个条件："></a>死锁的产生必须具备以下四个条件：</h5><ul>
+<li><h5 id="互斥条件-mutual-exclusion"><a href="#互斥条件-mutual-exclusion" class="headerlink" title="互斥条件(mutual exclusion)"></a>互斥条件(mutual exclusion)</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">指进程对所分配到的资源进行排它性使用，即在一段时间内某资源只由一个进程占用。如果此时还有其它进程请求资源，则请求者只能等待，直至占有资源的进程用毕释放。</span><br></pre></td></tr></table></figure>
+
+<p>例子中的饭勺和饭碗是竞争的资源，每个饭碗和饭勺在同一时间内只能一个人使用，如果可以同时使用，竞争的条件就不存在了，竞争都不存在，更不会出现死锁了。</p>
+</li>
+<li><h5 id="请求和保持条件-hold-and-wait"><a href="#请求和保持条件-hold-and-wait" class="headerlink" title="请求和保持条件(hold and wait)"></a>请求和保持条件(hold and wait)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已经保持至少一个资源，但又提出了新的资源请求，而该资源已被其它进程占有，此时请求进程阻塞，但又对自己已获得的其它资源保持不放。</span><br></pre></td></tr></table></figure>
+
+<p>对于所有去打饭的进程，比如作为饭勺的获得者，拿到了饭勺，那么会一直等待饭碗(阻塞)，但是不会主动放弃饭勺。如果可以主动放弃了饭勺，那么又可以继续推动了。</p>
+</li>
+<li><h5 id="不剥夺条件-no-preemption"><a href="#不剥夺条件-no-preemption" class="headerlink" title="不剥夺条件(no preemption)"></a>不剥夺条件(no preemption)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已获得的资源，在未使用完之前，不能被剥夺，只能在使用完时由自己释放。</span><br></pre></td></tr></table></figure>
+
+<p>作为一个资源的持有者，一个进程占据了饭碗，别的进程想要饭碗的时候，虽然占据饭碗的进程还在等待，但是别的进程不可以来抢我的饭碗(笑。就是资源一旦获得，除非使用结束，不能被剥夺。</p>
+</li>
+<li><h5 id="环路等待-circular-waiting"><a href="#环路等待-circular-waiting" class="headerlink" title="环路等待(circular waiting)"></a>环路等待(circular waiting)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指在发生死锁时，必然存在一个进程——资源的环形链，即进程集合&#123;P0，P1，P2，···，Pn&#125;中的P0正在等待一个P1占用的资源；P1正在等待P2占用的资源，……，Pn正在等待已被P0占用的资源。</span><br></pre></td></tr></table></figure>
+
+<p>死锁的出现，一定存在循环依赖。勺与碗的例子中就是一个环，A-&gt;B的碗，B-&gt;A的勺。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="死锁的预防"><a href="#死锁的预防" class="headerlink" title="死锁的预防"></a>死锁的预防</h4><h5 id="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"><a href="#死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。" class="headerlink" title="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"></a>死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。</h5><ul>
+<li><h5 id="破坏互斥条件"><a href="#破坏互斥条件" class="headerlink" title="破坏互斥条件"></a>破坏互斥条件</h5><p><strong>方法：</strong>如果允许系统资源都能共享使用，则系统不会进入死锁状态。</p>
+<p><strong>缺点：</strong>基本不可能实现，某些资源只能互斥的使用，而且有时还应保护互斥性。</p>
+</li>
+<li><h5 id="破坏请求与保持条件"><a href="#破坏请求与保持条件" class="headerlink" title="破坏请求与保持条件"></a>破坏请求与保持条件</h5><p><strong>方法：</strong>釆用预先静态分配方法，即进程在运行前一次申请完它所需要的全部资源，在它的资源未满足前，不把它投入运行。一旦投入运行后，这些资源就一直归它所有，也不再提出其他资源请求，这样就可以保证系统不会发生死锁。</p>
+<p><strong>缺点：</strong>系统资源被严重浪费，其中有些资源可能仅在运行初期或运行快结束时才使用，甚至根本不使用。而且还会导致“饥饿”现象，当由于个别资源长期被其他进程占用时，将致使等待该资源的进程迟迟不能开始运行。</p>
+</li>
+<li><h5 id="破坏不可剥夺条件"><a href="#破坏不可剥夺条件" class="headerlink" title="破坏不可剥夺条件"></a>破坏不可剥夺条件</h5><p><strong>方法：</strong>当一个已保持了某些不可剥夺资源的进程，请求新的资源而得不到满足时，它必须释放已经保持的所有资源，待以后需要时再重新申请。这意味着，一个进程已占有的资源会被暂时释放，或者说是被剥夺了，或从而破坏了不可剥夺条件。</p>
+<p><strong>缺点：</strong>该策略实现起来比较复杂，释放已获得的资源可能造成前一阶段工作的失效，反复地申请和释放资源会增加系统开销，降低系统吞吐量。这种方法常用于状态易于保存和恢复的资源，如CPU的寄存器及内存资源，一般不能用于打印机之类的资源。</p>
+</li>
+<li><h5 id="破坏循环等待条件"><a href="#破坏循环等待条件" class="headerlink" title="破坏循环等待条件"></a>破坏循环等待条件</h5><p><strong>方法：</strong>可釆用顺序资源分配法。首先给系统中的资源编号，规定每个进程，必须按编号递增的顺序请求资源，同类资源一次申请完。也就是说，只要进程提出申请分配资源Ri，则该进程在以后的资源申请中，只能申请编号大于Ri的资源。</p>
+<p><strong>缺点：</strong> 这种方法存在的问题是，编号必须相对稳定，这就限制了新类型设备的增加；尽管在为资源编号时已考虑到大多数作业实际使用这些资源的顺序，但也经常会发生作业使用资源的顺序与系统规定顺序不同的情况，造成资源的浪费；此外，这种按规定次序申请资源的方法，也必然会给用户的编程带来麻烦。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="死锁的避免"><a href="#死锁的避免" class="headerlink" title="死锁的避免"></a>死锁的避免</h4><h5 id="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"><a href="#在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。" class="headerlink" title="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"></a>在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。</h5><h5 id="Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"><a href="#Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。" class="headerlink" title="Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"></a>Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。</h5></li>
+</ul>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>System</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>设计模式之代理模式</title>
     <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h3 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</span><br><span class="line">通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。</span><br></pre></td></tr></table></figure>
@@ -66,34 +117,6 @@
       </tags>
   </entry>
   <entry>
-    <title>序/Introduction</title>
-    <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
-    <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br></center> 
-<center><font size="4">大大的船帆满满地承受着风势</font><br></center>  
-<center><font size="4">直面前往新世界</font><br></center>  
-<center><font color="#dd0000"> </font><br></center>
-
-
-<center>Rewrite CANOE</center> 
-
-
-
-<center><font color="#dd0000"> </font><br></center>
-<center><font color="#dd0000"> </font><br></center>
-<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br></center>                  
-
-
-
-
-<a id="more"></a>]]></content>
-      <categories>
-        <category>序</category>
-      </categories>
-      <tags>
-        <tag>Introduction</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>设计模式之单例模式</title>
     <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
@@ -132,6 +155,34 @@
       </categories>
       <tags>
         <tag>Singleton</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>序/Introduction</title>
+    <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
+    <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br></center> 
+<center><font size="4">大大的船帆满满地承受着风势</font><br></center>  
+<center><font size="4">直面前往新世界</font><br></center>  
+<center><font color="#dd0000"> </font><br></center>
+
+
+<center>Rewrite CANOE</center> 
+
+
+
+<center><font color="#dd0000"> </font><br></center>
+<center><font color="#dd0000"> </font><br></center>
+<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br></center>                  
+
+
+
+
+<a id="more"></a>]]></content>
+      <categories>
+        <category>序</category>
+      </categories>
+      <tags>
+        <tag>Introduction</tag>
       </tags>
   </entry>
   <entry>
