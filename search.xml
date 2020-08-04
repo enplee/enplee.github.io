@@ -140,6 +140,8 @@
     <content><![CDATA[<h3 id="操作系统之死锁"><a href="#操作系统之死锁" class="headerlink" title="操作系统之死锁"></a>操作系统之死锁</h3><ul>
 <li><h4 id="什么是死锁-Deadlock"><a href="#什么是死锁-Deadlock" class="headerlink" title="什么是死锁(Deadlock)"></a>什么是死锁(Deadlock)</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者相互通信而造成的一种阻塞的现象，若无外力推动，它们都无法进行下去。此时系统处于了死锁的状态或产生了死锁。</span><br></pre></td></tr></table></figure>
 
+<a id="more"></a>
+
 <h6 id="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"><a href="#举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。" class="headerlink" title="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"></a>举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。</h6></li>
 <li><h4 id="死锁的四个必要条件"><a href="#死锁的四个必要条件" class="headerlink" title="死锁的四个必要条件"></a>死锁的四个必要条件</h4><h5 id="死锁的产生必须具备以下四个条件："><a href="#死锁的产生必须具备以下四个条件：" class="headerlink" title="死锁的产生必须具备以下四个条件："></a>死锁的产生必须具备以下四个条件：</h5><ul>
 <li><h5 id="互斥条件-mutual-exclusion"><a href="#互斥条件-mutual-exclusion" class="headerlink" title="互斥条件(mutual exclusion)"></a>互斥条件(mutual exclusion)</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">指进程对所分配到的资源进行排它性使用，即在一段时间内某资源只由一个进程占用。如果此时还有其它进程请求资源，则请求者只能等待，直至占有资源的进程用毕释放。</span><br></pre></td></tr></table></figure>
