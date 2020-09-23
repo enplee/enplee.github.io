@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature MapAbstract神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。我们的HRank的灵感来自于这样一">
+  <meta name="description" content="Abstract神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map">
 <meta property="og:url" content="https://enplee.github.io/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/index.html">
 <meta property="og:site_name" content="Enplee&#39;s blog">
-<meta property="og:description" content="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature MapAbstract神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。我们的HRank的灵感来自于这样一">
+<meta property="og:description" content="Abstract神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-09-22T09:49:59.000Z">
-<meta property="article:modified_time" content="2020-09-23T03:06:26.885Z">
+<meta property="article:modified_time" content="2020-09-23T08:02:12.006Z">
 <meta property="article:author" content="lee-zee">
 <meta property="article:tag" content="Filter Prune">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-23 11:06:26" itemprop="dateModified" datetime="2020-09-23T11:06:26+08:00">2020-09-23</time>
+                <time title="Modified: 2020-09-23 16:02:12" itemprop="dateModified" datetime="2020-09-23T16:02:12+08:00">2020-09-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -257,7 +257,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="【模型压缩】CVPR2020-HRank-Filter-Pruning-using-High-Rank-Feature-Map"><a href="#【模型压缩】CVPR2020-HRank-Filter-Pruning-using-High-Rank-Feature-Map" class="headerlink" title="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map"></a>【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</h3><h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
+        <h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
 <p><a href="https://github.com/lmbxmu/HRank" target="_blank" rel="noopener">https://github.com/lmbxmu/HRank</a></p>
 <a id="more"></a>
 
@@ -394,7 +394,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#【模型压缩】CVPR2020-HRank-Filter-Pruning-using-High-Rank-Feature-Map"><span class="nav-number">1.</span> <span class="nav-text">【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Abstract"><span class="nav-number">1.1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Introduction"><span class="nav-number">1.2.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。"><span class="nav-number">1.2.1.</span> <span class="nav-text">Property Importance：根据 CNN 的内在属性对筛选器进行修剪。</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Related-Work"><span class="nav-number">1.3.</span> <span class="nav-text">Related Work</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Filter-Pruning"><span class="nav-number">1.3.1.</span> <span class="nav-text">Filter Pruning</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Discussions"><span class="nav-number">1.3.2.</span> <span class="nav-text">Discussions</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#The-Proposed-Method"><span class="nav-number">1.4.</span> <span class="nav-text">The Proposed Method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Experiments"><span class="nav-number">1.5.</span> <span class="nav-text">Experiments</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusions"><span class="nav-number">1.6.</span> <span class="nav-text">Conclusions</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。"><span class="nav-number">2.1.</span> <span class="nav-text">Property Importance：根据 CNN 的内在属性对筛选器进行修剪。</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Related-Work"><span class="nav-number">3.</span> <span class="nav-text">Related Work</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Filter-Pruning"><span class="nav-number">3.1.</span> <span class="nav-text">Filter Pruning</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Discussions"><span class="nav-number">3.2.</span> <span class="nav-text">Discussions</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#The-Proposed-Method"><span class="nav-number">4.</span> <span class="nav-text">The Proposed Method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Experiments"><span class="nav-number">5.</span> <span class="nav-text">Experiments</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusions"><span class="nav-number">6.</span> <span class="nav-text">Conclusions</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
