@@ -297,6 +297,175 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/" class="post-title-link" itemprop="url">【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-09-23 11:11:30 / Modified: 16:00:25" itemprop="dateCreated datePublished" datetime="2020-09-23T11:11:30+08:00">2020-09-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>滤波器修剪(filter prune)在神经网络的压缩和加速中得到了广泛的应用。现有的方法通常利用预定义的修剪标准,例如ℓp-norm(范数),修剪不重要的filter。这些方法有两个主要的限制。<strong>首先，流行的方法没有考虑不同层次的filter分布的多样性。为了将粗级特征提取到细级特征，不同层的滤波器具有不同的分布。</strong>因此，对不同的功能层使用相同的修剪标准是不合适的。<strong>其次，主流的逐层剪枝方法独立、顺序地处理每一层，没有考虑到网络中的所有层协同做出最终预测。</strong>在本文中，我们提出了学习filter剪枝准则(LFPC)来解决上述问题。具体地说，<strong>我们开发了一个可微的剪枝标准采样器。该采样器是可学习的，并通过采样准则得到的剪枝网络的验证损失来优化</strong>。通过这种方式，我们可以为不同的功能层自适应地选择合适的剪枝标准。此外，LFPC在评价采样准则时，同时综合考虑了各层的贡献。在三种图像分类基准上的实验验证了我们的方法。</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>卷积神经网络在各种计算机视觉研究应用中取得了显著进展。然而，这些手工设计的架构，如VGG ，  ResNet，通常都有巨大的模型尺寸和繁重的计算成本。很难将这些模型部署到实时响应的场景中。近年来，对模型压缩和加速的研究逐渐兴起。修剪策略由于其有效性，在前人的研究中备受关注。剪枝的最新进展可以分为两类，即权重剪枝[14]和过滤剪枝[27]。滤波器剪枝可以使剪枝模型更加结构化，实现实际的加速剪枝。现有的过滤器修剪方法遵循三个阶段准则。(1)训练:在目标数据集上训练一个大模型。(2)剪枝:根据特定的准则，对预训练模型中的不重要滤波器进行剪枝。(3)微调(再训练):对修剪后的模型进行再训练，恢复原始性能。在这三个阶段中，选择合适的修剪标准是关键因素。</p>
+<p>但是，之前的作品有一些缺点，可能不是真实应用场景的最佳选择。首先，先前的工作人为的指定一个剪枝标准，<strong>并对不同的层使用相同的剪枝标准</strong>。如[52]所示，不同的层具有不同的filter分布和变量方法。较低的层倾向于提取粗糙的层次特征，如线、点和曲线，而较高的层倾向于提取精细的层次特征，如常见的对象和形状。在这种情况下，为所有功能层固定一个修剪标准可能不合适。换句话说，最好能并发评估所有层的过滤器重要性。</p>
+<p>我们提出了学习过滤器剪枝准则(LFPC)来解决这些问题。LFPC的核心部件是可区分准则采样器(DCS)，其目的是针对不同的层采样不同的准则。这个采样器，因为它是可微的，可以有效地更新，以找到合适的样本。首先，DCS为所有层初始化一个可学习的标准概率。对于每一层，DCS根据滤波器和准则概率进行准则转发，得到准则特征图。在对各层进行准则转发后，得到准则丢失，并将其作为监督信号加以利用。可以通过对准则损失进行反向传播来更新准则概率分布，从而更好地适应网络的滤波分布。与以往的逐层修剪工作不同，我们的LFPC可以通过准则丢失来同时考虑所有的层次和所有的修剪准则。DCS训练完成后，优化后的criteria服务器作为网络的剪枝标准，如图1所示。剪枝后，对剪枝后的模型进行一次微调，得到一个高效、准确的模型。</p>
+<p>所作的贡献总结如下：</p>
+<ul>
+<li>提出了一种有效的学习框架——<strong>学习过滤器剪枝准则(LFPC)。这个框架可以学习为每个功能层选择最合适的修剪标准。此外，所提出的可微准则采样器(DCS)可以端到端训练，并在剪枝时同时考虑所有层</strong>。据我们所知，这是该研究方向的第一项工作。</li>
+<li>在三个基准测试上的实验证明了我们的LFPC的有效性。值得注意的是，它将ResNet110的速度提高了两倍，与CIFAR-10相比，它的相对精度甚至提高了0.31%。此外，我们在ResNet-50上减少了60%以上的失败，只有0.83%的top5精度损失。</li>
+</ul>
+<h3 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h3><p>以往的修剪工作可分为权重修剪和过滤修剪。权值修剪侧重于修剪过滤器的细粒度权值，从而导致模型的非结构化稀疏性。相比之下，通过对DNN进行过滤剪枝可以实现结构稀疏性，因此剪枝模型可以充分利用高效的基本线性代数子程序库(BLAS)，实现更好的加速。考虑到如何评估过滤器的重要性，我们可以将过滤器修剪方法大致分为两类，即基于权重的标准和基于活动的标准。此外，修剪算法还可以根据修剪频率进行大致分组，即“贪婪修剪”和“一次性修剪”。我们将在Tab中演示分类。</p>
+<p>![Learning Filter Pruning Criteria1](.\Networks\Learning Filter Pruning Criteria1.png)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不同类别的过滤剪枝算法。“W”和“A”表示基于权重和基于活动的标准。“O”和“G”表示一次性的贪婪修剪。</span><br></pre></td></tr></table></figure>
+
+<p><strong>基于权重的标准</strong>。一些方法利用过滤器的权重来确定过滤器的重要性。[18]利用ℓ2-norm标准选择过滤器并删除这些选中的过滤器。[51]引入批处理归一化(BN)层标度参数的稀疏性来对网络进行裁剪。[20]声称，靠近几何中值的滤波器应该被修剪。<strong>所有的工作对不同的层使用相同的修剪标准，没有考虑到不同的层有不同的功能和不同的过滤器分布。</strong></p>
+<p><strong>基于激活的标准</strong>。一些研究利用训练数据和过滤器激活来确定修剪过滤器。[45]采用主成分分析(PCA)方法来指定网络的哪一部分需要保留。[36]建议使用来自下一层的信息来指导过滤器的选择。[10]将训练集样本激活的重构误差最小化，并应用奇异值分解(SVD)得到滤波器的分解。[49]研究不同特征图之间的线性关系，消除卷积滤波器中的冗余。</p>
+<p><strong>贪婪的一次性修剪</strong>。贪婪剪枝，意味着修剪和再训练需要操作多次。贪婪剪枝虽然有利于提高剪枝的精度，但它需要大量的计算资源，且耗时较长。相比之下，一次热修剪[20,27]将网络修剪一次，再进行一次训练以恢复精度。它比贪婪剪枝更有效，但需要仔细的剪枝标准选择。在本文中，我们主要研究一次性剪枝。其他修剪和搜索方法。一些作品利用强化学习[19,23]或元学习[33]进行剪枝。相比之下，我们专注于通过差分采样器学习不同层次的适当剪枝标准。[4]提出向心SGD使多个滤波器收敛到一个单一点。[54]是一种全局剪枝方法，但剪枝神经元的重要性没有得到传播。我们的学习标准的思想与神经结构搜索(NAS)的工作[58,31]和自动增强[3]有一些相似之处，不同的是我们的搜索空间是修剪标准，而不是网络结构或增强策略。</p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><p>![Learning Filter Pruning Criteria5](.\Networks\Learning Filter Pruning Criteria5.png)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">标准在层内向前。不同颜色的框表示不同的修剪标准。</span><br><span class="line">首先，我们根据不同的标准来评估过滤器的重要性。</span><br><span class="line">其次，我们对具有小重要性分数的过滤器进行修剪，得到四种不同概率的修剪层。</span><br><span class="line">然后输出的feature map是剪枝层的四个feature map的对齐加权和。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><h4 id="Experimental-Setting"><a href="#Experimental-Setting" class="headerlink" title="Experimental Setting"></a>Experimental Setting</h4><p><strong>数据集</strong>。在本节中，我们在三个基准数据集，CIFAR-10,  CIFAR-100和ILSVRC-2012上验证了我们的加速方法的有效性。CIFAR-10数据集包含5万幅训练图像和1万幅测试图像，共6万幅32×32彩色图像，分布在10个不同的类中。CIFAR-100有100个类，图像数量与CIFAR-10相同。ILSVRC-2012包含128万张训练图像和1000个类的50k张验证图像。</p>
+<p><strong>结构设置</strong>。由于ResNet具有捷径结构，现有文献认为ResNet的冗余比VGGNet少，加速ResNet比加速VGGNet困难。因此，我们重点修剪具有挑战性的ResNet。</p>
+<p><strong>正常训练设置</strong>。对于CIFAR10和CIFAR-100的ResNet，我们使用与[55]相同的训练计划。在CIFAR实验中，我们将每个设置运行3次，并报告“mean±std”。在ILSVRC2012实验中，我们使用与[15,16]相同的默认参数设置，使用与官方PyTorch[40]示例相同的数据论证策略。</p>
+<p><strong>修剪设置</strong>。在对DCS进行训练后，我们使用优化的准则对网络进行修剪，并使用完整的训练集对网络进行微调。我们分析了修剪scratch模型与预训练模型的区别。为了修剪scratch模型，我们使用常规的训练计划，而不需要额外的微调。为了对预先训练好的模型进行裁剪，我们将学习率降低到原始学习率的十分之一。为了进行公平的比较，我们使用与[20]相同的基线模型进行修剪。在再训练过程中，我们使用余弦调度器[35,8]来获得一个稳定的结果。每一层的剪枝率采样方式与DCS1相同，可以自动自适应搜索比率[8]。</p>
+<h4 id="Experimental-results"><a href="#Experimental-results" class="headerlink" title="Experimental results"></a>Experimental results</h4><p>![Learning Filter Pruning Criteria2](.\Networks\Learning Filter Pruning Criteria2.png)</p>
+<p>![Learning Filter Pruning Criteria3](.\Networks\Learning Filter Pruning Criteria3.png)</p>
+<p>![Learning Filter Pruning Criteria4](.\Networks\Learning Filter Pruning Criteria4.png)</p>
+<h3 id="Conclusion-and-Future-Work"><a href="#Conclusion-and-Future-Work" class="headerlink" title="Conclusion and Future Work"></a>Conclusion and Future Work</h3><p>在这篇文章中，我们提出了一个新的学习过滤器剪枝准则(LFPC)框架用于深度CNNs加速。与现有的方法不同，LFPC明确考虑了层之间的差异，并自适应地为不同的层选择一组合适的标准。为了有效地学习准则，我们利用Gumbel-softmax使准则可微化。<strong>在几个基准测试中，LFPC用最先进的方法取得了可比较的性能。在未来，我们可以考虑在LFPC中使用更多的准则，并结合其他加速算法，如矩阵分解[28]，进一步提高性能。此外，将该方法应用于最近的小型Cnn(MobileNet)也有一定的意义。</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/" class="post-title-link" itemprop="url">【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-09-23 11:02:44 / Modified: 11:04:47" itemprop="dateCreated datePublished" datetime="2020-09-23T11:02:44+08:00">2020-09-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -320,10 +489,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-22 17:49:59 / Modified: 18:24:22" itemprop="dateCreated datePublished" datetime="2020-09-22T17:49:59+08:00">2020-09-22</time>
+              <time title="Created: 2020-09-22 17:49:59" itemprop="dateCreated datePublished" datetime="2020-09-22T17:49:59+08:00">2020-09-22</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-09-23 11:06:26" itemprop="dateModified" datetime="2020-09-23T11:06:26+08:00">2020-09-23</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -896,168 +1071,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式之单例模式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-08-02 23:05:22 / Modified: 22:38:32" itemprop="dateCreated datePublished" datetime="2020-08-02T23:05:22+08:00">2020-08-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式之代理模式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-08-02 22:37:41" itemprop="dateCreated datePublished" datetime="2020-08-02T22:37:41+08:00">2020-08-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-04 23:18:16" itemprop="dateModified" datetime="2020-08-04T23:18:16+08:00">2020-08-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</span><br><span class="line">通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1128,7 +1141,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1138,7 +1151,7 @@
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -1189,7 +1202,7 @@
 <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共10.3k字</span>
+  <span class="post-count">博客全站共13.2k字</span>
   <span class="post-meta-divider">|</span>
   本站总访问量<span id="busuanzi_value_site_pv"></span>次
   <span class="post-meta-divider">|</span>

@@ -1,22 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2020/04/29/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+    <title>【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks</title>
+    <url>/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Deep Learning</category>
+      </categories>
+      <tags>
+        <tag>Filter Graft</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</title>
+    <url>/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/</url>
+    <content><![CDATA[<h3 id="【模型压缩】CVPR2020-HRank-Filter-Pruning-using-High-Rank-Feature-Map"><a href="#【模型压缩】CVPR2020-HRank-Filter-Pruning-using-High-Rank-Feature-Map" class="headerlink" title="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map"></a>【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</h3><h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
+<p><a href="https://github.com/lmbxmu/HRank" target="_blank" rel="noopener">https://github.com/lmbxmu/HRank</a></p>
 <a id="more"></a>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>卷积神经网络（CNN）在计算机视觉应用方面取得了巨大成功，如分类，检测 和分割。然而，它们对计算能力和内存的高要求阻止将大多数最先进的 CNN 部署在边缘设备（如智能手机或可穿戴设备）中。虽然在设计新的硬件和/或硬件特定的CNN加速框架（如TensorRT）方面已经取得了良好的进展，但是是通过在acc方面的妥协来实现降低FLOPs和CNN的大小。流行的技术包括：filter压缩，参数量化和网络修剪。</p>
+<p>其中，网络修剪已显示出广阔的应用前景。典型的工作或者修剪Weight矩阵来获得sparse(稀疏)权重矩阵(weight pruning);或者从网络中删除整个过滤器(filter pruning)。除了网络压缩，权重修剪方法也可以实现加速在专用软件或硬件 .但是，它们在通用硬件或 BLAS 库上的应用上受限。相比之下，滤镜修剪方法没有此限制，因为整个filter都已删除。本文重点介绍filter修剪以实现模型压缩（参数减少）和加速度（FLOPs的减少），旨在为计算能力较低的设备提供多功能解决方案。</p>
+<p>filter修剪的核心在于filter的选择，用较低的准确率换取高压缩率。基于filter评价函数的设计，对filter进行了实证分类基于过滤器评估函数的设计，我们根据经验将过滤器修剪分为两组，如下所述。</p>
+<h5 id="Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。"><a href="#Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。" class="headerlink" title="Property Importance：根据 CNN 的内在属性对筛选器进行修剪。"></a>Property Importance：根据 CNN 的内在属性对筛选器进行修剪。</h5><p>这些修剪方法不会修改网络训练损失。修剪后，通过微调提高模型性能。在这些方法中，Hu et al.利用大型网络中输出的稀疏性来移除具有高百分比零激活的filter。基于l1范数的修剪方法假设参数或特征的范数小，那么具有更少的信息，应该首先被修剪。Molchanov et al.考虑了一阶梯度来评估filter的重要性。Hu et al.计算layers中的几何中位数，并修剪最接近此的滤镜。大多数filter评估功能的设计都是ad-hoc–为了某个特定目的，所建立起来的.这带来了低时间复杂度的优点，但也限制了加速度和压缩比。</p>
+<p><strong>Adaptive Importance</strong>：不同于基于属性重要性的方法，另一个方向将修剪要求嵌入到网络训练损失中，并采用联合修剪优化来生成自适应修剪决策。</p>
+<p>Liu et al.批处理规范化层的缩放因子施加了空间约束，允许将具有较低缩放因子的通道标识为无极性。Huang et al.引入了一个新的缩放因子参数（也称为掩码），以学习稀疏结构修剪，其中删除与缩放因子为零的筛选器。与基于属性重要性的filter prune相比，自适应重要性方法通常由于联合优化而产生更好的压缩和加速度结果。然而，由于损失的变化，所需的再培训步骤在机器时间和人力方面都是沉重的，我们要求另一轮超参数调整。对于某些方法<em>，例如</em>，基于掩码的方案，修改后的损耗甚至需要专门的优化器，这会影响基于自适应重要性的方法的灵活性和易用性。</p>
+<p>总体而言，到目前为止，过滤器修剪仍然是一个开放的问题。一方面，我们追求更高的压缩/加速度比，另一方面，我们受到重型机器时间和人力的限制（特别是Adaptive Importance为基础的方法）。<strong>我们认为这些问题的核心是缺乏有关filter重要性和冗余的实际/理论指导。</strong>在这篇论文中，我们提出了一种有效和高效的滤镜修剪方法：探索CNN每层特征图的High Rank。我们所提出的 HRank 为基于属性重要性的筛选器修剪器提供指导。它消除了引入额外的辅助约束或重新训练模型的需要，从而简化了修剪的复杂性。此外，与现有的基于属性重要性的方法相比，HRank在加速和压缩方面也有显著改进，比最先进的基于重要性的自适应方法取得更好的效果。实施高等级特征图背后的动机来自经验和定量的观察。我们发现，无论CNN看到多少数据，单个filter生成的特征图的平均排名总是相同的。这表明，只使用一小部分输入图像就可以精确的估计DNN的特征图排名。基于这一理念，我们从数学上证明，较低等级的特征图对准确性的贡献较小。因此，可以首先删除生成这些要素映射的筛选器。我们在CIFAR-10和ImageNet上对诸多模型进行了测试。结果表明，HRank优于现有filter修剪方法，包括基于属性重要性的方法和最先进的自适应重要性模型。另外的试验表明，即使我们在修剪后微调期间冻结了带有高等级特征图的部分filter，模型仍保留高精度，这验证了我们的假设。主要贡献为：</p>
+<ul>
+<li>在广泛统计验证后，我们通过经验证明，单个filter生成的特征图的平均排名几乎保持不变。据我们所知，这是第一次报道这一观察。</li>
+</ul>
+<ul>
+<li>我们从数学上证明，具有较低等级特征图的filter信息较少，因此对保持精度不太重要，可以先删除。对于高等级要素地图，情况正好相反。<br>•  广泛的实验证明了HRank在各种最先进的模型压缩和加速度方面的有效性和高效性。</li>
+</ul>
+<h4 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h4><h5 id="Filter-Pruning"><a href="#Filter-Pruning" class="headerlink" title="Filter Pruning"></a>Filter Pruning</h5><p>与修剪重量矩阵的权重修剪相反，滤镜修剪会根据特定指标删除整个筛选器。滤波修剪不仅大大降低了存储使用，而且降低了在线推理的计算成本。如第 sec 中所讨论的。1、滤波修剪可分为两类：属性重要性方法和自适应重要性方法。基于属性重要性的筛选器修剪旨在利用CNN的内在属性（例如l1范数，第一梯度），然后使用它们作为区分不太重要的过滤器的标准。</p>
+<p><strong>Low-rank Decomposition</strong></p>
+<p>神经网络往往被过度参数化，这表明每个图层中的参数可以准确地从一个小子集中恢复。受此启发，低等级分解已成为网络压缩的替代方案。它通过将权重矩阵表示为两个较小矩阵的低级乘积来近似卷积操作。与修剪不同，它旨在降低网络的计算成本，而不是更改原始筛选器的数量。虽然低等级分解有利于CNN的压缩和加速，但通常在高压缩比下，精度会有较大的损失。</p>
+<h5 id="Discussions"><a href="#Discussions" class="headerlink" title="Discussions"></a>Discussions</h5><p>与权重W修剪相比，filter修剪在降低模型复杂性方面更为有利。此外，无需专门的软件或硬件支持，其结构化修剪可以轻松集成到高效BLAS库中。然而，现有的filter修剪方法受到低效的加速和压缩（基于属性重要性的filter修剪）或机器和人工成本（自适应导入基于filter修剪），如Sec所讨论的。1.这两个问题给在资源有限的设备上部署深度 CNN 带来了根本性的挑战。我们把这种两难处境归因于缺少有关filter的实用/理论指导。我们关注要素图的排名，并在理论和实验上分析其有效性。<strong>请注意，我们的方法与低级分解方法是正交的。</strong>我们的目标是修剪过滤器生成低等级的图图，而不是分解过滤器。请注意，低等级方法可以集成到我们的模型中（<em>例如，</em>分解完全连接的层），以实现更高的压缩和加速率。</p>
+<h4 id="The-Proposed-Method"><a href="#The-Proposed-Method" class="headerlink" title="The Proposed Method"></a>The Proposed Method</h4><p>具体见论文</p>
+<h4 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h4><p><strong>Experimental Settings</strong></p>
+<p><strong>Datasets and Baselines.</strong>数据集和基线。为了证明我们在降低模型复杂性方面的效率，我们在小型和大型数据集（CIFAR-10 和ImageNet）上进行了实验。我们研究主流CNN模型上不同算法的性能，包括结构简单结构的VGGNet，具有初始模块的GoogLeNet，带残余块的 ResNet和密集块的DenseNet。对于所有benchMark 和体系结构，<strong>我们随机采样 500 张图像，以估计每个要素图的平均排名</strong>。</p>
+<p><strong>Evaluation Protocols</strong>.我们采用广泛使用的协议，即<em>参数数</em>和所需的浮点操作（表示为FLOPs），以评估模型大小和计算要求。为了评估任务特定功能，我们提供修剪模型的前 1 精度和CIFAR-10 上的修剪率（表示为 PR），以及 ImageNet 上修剪模型的top1和top5精度。</p>
+<p><strong>Conﬁgurations.</strong>我们使用 PyTorch  来实施建议的 HRank 方法。我们使用随机梯度下降算法（SGD）解决优化问题，初始学习速率为0.01,批号、重量衰减和动量设置为 128,0.0005 和 0<em>.</em>9，分别。对于每一层，我们在修剪后重新训练网络30个纪元,训练更多的时代时，可以观察到更高的准确性。然而，它需要更多的培训时间。</p>
+<h4 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions"></a>Conclusions</h4><p>本文提出了一种名为HRank的新颖滤镜修剪方法，它通过确定特征图的排名来确定滤镜的相对重要性。为此，我们通过经验证明，单个筛选器生成的要素贴图的平均排名始终相同。然后，我们用数学方法证明，该代低等级要素图不太重要，应先删除，反之亦然，实验也验证了这一点。此外，我们建议冻结部分滤波器，以生成高等级特征图，以进一步降低微调成本，对模型性能几乎没有影响。对各种现代CN的广泛实验证明了HRank在降低计算复杂性和模型大小方面的有效性。在未来的工作中，我们将对为什么单个filter生成的特征图的平均排名始终相同进行理论分析。</p>
 ]]></content>
+      <categories>
+        <category>Deep Learning</category>
+      </categories>
+      <tags>
+        <tag>Filter Prune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration</title>
+    <url>/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/</url>
+    <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>滤波器修剪(filter prune)在神经网络的压缩和加速中得到了广泛的应用。现有的方法通常利用预定义的修剪标准,例如ℓp-norm(范数),修剪不重要的filter。这些方法有两个主要的限制。<strong>首先，流行的方法没有考虑不同层次的filter分布的多样性。为了将粗级特征提取到细级特征，不同层的滤波器具有不同的分布。</strong>因此，对不同的功能层使用相同的修剪标准是不合适的。<strong>其次，主流的逐层剪枝方法独立、顺序地处理每一层，没有考虑到网络中的所有层协同做出最终预测。</strong>在本文中，我们提出了学习filter剪枝准则(LFPC)来解决上述问题。具体地说，<strong>我们开发了一个可微的剪枝标准采样器。该采样器是可学习的，并通过采样准则得到的剪枝网络的验证损失来优化</strong>。通过这种方式，我们可以为不同的功能层自适应地选择合适的剪枝标准。此外，LFPC在评价采样准则时，同时综合考虑了各层的贡献。在三种图像分类基准上的实验验证了我们的方法。</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>卷积神经网络在各种计算机视觉研究应用中取得了显著进展。然而，这些手工设计的架构，如VGG ，  ResNet，通常都有巨大的模型尺寸和繁重的计算成本。很难将这些模型部署到实时响应的场景中。近年来，对模型压缩和加速的研究逐渐兴起。修剪策略由于其有效性，在前人的研究中备受关注。剪枝的最新进展可以分为两类，即权重剪枝[14]和过滤剪枝[27]。滤波器剪枝可以使剪枝模型更加结构化，实现实际的加速剪枝。现有的过滤器修剪方法遵循三个阶段准则。(1)训练:在目标数据集上训练一个大模型。(2)剪枝:根据特定的准则，对预训练模型中的不重要滤波器进行剪枝。(3)微调(再训练):对修剪后的模型进行再训练，恢复原始性能。在这三个阶段中，选择合适的修剪标准是关键因素。</p>
+<p>但是，之前的作品有一些缺点，可能不是真实应用场景的最佳选择。首先，先前的工作人为的指定一个剪枝标准，<strong>并对不同的层使用相同的剪枝标准</strong>。如[52]所示，不同的层具有不同的filter分布和变量方法。较低的层倾向于提取粗糙的层次特征，如线、点和曲线，而较高的层倾向于提取精细的层次特征，如常见的对象和形状。在这种情况下，为所有功能层固定一个修剪标准可能不合适。换句话说，最好能并发评估所有层的过滤器重要性。</p>
+<p>我们提出了学习过滤器剪枝准则(LFPC)来解决这些问题。LFPC的核心部件是可区分准则采样器(DCS)，其目的是针对不同的层采样不同的准则。这个采样器，因为它是可微的，可以有效地更新，以找到合适的样本。首先，DCS为所有层初始化一个可学习的标准概率。对于每一层，DCS根据滤波器和准则概率进行准则转发，得到准则特征图。在对各层进行准则转发后，得到准则丢失，并将其作为监督信号加以利用。可以通过对准则损失进行反向传播来更新准则概率分布，从而更好地适应网络的滤波分布。与以往的逐层修剪工作不同，我们的LFPC可以通过准则丢失来同时考虑所有的层次和所有的修剪准则。DCS训练完成后，优化后的criteria服务器作为网络的剪枝标准，如图1所示。剪枝后，对剪枝后的模型进行一次微调，得到一个高效、准确的模型。</p>
+<p>所作的贡献总结如下：</p>
+<ul>
+<li>提出了一种有效的学习框架——<strong>学习过滤器剪枝准则(LFPC)。这个框架可以学习为每个功能层选择最合适的修剪标准。此外，所提出的可微准则采样器(DCS)可以端到端训练，并在剪枝时同时考虑所有层</strong>。据我们所知，这是该研究方向的第一项工作。</li>
+<li>在三个基准测试上的实验证明了我们的LFPC的有效性。值得注意的是，它将ResNet110的速度提高了两倍，与CIFAR-10相比，它的相对精度甚至提高了0.31%。此外，我们在ResNet-50上减少了60%以上的失败，只有0.83%的top5精度损失。</li>
+</ul>
+<h3 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h3><p>以往的修剪工作可分为权重修剪和过滤修剪。权值修剪侧重于修剪过滤器的细粒度权值，从而导致模型的非结构化稀疏性。相比之下，通过对DNN进行过滤剪枝可以实现结构稀疏性，因此剪枝模型可以充分利用高效的基本线性代数子程序库(BLAS)，实现更好的加速。考虑到如何评估过滤器的重要性，我们可以将过滤器修剪方法大致分为两类，即基于权重的标准和基于活动的标准。此外，修剪算法还可以根据修剪频率进行大致分组，即“贪婪修剪”和“一次性修剪”。我们将在Tab中演示分类。</p>
+<p>![Learning Filter Pruning Criteria1](.\Networks\Learning Filter Pruning Criteria1.png)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">不同类别的过滤剪枝算法。“W”和“A”表示基于权重和基于活动的标准。“O”和“G”表示一次性的贪婪修剪。</span><br></pre></td></tr></table></figure>
+
+<p><strong>基于权重的标准</strong>。一些方法利用过滤器的权重来确定过滤器的重要性。[18]利用ℓ2-norm标准选择过滤器并删除这些选中的过滤器。[51]引入批处理归一化(BN)层标度参数的稀疏性来对网络进行裁剪。[20]声称，靠近几何中值的滤波器应该被修剪。<strong>所有的工作对不同的层使用相同的修剪标准，没有考虑到不同的层有不同的功能和不同的过滤器分布。</strong></p>
+<p><strong>基于激活的标准</strong>。一些研究利用训练数据和过滤器激活来确定修剪过滤器。[45]采用主成分分析(PCA)方法来指定网络的哪一部分需要保留。[36]建议使用来自下一层的信息来指导过滤器的选择。[10]将训练集样本激活的重构误差最小化，并应用奇异值分解(SVD)得到滤波器的分解。[49]研究不同特征图之间的线性关系，消除卷积滤波器中的冗余。</p>
+<p><strong>贪婪的一次性修剪</strong>。贪婪剪枝，意味着修剪和再训练需要操作多次。贪婪剪枝虽然有利于提高剪枝的精度，但它需要大量的计算资源，且耗时较长。相比之下，一次热修剪[20,27]将网络修剪一次，再进行一次训练以恢复精度。它比贪婪剪枝更有效，但需要仔细的剪枝标准选择。在本文中，我们主要研究一次性剪枝。其他修剪和搜索方法。一些作品利用强化学习[19,23]或元学习[33]进行剪枝。相比之下，我们专注于通过差分采样器学习不同层次的适当剪枝标准。[4]提出向心SGD使多个滤波器收敛到一个单一点。[54]是一种全局剪枝方法，但剪枝神经元的重要性没有得到传播。我们的学习标准的思想与神经结构搜索(NAS)的工作[58,31]和自动增强[3]有一些相似之处，不同的是我们的搜索空间是修剪标准，而不是网络结构或增强策略。</p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><p>![Learning Filter Pruning Criteria5](.\Networks\Learning Filter Pruning Criteria5.png)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">标准在层内向前。不同颜色的框表示不同的修剪标准。</span><br><span class="line">首先，我们根据不同的标准来评估过滤器的重要性。</span><br><span class="line">其次，我们对具有小重要性分数的过滤器进行修剪，得到四种不同概率的修剪层。</span><br><span class="line">然后输出的feature map是剪枝层的四个feature map的对齐加权和。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><h4 id="Experimental-Setting"><a href="#Experimental-Setting" class="headerlink" title="Experimental Setting"></a>Experimental Setting</h4><p><strong>数据集</strong>。在本节中，我们在三个基准数据集，CIFAR-10,  CIFAR-100和ILSVRC-2012上验证了我们的加速方法的有效性。CIFAR-10数据集包含5万幅训练图像和1万幅测试图像，共6万幅32×32彩色图像，分布在10个不同的类中。CIFAR-100有100个类，图像数量与CIFAR-10相同。ILSVRC-2012包含128万张训练图像和1000个类的50k张验证图像。</p>
+<p><strong>结构设置</strong>。由于ResNet具有捷径结构，现有文献认为ResNet的冗余比VGGNet少，加速ResNet比加速VGGNet困难。因此，我们重点修剪具有挑战性的ResNet。</p>
+<p><strong>正常训练设置</strong>。对于CIFAR10和CIFAR-100的ResNet，我们使用与[55]相同的训练计划。在CIFAR实验中，我们将每个设置运行3次，并报告“mean±std”。在ILSVRC2012实验中，我们使用与[15,16]相同的默认参数设置，使用与官方PyTorch[40]示例相同的数据论证策略。</p>
+<p><strong>修剪设置</strong>。在对DCS进行训练后，我们使用优化的准则对网络进行修剪，并使用完整的训练集对网络进行微调。我们分析了修剪scratch模型与预训练模型的区别。为了修剪scratch模型，我们使用常规的训练计划，而不需要额外的微调。为了对预先训练好的模型进行裁剪，我们将学习率降低到原始学习率的十分之一。为了进行公平的比较，我们使用与[20]相同的基线模型进行修剪。在再训练过程中，我们使用余弦调度器[35,8]来获得一个稳定的结果。每一层的剪枝率采样方式与DCS1相同，可以自动自适应搜索比率[8]。</p>
+<h4 id="Experimental-results"><a href="#Experimental-results" class="headerlink" title="Experimental results"></a>Experimental results</h4><p>![Learning Filter Pruning Criteria2](.\Networks\Learning Filter Pruning Criteria2.png)</p>
+<p>![Learning Filter Pruning Criteria3](.\Networks\Learning Filter Pruning Criteria3.png)</p>
+<p>![Learning Filter Pruning Criteria4](.\Networks\Learning Filter Pruning Criteria4.png)</p>
+<h3 id="Conclusion-and-Future-Work"><a href="#Conclusion-and-Future-Work" class="headerlink" title="Conclusion and Future Work"></a>Conclusion and Future Work</h3><p>在这篇文章中，我们提出了一个新的学习过滤器剪枝准则(LFPC)框架用于深度CNNs加速。与现有的方法不同，LFPC明确考虑了层之间的差异，并自适应地为不同的层选择一组合适的标准。为了有效地学习准则，我们利用Gumbel-softmax使准则可微化。<strong>在几个基准测试中，LFPC用最先进的方法取得了可比较的性能。在未来，我们可以考虑在LFPC中使用更多的准则，并结合其他加速算法，如矩阵分解[28]，进一步提高性能。此外，将该方法应用于最近的小型Cnn(MobileNet)也有一定的意义。</strong></p>
+]]></content>
+      <categories>
+        <category>Deep Learning</category>
+      </categories>
+      <tags>
+        <tag>Filter Prune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多级反馈队列调度算法</title>
+    <url>/2020/08/06/%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h3 id="操作系统之多级反馈队列调度算法"><a href="#操作系统之多级反馈队列调度算法" class="headerlink" title="操作系统之多级反馈队列调度算法"></a>操作系统之多级反馈队列调度算法</h3><h6 id="多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"><a href="#多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。" class="headerlink" title="多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"></a>多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。</h6><a id="more"></a>
+
+<h5 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 设有N个队列（Q1,Q2....QN），其中各个队列对于处理机的优先级不同,即位于各个队列中的作业(进程)的优先级也是不一样的。</span><br><span class="line">   一般来说，优先级Priority(Q1) &gt; Priority(Q2) &gt; ... &gt; Priority(QN)。</span><br><span class="line">   位于Q1中的任何一个作业(进程)都要比Q2中的任何一个作业(进程)相对于CPU的优先级要高，依次类推其它的队列。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2. 对于优先级最低的队列(QN)，作业调度遵循时间片轮转法。位于队列QN中有M个作业，运行时间是通过QN这个队列所设定的时间片来确定的；</span><br><span class="line">   对于其他队列，遵循的是先来先服务算法,同时每一进程分配一定的时间片，若时间片运行完时进程未结束，则进入下一优先级队列的末尾。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">3. 各个队列的时间片是随着优先级的增加而减少的，也就是说，优先级越高的队列中它的时间片就越短。</span><br><span class="line">   同时，为了便于那些超大作业的完成，最后一个队列QN(优先级最低的队列)的时间片一般很大。</span><br></pre></td></tr></table></figure>
+
+<h5 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h5><ol>
+<li>进程在进入待调度的队列等待时，首先进入优先级最高的Q1等待。</li>
+<li>首先调度优先级高的队列中的进程。若Q1中没有调度的进程，则调度次优先级队列中的进程。当且仅当高优先级队列中没有调度的进程是，才调度次优先级。</li>
+<li>对于同一个进程中的进程，采用先来先服务(FCFS)分配固定时间片调度(除了最后一个对列)。分配的时间片大小取决去当前队列。如果当前作业在固定时间片内未完成，进入下一级队列，直至完成。</li>
+<li>在最后一个对列的进程，采用时间片轮转调度方式调度。</li>
+<li>当低优先级队列中的进程正在运行时，有新的作业到达，此时须立即把正在运行的进程放回当前队列的队尾，然后把处理机分给高优先级进程(抢占式)。或者等待当前进程执行结束，重新回到高优先级队列中(非抢占式)。</li>
+</ol>
+<h5 id="算法总结"><a href="#算法总结" class="headerlink" title="算法总结"></a>算法总结</h5><p>​    多级反馈队列调度算法既能最小化交互工作的<strong>响应时间</strong>，又能减少对工作长度的先验知识，从而<strong>最小化周转时间</strong>。</p>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>System</tag>
+      </tags>
   </entry>
   <entry>
     <title>序/Introduction</title>
@@ -44,6 +142,263 @@
       </categories>
       <tags>
         <tag>Introduction</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/04/29/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>操作系统之死锁</title>
+    <url>/2020/08/04/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B9%8B%E6%AD%BB%E9%94%81/</url>
+    <content><![CDATA[<h3 id="操作系统之死锁"><a href="#操作系统之死锁" class="headerlink" title="操作系统之死锁"></a>操作系统之死锁</h3><ul>
+<li><h4 id="什么是死锁-Deadlock"><a href="#什么是死锁-Deadlock" class="headerlink" title="什么是死锁(Deadlock)"></a>什么是死锁(Deadlock)</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者相互通信而造成的一种阻塞的现象。</span><br><span class="line">若无外力推动，它们都无法进行下去。</span><br><span class="line">此时系统处于了死锁的状态或产生了死锁。</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h6 id="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"><a href="#举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。" class="headerlink" title="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"></a>举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。</h6></li>
+<li><h4 id="死锁的四个必要条件"><a href="#死锁的四个必要条件" class="headerlink" title="死锁的四个必要条件"></a>死锁的四个必要条件</h4><h5 id="死锁的产生必须具备以下四个条件："><a href="#死锁的产生必须具备以下四个条件：" class="headerlink" title="死锁的产生必须具备以下四个条件："></a>死锁的产生必须具备以下四个条件：</h5><ul>
+<li><h5 id="互斥条件-mutual-exclusion"><a href="#互斥条件-mutual-exclusion" class="headerlink" title="互斥条件(mutual exclusion)"></a>互斥条件(mutual exclusion)</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">指进程对所分配到的资源进行排它性使用，即在一段时间内某资源只由一个进程占用。</span><br><span class="line">如果此时还有其它进程请求资源，则请求者只能等待，直至占有资源的进程用毕释放。</span><br></pre></td></tr></table></figure>
+
+<p>例子中的饭勺和饭碗是竞争的资源，每个饭碗和饭勺在同一时间内只能一个人使用，如果可以同时使用，竞争的条件就不存在了，竞争都不存在，更不会出现死锁了。</p>
+</li>
+<li><h5 id="请求和保持条件-hold-and-wait"><a href="#请求和保持条件-hold-and-wait" class="headerlink" title="请求和保持条件(hold and wait)"></a>请求和保持条件(hold and wait)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已经保持至少一个资源，但又提出了新的资源请求，而该资源已被其它进程占有；</span><br><span class="line">此时请求进程阻塞，但又对自己已获得的其它资源保持不放。</span><br></pre></td></tr></table></figure>
+
+<p>对于所有去打饭的进程，比如作为饭勺的获得者，拿到了饭勺，那么会一直等待饭碗(阻塞)，但是不会主动放弃饭勺。如果可以主动放弃了饭勺，那么又可以继续推动了。</p>
+</li>
+<li><h5 id="不剥夺条件-no-preemption"><a href="#不剥夺条件-no-preemption" class="headerlink" title="不剥夺条件(no preemption)"></a>不剥夺条件(no preemption)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已获得的资源，在未使用完之前，不能被剥夺，只能在使用完时由自己释放。</span><br></pre></td></tr></table></figure>
+
+<p>作为一个资源的持有者，一个进程占据了饭碗，别的进程想要饭碗的时候，虽然占据饭碗的进程还在等待，但是别的进程不可以来抢我的饭碗(笑。就是资源一旦获得，除非使用结束，不能被剥夺。</p>
+</li>
+<li><h5 id="环路等待-circular-waiting"><a href="#环路等待-circular-waiting" class="headerlink" title="环路等待(circular waiting)"></a>环路等待(circular waiting)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指在发生死锁时，必然存在一个进程——资源的环形链，即进程集合&#123;P0，P1，P2，···，Pn&#125;中的P0正在等待一个P1占用的资源；</span><br><span class="line">P1正在等待P2占用的资源，……，Pn正在等待已被P0占用的资源。</span><br></pre></td></tr></table></figure>
+
+<p>死锁的出现，一定存在循环依赖。勺与碗的例子中就是一个环，A-&gt;B的碗，B-&gt;A的勺。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="死锁的预防"><a href="#死锁的预防" class="headerlink" title="死锁的预防"></a>死锁的预防</h4><h5 id="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"><a href="#死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。" class="headerlink" title="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"></a>死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。</h5><ul>
+<li><h5 id="破坏互斥条件"><a href="#破坏互斥条件" class="headerlink" title="破坏互斥条件"></a>破坏互斥条件</h5><p><strong>方法：</strong>如果允许系统资源都能共享使用，则系统不会进入死锁状态。</p>
+<p><strong>缺点：</strong>基本不可能实现，某些资源只能互斥的使用，而且有时还应保护互斥性。</p>
+</li>
+<li><h5 id="破坏请求与保持条件"><a href="#破坏请求与保持条件" class="headerlink" title="破坏请求与保持条件"></a>破坏请求与保持条件</h5><p><strong>方法：</strong>釆用预先静态分配方法，即进程在运行前一次申请完它所需要的全部资源，在它的资源未满足前，不把它投入运行。一旦投入运行后，这些资源就一直归它所有，也不再提出其他资源请求，这样就可以保证系统不会发生死锁。</p>
+<p><strong>缺点：</strong>系统资源被严重浪费，其中有些资源可能仅在运行初期或运行快结束时才使用，甚至根本不使用。而且还会导致“饥饿”现象，当由于个别资源长期被其他进程占用时，将致使等待该资源的进程迟迟不能开始运行。</p>
+</li>
+<li><h5 id="破坏不可剥夺条件"><a href="#破坏不可剥夺条件" class="headerlink" title="破坏不可剥夺条件"></a>破坏不可剥夺条件</h5><p><strong>方法：</strong>当一个已保持了某些不可剥夺资源的进程，请求新的资源而得不到满足时，它必须释放已经保持的所有资源，待以后需要时再重新申请。这意味着，一个进程已占有的资源会被暂时释放，或者说是被剥夺了，或从而破坏了不可剥夺条件。</p>
+<p><strong>缺点：</strong>该策略实现起来比较复杂，释放已获得的资源可能造成前一阶段工作的失效，反复地申请和释放资源会增加系统开销，降低系统吞吐量。这种方法常用于状态易于保存和恢复的资源，如CPU的寄存器及内存资源，一般不能用于打印机之类的资源。</p>
+</li>
+<li><h5 id="破坏循环等待条件"><a href="#破坏循环等待条件" class="headerlink" title="破坏循环等待条件"></a>破坏循环等待条件</h5><p><strong>方法：</strong>可釆用顺序资源分配法。首先给系统中的资源编号，规定每个进程，必须按编号递增的顺序请求资源，同类资源一次申请完。也就是说，只要进程提出申请分配资源Ri，则该进程在以后的资源申请中，只能申请编号大于Ri的资源。</p>
+<p><strong>缺点：</strong> 这种方法存在的问题是，编号必须相对稳定，这就限制了新类型设备的增加；尽管在为资源编号时已考虑到大多数作业实际使用这些资源的顺序，但也经常会发生作业使用资源的顺序与系统规定顺序不同的情况，造成资源的浪费；此外，这种按规定次序申请资源的方法，也必然会给用户的编程带来麻烦。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="死锁的避免"><a href="#死锁的避免" class="headerlink" title="死锁的避免"></a>死锁的避免</h4><h5 id="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"><a href="#在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。" class="headerlink" title="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"></a>在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。</h5><h5 id="Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"><a href="#Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。" class="headerlink" title="Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"></a>Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。</h5><p>未完待续……..ing</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法笔记之快速幂</title>
+    <url>/2020/08/08/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%BF%AB%E9%80%9F%E5%B9%82/</url>
+    <content><![CDATA[<h3 id="算法笔记之快速幂"><a href="#算法笔记之快速幂" class="headerlink" title="算法笔记之快速幂"></a>算法笔记之快速幂</h3><h4 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">问题描述:求A^B的最后三位数，并输出。</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h5 id="看到这道题目，最简单的思想就是求幂之后取余，代码如下："><a href="#看到这道题目，最简单的思想就是求幂之后取余，代码如下：" class="headerlink" title="看到这道题目，最简单的思想就是求幂之后取余，代码如下："></a>看到这道题目，最简单的思想就是求幂之后取余，代码如下：</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">Pow_1</span><span class="params">(<span class="keyword">long</span> base,<span class="keyword">long</span> power)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=power;i++)&#123;</span><br><span class="line">        res = res*base;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res%<span class="number">1000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="以上代码无法解决超大指数的情况，也就是x的增长，pow-base-x-会呈现爆炸性增长。"><a href="#以上代码无法解决超大指数的情况，也就是x的增长，pow-base-x-会呈现爆炸性增长。" class="headerlink" title="以上代码无法解决超大指数的情况，也就是x的增长，pow(base,x)会呈现爆炸性增长。"></a>以上代码无法解决超大指数的情况，也就是x的增长，pow(base,x)会呈现爆炸性增长。</h5><h5 id="而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。"><a href="#而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。" class="headerlink" title="而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。"></a>而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">Pow_2</span><span class="params">(<span class="keyword">long</span> base,<span class="keyword">long</span> power)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=power;i++)&#123;</span><br><span class="line">        res %= <span class="number">1000</span>;</span><br><span class="line">        res = res*base;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res%<span class="number">1000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O-n-如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。"><a href="#目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O-n-如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。" class="headerlink" title="目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O(n).如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。"></a>目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O(n).如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。</h5><h4 id="快速幂方法"><a href="#快速幂方法" class="headerlink" title="快速幂方法"></a>快速幂方法</h4><h5 id="快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高-相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导："><a href="#快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高-相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导：" class="headerlink" title="快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高(相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导："></a>快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高(相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导：</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">5^10 &#x3D; (25)^5 &#x3D; (625)^2*25</span><br><span class="line">正如的例子:如果求n^k,那么当k为偶数时,n^k &#x3D; (n*n)^(k&#x2F;2);</span><br><span class="line">		   当k为奇数时，n^k &#x3D; (n*n)^(k&#x2F;2)*n;</span><br><span class="line">只要把底数变为原来的平方，指数就缩减为了原来的一半。</span><br><span class="line">那么，我们对底数每次都取平方，那么指数会一直缩减一半，当指数缩小为1，底数就是当前的结果。</span><br></pre></td></tr></table></figure>
+
+<h5 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">Pow_3</span><span class="params">(<span class="keyword">long</span> base,<span class="keyword">long</span> power)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (power&gt;<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>((res&amp;<span class="number">1</span>)==<span class="number">1</span>)&#123;</span><br><span class="line">            res = (res*base)%<span class="number">1000</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        power &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        base =(base*base)%<span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O-logn"><a href="#实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O-logn" class="headerlink" title="实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O(logn)."></a>实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O(logn).</h5>]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法笔记之Manacher算法</title>
+    <url>/2020/08/10/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8BManacher%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="算法笔记之Manacher算法"><a href="#算法笔记之Manacher算法" class="headerlink" title="算法笔记之Manacher算法"></a>算法笔记之Manacher算法</h2><h4 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">问题描述：最长回文子串问题</span><br><span class="line">	给定一个字符串，求它的最长回文子串长度。</span><br><span class="line">示例：</span><br><span class="line">	s &#x3D; abbabbac  最长回文子串为：abbabba</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="解法一：中心扩展法"><a href="#解法一：中心扩展法" class="headerlink" title="解法一：中心扩展法"></a>解法一：中心扩展法</h4><p>​    任何一个回文串一定关于某个中心字符对称的，偶数长度的字符串对称中心是长度为2的字符，例如<strong>aabbaa</strong>中的对称中心是bb，奇数长度的字符串对称中心是长度为1的字符，例如<strong>acbca</strong>的对称中心是b。根据这个特性，针对任何一个字符串，可以对所有可能的对称中心向外拓展，例如：<strong>aabbaa</strong>的长度为1的对称中心a,a,b,b,a,a,长度为2的对称中心aa,bb,aa。当拓展是，只要保证最外层两个字符相等，那么就是一个回文串。对于长度为n的字符串，对称中心有2n-1个，每个对称中心扩展比较的复杂度是On,所以此算法的时间复杂度是O(n^2)。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s == <span class="keyword">null</span> || s.length() &lt; <span class="number">1</span>) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">int</span> start = <span class="number">0</span>, end = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> len1 = expandAroundCenter(s, i, i);</span><br><span class="line">            <span class="keyword">int</span> len2 = expandAroundCenter(s, i, i + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">int</span> len = Math.max(len1, len2);</span><br><span class="line">            <span class="keyword">if</span> (len &gt; end - start) &#123;</span><br><span class="line">                start = i - (len - <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">                end = i + len / <span class="number">2</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> s.substring(start, end + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">expandAroundCenter</span><span class="params">(String s, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> L = left, R = right;</span><br><span class="line">        <span class="keyword">while</span> (L &gt;= <span class="number">0</span> &amp;&amp; R &lt; s.length() &amp;&amp; s.charAt(L) == s.charAt(R)) &#123;</span><br><span class="line">            L--;</span><br><span class="line">            R++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> R - L - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="解法二：Manacher算法"><a href="#解法二：Manacher算法" class="headerlink" title="解法二：Manacher算法"></a>解法二：Manacher算法</h4><p>​    中心扩展法虽然很直观，但是时间复杂度是O(n^2),这对于长字符串是不可以接受的。于是，就要介绍文章的主角：Manacher(马拉车)算法。马拉车算法通过巧妙的手法，实现了On的复杂度，鬼斧神工。</p>
+<p>​    <strong>解法一</strong>存在着部分缺陷：</p>
+<ol>
+<li><p>回文串长度的奇偶性带来了两种不同的对称中心，需要不同的处理。</p>
+</li>
+<li><p>在进行中心扩展时，做了很多重复的访问。</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">例如： S &#x3D; &quot;ababa&quot;</span><br><span class="line">	  i &#x3D;  01234</span><br><span class="line">当：i&#x3D;1,i&#x3D;2时，子串aba被访问了两次。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>下面来看Manacher算法的改进：</p>
+<h5 id="（1）解决长度奇偶性带来的对称中心问题"><a href="#（1）解决长度奇偶性带来的对称中心问题" class="headerlink" title="（1）解决长度奇偶性带来的对称中心问题"></a>（1）解决长度奇偶性带来的对称中心问题</h5><p>Manacher算法对字符串进行了预处理，在所有字符中间插入字符串中未出现过得字符。通过这种方式，所有的回文子串的长度都是奇数长度的。可证明，一定不存在偶数的回文子串。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">aba  &#x3D;&gt; #a#b#a#</span><br><span class="line">abba &#x3D;&gt; #a#b#b#a#</span><br></pre></td></tr></table></figure>
+
+<h5 id="（2）-解决中心扩展出现的重复检查问题"><a href="#（2）-解决中心扩展出现的重复检查问题" class="headerlink" title="（2） 解决中心扩展出现的重复检查问题"></a>（2） 解决中心扩展出现的重复检查问题</h5><p>当进行遍历的途中，可以根据以下分析：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">index: 0 1 2 3 4 5 6 7 8 9</span><br><span class="line">假设当前的扩散中心是 6,而且0-5已经检查完毕,0-5的为中心的最大回文串长度已经确定。</span><br><span class="line">此时，如果 以4为中心的最大回文串是: 12345678;</span><br><span class="line">	 那么 6的回文子串在&lt;8的范围内理应和 6关于4对称的2中心所构成的部分子串是相同的。</span><br><span class="line">通过以上的推论：</span><br><span class="line">	1. 当检查某个中心是，尽可能找到之前对称的部分子串，减少枚举长度。</span><br><span class="line">	2. 为了然能找到的子串尽可能的大，需要维护一个所有中心最大回文子串所能到达的最右端点。</span><br></pre></td></tr></table></figure>
+
+<p>为了更好的实现算法，需要引入以下概念：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">回文半径：一个回文串中最左或最右位置的字符与其对称轴的距离称为回文半径</span><br><span class="line">例如：</span><br><span class="line">	S: # a # b # a #</span><br><span class="line">	p: 1 2 1 4 1 2 1</span><br><span class="line">  p-1: 0 1 0 3 0 1 0</span><br><span class="line">    i: 0 1 2 3 4 5 6</span><br><span class="line">而且，p-1的最大值，恰好就是原字符串回文子串的最大长度。</span><br></pre></td></tr></table></figure>
+
+<p>根据上述的两点：求最长回文子串，那就是求这个回文半径数组；而且，当我们想要求i位置的p[i]时，按照如上分析，可以利用p[0-i-1]的数据减少运算。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">manacher</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">    String sMan = manacherPrepare(s);</span><br><span class="line">    <span class="keyword">int</span>[] p = <span class="keyword">new</span> <span class="keyword">int</span>[sMan.length()];</span><br><span class="line">    <span class="keyword">int</span> maxRight = <span class="number">0</span>,pos = <span class="number">0</span>,maxLen = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMan.length();i++)&#123;</span><br><span class="line">        p[i] = i&lt;maxRight ? Math.min(p[<span class="number">2</span>*pos-i],maxRight-i):<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (i-p[i]&gt;=<span class="number">0</span> &amp;&amp; i+p[i]&lt;sMan.length() &amp;&amp; sMan.charAt(i-p[i])==sMan.charAt(i+p[i]))&#123;</span><br><span class="line">            p[i]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(p[i]+i-<span class="number">1</span> &gt; maxRight)&#123;</span><br><span class="line">            maxRight = p[i] + i -<span class="number">1</span>;</span><br><span class="line">            pos = i;</span><br><span class="line">        &#125;</span><br><span class="line">        maxLen = Math.max(maxLen,p[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxLen-<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">manacherPrepare</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">    StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">char</span> c:s.toCharArray())&#123;</span><br><span class="line">        sb.append(<span class="string">'#'</span>);</span><br><span class="line">        sb.append(c);</span><br><span class="line">    &#125;</span><br><span class="line">    sb.append(<span class="string">'#'</span>);</span><br><span class="line">    <span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>String</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法笔记之二分法解决极小化极大</title>
+    <url>/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/</url>
+    <content><![CDATA[<h3 id="算法笔记之二分法解决极小化极大"><a href="#算法笔记之二分法解决极小化极大" class="headerlink" title="算法笔记之二分法解决极小化极大"></a>算法笔记之二分法解决极小化极大</h3><h4 id="问题引入："><a href="#问题引入：" class="headerlink" title="问题引入："></a>问题引入：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。</span><br><span class="line">已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。</span><br><span class="line">给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。</span><br><span class="line">n &#x3D;&#x3D; position.length</span><br><span class="line">2 &lt;&#x3D; n &lt;&#x3D; 10^5</span><br><span class="line">1 &lt;&#x3D; position[i] &lt;&#x3D; 10^9</span><br><span class="line">所有 position 中的整数 互不相同 。</span><br><span class="line">2 &lt;&#x3D; m &lt;&#x3D; position.length</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h4 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h4><blockquote>
+<p>题目要求返回最大化的最小磁力，这是这类问题的一个典型的<strong>标志</strong>。</p>
+<p>正向分析题目，很难去解决。利用动态规划，贪心还是DFS都很棘手。</p>
+<p>但是，这个时候反过来从结果出发，能不能枚举所有可能的最小磁力获得最大的磁力呢？</p>
+<p>枚举是可以实现的，以为最小磁力可能出现的区间就是1到数组间隔最大值。</p>
+<p>同时，结果的集合又呈单调性。在某个临界点之前都符合题意，之后的所有可能都不符合。</p>
+<p>对于这种单调性的问题，二分法就是很好的解决方案了。</p>
+<p><strong>结论:从结果出发，二分搜索结果。见到极小化极大，极大化极小的问题，就可以考虑二分法</strong></p>
+</blockquote>
+<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><ol>
+<li>根据题目的数据范围，二分法搜索的区间是<strong>[0,pos[n]-pos[0]]</strong>;</li>
+<li>二分法的关键就是如何判定某个点是符合的：设k为某个最小的磁力，那么看数组上以k为距离可以放置多少小球，个数&gt;m成立。</li>
+<li>二分法另外一个复杂的点在于边界控制问题。</li>
+</ol>
+<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxMinDist</span><span class="params">(<span class="keyword">int</span>[] position,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">    Arrays.sort(position);</span><br><span class="line">    <span class="keyword">int</span> n = position.length;</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>,r=position[n-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(checkMid(mid,n,m,position))&#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            r = mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkMid</span><span class="params">(<span class="keyword">int</span> mid,<span class="keyword">int</span> n,<span class="keyword">int</span> m,<span class="keyword">int</span>[] position)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>,temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(position[i]-position[temp]&gt;=mid)&#123;</span><br><span class="line">            cnt++;</span><br><span class="line">            temp=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt&gt;=m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之七大设计原则</title>
+    <url>/2020/08/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%83%E5%A4%A7%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</url>
+    <content><![CDATA[<h4 id="设计模式之七大设计原则"><a href="#设计模式之七大设计原则" class="headerlink" title="设计模式之七大设计原则"></a>设计模式之七大设计原则</h4><ol>
+<li>重用性</li>
+<li>可读性(编程规范性)</li>
+<li>可扩展性</li>
+<li>可靠性</li>
+<li><strong>高内聚，低耦合</strong></li>
+</ol>
+<h5 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对类来说，一个类应该只负责一项职责。</span><br></pre></td></tr></table></figure>
+
+<h5 id="接口隔离原则"><a href="#接口隔离原则" class="headerlink" title="接口隔离原则"></a>接口隔离原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">客户端不应该依赖它不需要的接口，即一个类对另一个类的依赖应该建立在最小的接口上。</span><br></pre></td></tr></table></figure>
+
+<h5 id="依赖倒转原则"><a href="#依赖倒转原则" class="headerlink" title="依赖倒转原则"></a>依赖倒转原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 高层模块不应该依赖底层模块，二者都应该依赖其抽象</span><br><span class="line">2. 抽象不应该依赖细节，细节应该依赖抽象</span><br><span class="line">3. 依赖倒置的中心思想是面向接口编程</span><br></pre></td></tr></table></figure>
+
+<p>实现依赖的三种方式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 通过接口传递实现依赖</span><br><span class="line">2. 通过构造方法实现依赖</span><br><span class="line">3. 通过setter方法实现依赖</span><br></pre></td></tr></table></figure>
+
+<h5 id="里氏替换原则"><a href="#里氏替换原则" class="headerlink" title="里氏替换原则"></a>里氏替换原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">引用基类的地方必须能透明的使用其子类的对象</span><br><span class="line">使用继承时，根据里氏替换原则，尽量不要重写父类方法</span><br></pre></td></tr></table></figure>
+
+<h5 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对扩展开放，对修改关闭。</span><br><span class="line">用抽象构建框架，用实现扩展细节。</span><br></pre></td></tr></table></figure>
+
+<h5 id="迪米特法则"><a href="#迪米特法则" class="headerlink" title="迪米特法则"></a>迪米特法则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 迪米特法则(最少知道原则),一个类对自己依赖的类知道的越少越好。</span><br><span class="line">2. 类和类之间的关系越密切，耦合度越大。</span><br></pre></td></tr></table></figure>
+
+<h5 id="合成复用原则"><a href="#合成复用原则" class="headerlink" title="合成复用原则"></a>合成复用原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">尽量使用合成&#x2F;聚合的方式，而不是继承。</span><br></pre></td></tr></table></figure>
+
+<h5 id="总结：设计原则的核心思想"><a href="#总结：设计原则的核心思想" class="headerlink" title="总结：设计原则的核心思想"></a>总结：设计原则的核心思想</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 找出应用中的可能变化之处，把他们独立出来</span><br><span class="line">2. 针对接口编程，而不是针对实现编程</span><br><span class="line">3. 为了交互对象的松耦合设计而努力</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>design pattern</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>面试问题之赛马</title>
+    <url>/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/</url>
+    <content><![CDATA[<h2 id="面试问题之赛马"><a href="#面试问题之赛马" class="headerlink" title="面试问题之赛马"></a>面试问题之赛马</h2><h4 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h4><blockquote>
+<h4 id="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"><a href="#一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？" class="headerlink" title="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"></a>一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？</h4></blockquote>
+<a id="more"></a>
+<h4 id="题目分析："><a href="#题目分析：" class="headerlink" title="题目分析："></a>题目分析：</h4><blockquote>
+<ol>
+<li><p>一次比赛可以获得不多于8数量的有序成绩数组；</p>
+</li>
+<li><p>首先进行8场比赛，可以获得8组有序的成绩数组；</p>
+</li>
+<li><p>将8组小组在比赛的第一名，再进行一次比赛，此时进行了9场比赛；</p>
+</li>
+<li><p>综合以上结果，将8个小组按照第一名排列，获得二维成绩数组。</p>
+</li>
+<li><p>显然，第一名已经确定，同时可以排除小组第一名成绩在第九次比赛后四名的小组和每组的后四名(因为前四名不可能出现在后四名)。</p>
+</li>
+<li><p>根据如下数组，可以分别划定2,3,4名的出现范围：</p>
+<blockquote>
+<p><img src="/.io//.%5C%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC%5CSaima.png" alt="Saima"></p>
+<blockquote>
+<p>图中：每列依次排名，由左至右按第一名排名。</p>
+<ol>
+<li>第一名已经确定，途中黄色所示。</li>
+<li>第二名的范围也可确定，途中绿色标识的其中一个</li>
+<li>第三名可能的范围是绿色标识和蓝色标识相加。</li>
+<li>第四名范围需要讨论?位置的马是否入选第三名(不可能是第二名)，如果蓝色是第三名，那么第四名可能的范围就是绿色+蓝色+粉色+褐色。如果?位置的马不是第三名，第四名的范围就可排除粉色的区域(?的马一定比粉色的快)。</li>
+<li>所以，?区域是第三名，9匹候选马，跑两轮；?不是第三名，7匹马，跑一轮。</li>
+</ol>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><blockquote>
+<blockquote>
+<p>最多需要跑11轮，最少需要跑10轮。</p>
+</blockquote>
+</blockquote>
+]]></content>
+      <categories>
+        <category>面试</category>
+      </categories>
+      <tags>
+        <tag>面试</tag>
       </tags>
   </entry>
   <entry>
@@ -132,303 +487,6 @@
       </categories>
       <tags>
         <tag>Singleton</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>操作系统之死锁</title>
-    <url>/2020/08/04/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B9%8B%E6%AD%BB%E9%94%81/</url>
-    <content><![CDATA[<h3 id="操作系统之死锁"><a href="#操作系统之死锁" class="headerlink" title="操作系统之死锁"></a>操作系统之死锁</h3><ul>
-<li><h4 id="什么是死锁-Deadlock"><a href="#什么是死锁-Deadlock" class="headerlink" title="什么是死锁(Deadlock)"></a>什么是死锁(Deadlock)</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者相互通信而造成的一种阻塞的现象。</span><br><span class="line">若无外力推动，它们都无法进行下去。</span><br><span class="line">此时系统处于了死锁的状态或产生了死锁。</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h6 id="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"><a href="#举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。" class="headerlink" title="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"></a>举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。</h6></li>
-<li><h4 id="死锁的四个必要条件"><a href="#死锁的四个必要条件" class="headerlink" title="死锁的四个必要条件"></a>死锁的四个必要条件</h4><h5 id="死锁的产生必须具备以下四个条件："><a href="#死锁的产生必须具备以下四个条件：" class="headerlink" title="死锁的产生必须具备以下四个条件："></a>死锁的产生必须具备以下四个条件：</h5><ul>
-<li><h5 id="互斥条件-mutual-exclusion"><a href="#互斥条件-mutual-exclusion" class="headerlink" title="互斥条件(mutual exclusion)"></a>互斥条件(mutual exclusion)</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">指进程对所分配到的资源进行排它性使用，即在一段时间内某资源只由一个进程占用。</span><br><span class="line">如果此时还有其它进程请求资源，则请求者只能等待，直至占有资源的进程用毕释放。</span><br></pre></td></tr></table></figure>
-
-<p>例子中的饭勺和饭碗是竞争的资源，每个饭碗和饭勺在同一时间内只能一个人使用，如果可以同时使用，竞争的条件就不存在了，竞争都不存在，更不会出现死锁了。</p>
-</li>
-<li><h5 id="请求和保持条件-hold-and-wait"><a href="#请求和保持条件-hold-and-wait" class="headerlink" title="请求和保持条件(hold and wait)"></a>请求和保持条件(hold and wait)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已经保持至少一个资源，但又提出了新的资源请求，而该资源已被其它进程占有；</span><br><span class="line">此时请求进程阻塞，但又对自己已获得的其它资源保持不放。</span><br></pre></td></tr></table></figure>
-
-<p>对于所有去打饭的进程，比如作为饭勺的获得者，拿到了饭勺，那么会一直等待饭碗(阻塞)，但是不会主动放弃饭勺。如果可以主动放弃了饭勺，那么又可以继续推动了。</p>
-</li>
-<li><h5 id="不剥夺条件-no-preemption"><a href="#不剥夺条件-no-preemption" class="headerlink" title="不剥夺条件(no preemption)"></a>不剥夺条件(no preemption)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已获得的资源，在未使用完之前，不能被剥夺，只能在使用完时由自己释放。</span><br></pre></td></tr></table></figure>
-
-<p>作为一个资源的持有者，一个进程占据了饭碗，别的进程想要饭碗的时候，虽然占据饭碗的进程还在等待，但是别的进程不可以来抢我的饭碗(笑。就是资源一旦获得，除非使用结束，不能被剥夺。</p>
-</li>
-<li><h5 id="环路等待-circular-waiting"><a href="#环路等待-circular-waiting" class="headerlink" title="环路等待(circular waiting)"></a>环路等待(circular waiting)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指在发生死锁时，必然存在一个进程——资源的环形链，即进程集合&#123;P0，P1，P2，···，Pn&#125;中的P0正在等待一个P1占用的资源；</span><br><span class="line">P1正在等待P2占用的资源，……，Pn正在等待已被P0占用的资源。</span><br></pre></td></tr></table></figure>
-
-<p>死锁的出现，一定存在循环依赖。勺与碗的例子中就是一个环，A-&gt;B的碗，B-&gt;A的勺。</p>
-</li>
-</ul>
-</li>
-<li><h4 id="死锁的预防"><a href="#死锁的预防" class="headerlink" title="死锁的预防"></a>死锁的预防</h4><h5 id="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"><a href="#死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。" class="headerlink" title="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"></a>死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。</h5><ul>
-<li><h5 id="破坏互斥条件"><a href="#破坏互斥条件" class="headerlink" title="破坏互斥条件"></a>破坏互斥条件</h5><p><strong>方法：</strong>如果允许系统资源都能共享使用，则系统不会进入死锁状态。</p>
-<p><strong>缺点：</strong>基本不可能实现，某些资源只能互斥的使用，而且有时还应保护互斥性。</p>
-</li>
-<li><h5 id="破坏请求与保持条件"><a href="#破坏请求与保持条件" class="headerlink" title="破坏请求与保持条件"></a>破坏请求与保持条件</h5><p><strong>方法：</strong>釆用预先静态分配方法，即进程在运行前一次申请完它所需要的全部资源，在它的资源未满足前，不把它投入运行。一旦投入运行后，这些资源就一直归它所有，也不再提出其他资源请求，这样就可以保证系统不会发生死锁。</p>
-<p><strong>缺点：</strong>系统资源被严重浪费，其中有些资源可能仅在运行初期或运行快结束时才使用，甚至根本不使用。而且还会导致“饥饿”现象，当由于个别资源长期被其他进程占用时，将致使等待该资源的进程迟迟不能开始运行。</p>
-</li>
-<li><h5 id="破坏不可剥夺条件"><a href="#破坏不可剥夺条件" class="headerlink" title="破坏不可剥夺条件"></a>破坏不可剥夺条件</h5><p><strong>方法：</strong>当一个已保持了某些不可剥夺资源的进程，请求新的资源而得不到满足时，它必须释放已经保持的所有资源，待以后需要时再重新申请。这意味着，一个进程已占有的资源会被暂时释放，或者说是被剥夺了，或从而破坏了不可剥夺条件。</p>
-<p><strong>缺点：</strong>该策略实现起来比较复杂，释放已获得的资源可能造成前一阶段工作的失效，反复地申请和释放资源会增加系统开销，降低系统吞吐量。这种方法常用于状态易于保存和恢复的资源，如CPU的寄存器及内存资源，一般不能用于打印机之类的资源。</p>
-</li>
-<li><h5 id="破坏循环等待条件"><a href="#破坏循环等待条件" class="headerlink" title="破坏循环等待条件"></a>破坏循环等待条件</h5><p><strong>方法：</strong>可釆用顺序资源分配法。首先给系统中的资源编号，规定每个进程，必须按编号递增的顺序请求资源，同类资源一次申请完。也就是说，只要进程提出申请分配资源Ri，则该进程在以后的资源申请中，只能申请编号大于Ri的资源。</p>
-<p><strong>缺点：</strong> 这种方法存在的问题是，编号必须相对稳定，这就限制了新类型设备的增加；尽管在为资源编号时已考虑到大多数作业实际使用这些资源的顺序，但也经常会发生作业使用资源的顺序与系统规定顺序不同的情况，造成资源的浪费；此外，这种按规定次序申请资源的方法，也必然会给用户的编程带来麻烦。</p>
-</li>
-</ul>
-</li>
-<li><h4 id="死锁的避免"><a href="#死锁的避免" class="headerlink" title="死锁的避免"></a>死锁的避免</h4><h5 id="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"><a href="#在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。" class="headerlink" title="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"></a>在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。</h5><h5 id="Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"><a href="#Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。" class="headerlink" title="Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"></a>Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。</h5><p>未完待续……..ing</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>操作系统</category>
-      </categories>
-      <tags>
-        <tag>System</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>面试问题之赛马</title>
-    <url>/2020/08/02/%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E4%B9%8B%E8%B5%9B%E9%A9%AC/</url>
-    <content><![CDATA[<h2 id="面试问题之赛马"><a href="#面试问题之赛马" class="headerlink" title="面试问题之赛马"></a>面试问题之赛马</h2><h4 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h4><blockquote>
-<h4 id="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"><a href="#一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？" class="headerlink" title="一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？"></a>一共有64匹赛马，8个赛道，每次比赛获得上赛道的马匹对应的名次，最少需要几次比赛？</h4></blockquote>
-<a id="more"></a>
-<h4 id="题目分析："><a href="#题目分析：" class="headerlink" title="题目分析："></a>题目分析：</h4><blockquote>
-<ol>
-<li><p>一次比赛可以获得不多于8数量的有序成绩数组；</p>
-</li>
-<li><p>首先进行8场比赛，可以获得8组有序的成绩数组；</p>
-</li>
-<li><p>将8组小组在比赛的第一名，再进行一次比赛，此时进行了9场比赛；</p>
-</li>
-<li><p>综合以上结果，将8个小组按照第一名排列，获得二维成绩数组。</p>
-</li>
-<li><p>显然，第一名已经确定，同时可以排除小组第一名成绩在第九次比赛后四名的小组和每组的后四名(因为前四名不可能出现在后四名)。</p>
-</li>
-<li><p>根据如下数组，可以分别划定2,3,4名的出现范围：</p>
-<blockquote>
-<p><img src="/.io//Saima.png" alt="Saima.png"> </p>
-<blockquote>
-<p>图中：每列依次排名，由左至右按第一名排名。</p>
-<ol>
-<li>第一名已经确定，途中黄色所示。</li>
-<li>第二名的范围也可确定，途中绿色标识的其中一个</li>
-<li>第三名可能的范围是绿色标识和蓝色标识相加。</li>
-<li>第四名范围需要讨论?位置的马是否入选第三名(不可能是第二名)，如果蓝色是第三名，那么第四名可能的范围就是绿色+蓝色+粉色+褐色。如果?位置的马不是第三名，第四名的范围就可排除粉色的区域(?的马一定比粉色的快)。</li>
-<li>所以，?区域是第三名，9匹候选马，跑两轮；?不是第三名，7匹马，跑一轮。</li>
-</ol>
-</blockquote>
-</blockquote>
-</li>
-</ol>
-</blockquote>
-<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><blockquote>
-<blockquote>
-<p>最多需要跑11轮，最少需要跑10轮。</p>
-</blockquote>
-</blockquote>
-]]></content>
-      <categories>
-        <category>面试</category>
-      </categories>
-      <tags>
-        <tag>面试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>多级反馈队列调度算法</title>
-    <url>/2020/08/06/%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h3 id="操作系统之多级反馈队列调度算法"><a href="#操作系统之多级反馈队列调度算法" class="headerlink" title="操作系统之多级反馈队列调度算法"></a>操作系统之多级反馈队列调度算法</h3><h6 id="多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"><a href="#多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。" class="headerlink" title="多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"></a>多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。</h6><a id="more"></a>
-
-<h5 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 设有N个队列（Q1,Q2....QN），其中各个队列对于处理机的优先级不同,即位于各个队列中的作业(进程)的优先级也是不一样的。</span><br><span class="line">   一般来说，优先级Priority(Q1) &gt; Priority(Q2) &gt; ... &gt; Priority(QN)。</span><br><span class="line">   位于Q1中的任何一个作业(进程)都要比Q2中的任何一个作业(进程)相对于CPU的优先级要高，依次类推其它的队列。</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2. 对于优先级最低的队列(QN)，作业调度遵循时间片轮转法。位于队列QN中有M个作业，运行时间是通过QN这个队列所设定的时间片来确定的；</span><br><span class="line">   对于其他队列，遵循的是先来先服务算法,同时每一进程分配一定的时间片，若时间片运行完时进程未结束，则进入下一优先级队列的末尾。</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">3. 各个队列的时间片是随着优先级的增加而减少的，也就是说，优先级越高的队列中它的时间片就越短。</span><br><span class="line">   同时，为了便于那些超大作业的完成，最后一个队列QN(优先级最低的队列)的时间片一般很大。</span><br></pre></td></tr></table></figure>
-
-<h5 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h5><ol>
-<li>进程在进入待调度的队列等待时，首先进入优先级最高的Q1等待。</li>
-<li>首先调度优先级高的队列中的进程。若Q1中没有调度的进程，则调度次优先级队列中的进程。当且仅当高优先级队列中没有调度的进程是，才调度次优先级。</li>
-<li>对于同一个进程中的进程，采用先来先服务(FCFS)分配固定时间片调度(除了最后一个对列)。分配的时间片大小取决去当前队列。如果当前作业在固定时间片内未完成，进入下一级队列，直至完成。</li>
-<li>在最后一个对列的进程，采用时间片轮转调度方式调度。</li>
-<li>当低优先级队列中的进程正在运行时，有新的作业到达，此时须立即把正在运行的进程放回当前队列的队尾，然后把处理机分给高优先级进程(抢占式)。或者等待当前进程执行结束，重新回到高优先级队列中(非抢占式)。</li>
-</ol>
-<h5 id="算法总结"><a href="#算法总结" class="headerlink" title="算法总结"></a>算法总结</h5><p>​    多级反馈队列调度算法既能最小化交互工作的<strong>响应时间</strong>，又能减少对工作长度的先验知识，从而<strong>最小化周转时间</strong>。</p>
-]]></content>
-      <categories>
-        <category>操作系统</category>
-      </categories>
-      <tags>
-        <tag>System</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>算法笔记之快速幂</title>
-    <url>/2020/08/08/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%BF%AB%E9%80%9F%E5%B9%82/</url>
-    <content><![CDATA[<h3 id="算法笔记之快速幂"><a href="#算法笔记之快速幂" class="headerlink" title="算法笔记之快速幂"></a>算法笔记之快速幂</h3><h4 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">问题描述:求A^B的最后三位数，并输出。</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h5 id="看到这道题目，最简单的思想就是求幂之后取余，代码如下："><a href="#看到这道题目，最简单的思想就是求幂之后取余，代码如下：" class="headerlink" title="看到这道题目，最简单的思想就是求幂之后取余，代码如下："></a>看到这道题目，最简单的思想就是求幂之后取余，代码如下：</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">Pow_1</span><span class="params">(<span class="keyword">long</span> base,<span class="keyword">long</span> power)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=power;i++)&#123;</span><br><span class="line">        res = res*base;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res%<span class="number">1000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="以上代码无法解决超大指数的情况，也就是x的增长，pow-base-x-会呈现爆炸性增长。"><a href="#以上代码无法解决超大指数的情况，也就是x的增长，pow-base-x-会呈现爆炸性增长。" class="headerlink" title="以上代码无法解决超大指数的情况，也就是x的增长，pow(base,x)会呈现爆炸性增长。"></a>以上代码无法解决超大指数的情况，也就是x的增长，pow(base,x)会呈现爆炸性增长。</h5><h5 id="而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。"><a href="#而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。" class="headerlink" title="而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。"></a>而且long是64位，所以res在指数很大的情况下会发生溢出。解决方案也很简单，每次结果取余。</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">Pow_2</span><span class="params">(<span class="keyword">long</span> base,<span class="keyword">long</span> power)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=power;i++)&#123;</span><br><span class="line">        res %= <span class="number">1000</span>;</span><br><span class="line">        res = res*base;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res%<span class="number">1000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O-n-如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。"><a href="#目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O-n-如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。" class="headerlink" title="目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O(n).如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。"></a>目前这种方法就可以很好的解决问题了，但是当前的算法时间复杂度是O(n).如果是power的大小时1e9甚至更大，程序的表现并不好。其实，完全有比进行n次乘法更高效的方法。接下来就是快速幂的方法介绍。</h5><h4 id="快速幂方法"><a href="#快速幂方法" class="headerlink" title="快速幂方法"></a>快速幂方法</h4><h5 id="快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高-相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导："><a href="#快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高-相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导：" class="headerlink" title="快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高(相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导："></a>快速幂，顾名思义就是更快速的实现幂的计算。传统计算幂的算法时间复杂度这么高(相对来说），是因为指数为n，就要做n次运算。但是，根据如下推导：</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">5^10 &#x3D; (25)^5 &#x3D; (625)^2*25</span><br><span class="line">正如的例子:如果求n^k,那么当k为偶数时,n^k &#x3D; (n*n)^(k&#x2F;2);</span><br><span class="line">		   当k为奇数时，n^k &#x3D; (n*n)^(k&#x2F;2)*n;</span><br><span class="line">只要把底数变为原来的平方，指数就缩减为了原来的一半。</span><br><span class="line">那么，我们对底数每次都取平方，那么指数会一直缩减一半，当指数缩小为1，底数就是当前的结果。</span><br></pre></td></tr></table></figure>
-
-<h5 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">Pow_3</span><span class="params">(<span class="keyword">long</span> base,<span class="keyword">long</span> power)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (power&gt;<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>((res&amp;<span class="number">1</span>)==<span class="number">1</span>)&#123;</span><br><span class="line">            res = (res*base)%<span class="number">1000</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        power &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        base =(base*base)%<span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O-logn"><a href="#实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O-logn" class="headerlink" title="实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O(logn)."></a>实际上，快速幂就是尽可能的复用之前的运算结果，时间复杂度为O(logn).</h5>]]></content>
-      <categories>
-        <category>Algorithm</category>
-      </categories>
-      <tags>
-        <tag>Math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>算法笔记之二分法解决极小化极大</title>
-    <url>/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/</url>
-    <content><![CDATA[<h3 id="算法笔记之二分法解决极小化极大"><a href="#算法笔记之二分法解决极小化极大" class="headerlink" title="算法笔记之二分法解决极小化极大"></a>算法笔记之二分法解决极小化极大</h3><h4 id="问题引入："><a href="#问题引入：" class="headerlink" title="问题引入："></a>问题引入：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。</span><br><span class="line">已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。</span><br><span class="line">给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。</span><br><span class="line">n &#x3D;&#x3D; position.length</span><br><span class="line">2 &lt;&#x3D; n &lt;&#x3D; 10^5</span><br><span class="line">1 &lt;&#x3D; position[i] &lt;&#x3D; 10^9</span><br><span class="line">所有 position 中的整数 互不相同 。</span><br><span class="line">2 &lt;&#x3D; m &lt;&#x3D; position.length</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h4 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h4><blockquote>
-<p>题目要求返回最大化的最小磁力，这是这类问题的一个典型的<strong>标志</strong>。</p>
-<p>正向分析题目，很难去解决。利用动态规划，贪心还是DFS都很棘手。</p>
-<p>但是，这个时候反过来从结果出发，能不能枚举所有可能的最小磁力获得最大的磁力呢？</p>
-<p>枚举是可以实现的，以为最小磁力可能出现的区间就是1到数组间隔最大值。</p>
-<p>同时，结果的集合又呈单调性。在某个临界点之前都符合题意，之后的所有可能都不符合。</p>
-<p>对于这种单调性的问题，二分法就是很好的解决方案了。</p>
-<p><strong>结论:从结果出发，二分搜索结果。见到极小化极大，极大化极小的问题，就可以考虑二分法</strong></p>
-</blockquote>
-<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><ol>
-<li>根据题目的数据范围，二分法搜索的区间是<strong>[0,pos[n]-pos[0]]</strong>;</li>
-<li>二分法的关键就是如何判定某个点是符合的：设k为某个最小的磁力，那么看数组上以k为距离可以放置多少小球，个数&gt;m成立。</li>
-<li>二分法另外一个复杂的点在于边界控制问题。</li>
-</ol>
-<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxMinDist</span><span class="params">(<span class="keyword">int</span>[] position,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">    Arrays.sort(position);</span><br><span class="line">    <span class="keyword">int</span> n = position.length;</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>,r=position[n-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(checkMid(mid,n,m,position))&#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            r = mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkMid</span><span class="params">(<span class="keyword">int</span> mid,<span class="keyword">int</span> n,<span class="keyword">int</span> m,<span class="keyword">int</span>[] position)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>,temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(position[i]-position[temp]&gt;=mid)&#123;</span><br><span class="line">            cnt++;</span><br><span class="line">            temp=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt&gt;=m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Algorithm</category>
-      </categories>
-      <tags>
-        <tag>math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>算法笔记之Manacher算法</title>
-    <url>/2020/08/10/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8BManacher%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="算法笔记之Manacher算法"><a href="#算法笔记之Manacher算法" class="headerlink" title="算法笔记之Manacher算法"></a>算法笔记之Manacher算法</h2><h4 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">问题描述：最长回文子串问题</span><br><span class="line">	给定一个字符串，求它的最长回文子串长度。</span><br><span class="line">示例：</span><br><span class="line">	s &#x3D; abbabbac  最长回文子串为：abbabba</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h4 id="解法一：中心扩展法"><a href="#解法一：中心扩展法" class="headerlink" title="解法一：中心扩展法"></a>解法一：中心扩展法</h4><p>​    任何一个回文串一定关于某个中心字符对称的，偶数长度的字符串对称中心是长度为2的字符，例如<strong>aabbaa</strong>中的对称中心是bb，奇数长度的字符串对称中心是长度为1的字符，例如<strong>acbca</strong>的对称中心是b。根据这个特性，针对任何一个字符串，可以对所有可能的对称中心向外拓展，例如：<strong>aabbaa</strong>的长度为1的对称中心a,a,b,b,a,a,长度为2的对称中心aa,bb,aa。当拓展是，只要保证最外层两个字符相等，那么就是一个回文串。对于长度为n的字符串，对称中心有2n-1个，每个对称中心扩展比较的复杂度是On,所以此算法的时间复杂度是O(n^2)。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s == <span class="keyword">null</span> || s.length() &lt; <span class="number">1</span>) <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">int</span> start = <span class="number">0</span>, end = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> len1 = expandAroundCenter(s, i, i);</span><br><span class="line">            <span class="keyword">int</span> len2 = expandAroundCenter(s, i, i + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">int</span> len = Math.max(len1, len2);</span><br><span class="line">            <span class="keyword">if</span> (len &gt; end - start) &#123;</span><br><span class="line">                start = i - (len - <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">                end = i + len / <span class="number">2</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> s.substring(start, end + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">expandAroundCenter</span><span class="params">(String s, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> L = left, R = right;</span><br><span class="line">        <span class="keyword">while</span> (L &gt;= <span class="number">0</span> &amp;&amp; R &lt; s.length() &amp;&amp; s.charAt(L) == s.charAt(R)) &#123;</span><br><span class="line">            L--;</span><br><span class="line">            R++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> R - L - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="解法二：Manacher算法"><a href="#解法二：Manacher算法" class="headerlink" title="解法二：Manacher算法"></a>解法二：Manacher算法</h4><p>​    中心扩展法虽然很直观，但是时间复杂度是O(n^2),这对于长字符串是不可以接受的。于是，就要介绍文章的主角：Manacher(马拉车)算法。马拉车算法通过巧妙的手法，实现了On的复杂度，鬼斧神工。</p>
-<p>​    <strong>解法一</strong>存在着部分缺陷：</p>
-<ol>
-<li><p>回文串长度的奇偶性带来了两种不同的对称中心，需要不同的处理。</p>
-</li>
-<li><p>在进行中心扩展时，做了很多重复的访问。</p>
- <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">例如： S &#x3D; &quot;ababa&quot;</span><br><span class="line">	  i &#x3D;  01234</span><br><span class="line">当：i&#x3D;1,i&#x3D;2时，子串aba被访问了两次。</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<p>下面来看Manacher算法的改进：</p>
-<h5 id="（1）解决长度奇偶性带来的对称中心问题"><a href="#（1）解决长度奇偶性带来的对称中心问题" class="headerlink" title="（1）解决长度奇偶性带来的对称中心问题"></a>（1）解决长度奇偶性带来的对称中心问题</h5><p>Manacher算法对字符串进行了预处理，在所有字符中间插入字符串中未出现过得字符。通过这种方式，所有的回文子串的长度都是奇数长度的。可证明，一定不存在偶数的回文子串。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">aba  &#x3D;&gt; #a#b#a#</span><br><span class="line">abba &#x3D;&gt; #a#b#b#a#</span><br></pre></td></tr></table></figure>
-
-<h5 id="（2）-解决中心扩展出现的重复检查问题"><a href="#（2）-解决中心扩展出现的重复检查问题" class="headerlink" title="（2） 解决中心扩展出现的重复检查问题"></a>（2） 解决中心扩展出现的重复检查问题</h5><p>当进行遍历的途中，可以根据以下分析：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">index: 0 1 2 3 4 5 6 7 8 9</span><br><span class="line">假设当前的扩散中心是 6,而且0-5已经检查完毕,0-5的为中心的最大回文串长度已经确定。</span><br><span class="line">此时，如果 以4为中心的最大回文串是: 12345678;</span><br><span class="line">	 那么 6的回文子串在&lt;8的范围内理应和 6关于4对称的2中心所构成的部分子串是相同的。</span><br><span class="line">通过以上的推论：</span><br><span class="line">	1. 当检查某个中心是，尽可能找到之前对称的部分子串，减少枚举长度。</span><br><span class="line">	2. 为了然能找到的子串尽可能的大，需要维护一个所有中心最大回文子串所能到达的最右端点。</span><br></pre></td></tr></table></figure>
-
-<p>为了更好的实现算法，需要引入以下概念：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">回文半径：一个回文串中最左或最右位置的字符与其对称轴的距离称为回文半径</span><br><span class="line">例如：</span><br><span class="line">	S: # a # b # a #</span><br><span class="line">	p: 1 2 1 4 1 2 1</span><br><span class="line">  p-1: 0 1 0 3 0 1 0</span><br><span class="line">    i: 0 1 2 3 4 5 6</span><br><span class="line">而且，p-1的最大值，恰好就是原字符串回文子串的最大长度。</span><br></pre></td></tr></table></figure>
-
-<p>根据上述的两点：求最长回文子串，那就是求这个回文半径数组；而且，当我们想要求i位置的p[i]时，按照如上分析，可以利用p[0-i-1]的数据减少运算。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">manacher</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">    String sMan = manacherPrepare(s);</span><br><span class="line">    <span class="keyword">int</span>[] p = <span class="keyword">new</span> <span class="keyword">int</span>[sMan.length()];</span><br><span class="line">    <span class="keyword">int</span> maxRight = <span class="number">0</span>,pos = <span class="number">0</span>,maxLen = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMan.length();i++)&#123;</span><br><span class="line">        p[i] = i&lt;maxRight ? Math.min(p[<span class="number">2</span>*pos-i],maxRight-i):<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (i-p[i]&gt;=<span class="number">0</span> &amp;&amp; i+p[i]&lt;sMan.length() &amp;&amp; sMan.charAt(i-p[i])==sMan.charAt(i+p[i]))&#123;</span><br><span class="line">            p[i]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(p[i]+i-<span class="number">1</span> &gt; maxRight)&#123;</span><br><span class="line">            maxRight = p[i] + i -<span class="number">1</span>;</span><br><span class="line">            pos = i;</span><br><span class="line">        &#125;</span><br><span class="line">        maxLen = Math.max(maxLen,p[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxLen-<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">manacherPrepare</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">    StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">char</span> c:s.toCharArray())&#123;</span><br><span class="line">        sb.append(<span class="string">'#'</span>);</span><br><span class="line">        sb.append(c);</span><br><span class="line">    &#125;</span><br><span class="line">    sb.append(<span class="string">'#'</span>);</span><br><span class="line">    <span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Algorithm</category>
-      </categories>
-      <tags>
-        <tag>String</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>设计模式之七大设计原则</title>
-    <url>/2020/08/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%83%E5%A4%A7%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</url>
-    <content><![CDATA[<h4 id="设计模式之七大设计原则"><a href="#设计模式之七大设计原则" class="headerlink" title="设计模式之七大设计原则"></a>设计模式之七大设计原则</h4><ol>
-<li>重用性</li>
-<li>可读性(编程规范性)</li>
-<li>可扩展性</li>
-<li>可靠性</li>
-<li><strong>高内聚，低耦合</strong></li>
-</ol>
-<h5 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对类来说，一个类应该只负责一项职责。</span><br></pre></td></tr></table></figure>
-
-<h5 id="接口隔离原则"><a href="#接口隔离原则" class="headerlink" title="接口隔离原则"></a>接口隔离原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">客户端不应该依赖它不需要的接口，即一个类对另一个类的依赖应该建立在最小的接口上。</span><br></pre></td></tr></table></figure>
-
-<h5 id="依赖倒转原则"><a href="#依赖倒转原则" class="headerlink" title="依赖倒转原则"></a>依赖倒转原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 高层模块不应该依赖底层模块，二者都应该依赖其抽象</span><br><span class="line">2. 抽象不应该依赖细节，细节应该依赖抽象</span><br><span class="line">3. 依赖倒置的中心思想是面向接口编程</span><br></pre></td></tr></table></figure>
-
-<p>实现依赖的三种方式</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 通过接口传递实现依赖</span><br><span class="line">2. 通过构造方法实现依赖</span><br><span class="line">3. 通过setter方法实现依赖</span><br></pre></td></tr></table></figure>
-
-<h5 id="里氏替换原则"><a href="#里氏替换原则" class="headerlink" title="里氏替换原则"></a>里氏替换原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">引用基类的地方必须能透明的使用其子类的对象</span><br><span class="line">使用继承时，根据里氏替换原则，尽量不要重写父类方法</span><br></pre></td></tr></table></figure>
-
-<h5 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对扩展开放，对修改关闭。</span><br><span class="line">用抽象构建框架，用实现扩展细节。</span><br></pre></td></tr></table></figure>
-
-<h5 id="迪米特法则"><a href="#迪米特法则" class="headerlink" title="迪米特法则"></a>迪米特法则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 迪米特法则(最少知道原则),一个类对自己依赖的类知道的越少越好。</span><br><span class="line">2. 类和类之间的关系越密切，耦合度越大。</span><br></pre></td></tr></table></figure>
-
-<h5 id="合成复用原则"><a href="#合成复用原则" class="headerlink" title="合成复用原则"></a>合成复用原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">尽量使用合成&#x2F;聚合的方式，而不是继承。</span><br></pre></td></tr></table></figure>
-
-<h5 id="总结：设计原则的核心思想"><a href="#总结：设计原则的核心思想" class="headerlink" title="总结：设计原则的核心思想"></a>总结：设计原则的核心思想</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 找出应用中的可能变化之处，把他们独立出来</span><br><span class="line">2. 针对接口编程，而不是针对实现编程</span><br><span class="line">3. 为了交互对象的松耦合设计而努力</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-      <tags>
-        <tag>design pattern</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</title>
-    <url>/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/</url>
-    <content><![CDATA[<h3 id="【模型压缩】CVPR2020-HRank-Filter-Pruning-using-High-Rank-Feature-Map"><a href="#【模型压缩】CVPR2020-HRank-Filter-Pruning-using-High-Rank-Feature-Map" class="headerlink" title="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map"></a>【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</h3><h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
-<p><a href="https://github.com/lmbxmu/HRank" target="_blank" rel="noopener">https://github.com/lmbxmu/HRank</a></p>
-<a id="more"></a>
-
-<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>卷积神经网络（CNN）在计算机视觉应用方面取得了巨大成功，如分类，检测 和分割。然而，它们对计算能力和内存的高要求阻止将大多数最先进的 CNN 部署在边缘设备（如智能手机或可穿戴设备）中。虽然在设计新的硬件和/或硬件特定的CNN加速框架（如TensorRT）方面已经取得了良好的进展，但是是通过在acc方面的妥协来实现降低FLOPs和CNN的大小。流行的技术包括：filter压缩，参数量化和网络修剪。</p>
-<p>其中，网络修剪已显示出广阔的应用前景。典型的工作或者修剪Weight矩阵来获得sparse(稀疏)权重矩阵(weight pruning);或者从网络中删除整个过滤器(filter pruning)。除了网络压缩，权重修剪方法也可以实现加速在专用软件或硬件 .但是，它们在通用硬件或 BLAS 库上的应用上受限。相比之下，滤镜修剪方法没有此限制，因为整个filter都已删除。本文重点介绍filter修剪以实现模型压缩（参数减少）和加速度（FLOPs的减少），旨在为计算能力较低的设备提供多功能解决方案。</p>
-<p>filter修剪的核心在于filter的选择，用较低的准确率换取高压缩率。基于filter评价函数的设计，对filter进行了实证分类基于过滤器评估函数的设计，我们根据经验将过滤器修剪分为两组，如下所述。</p>
-<h5 id="Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。"><a href="#Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。" class="headerlink" title="Property Importance：根据 CNN 的内在属性对筛选器进行修剪。"></a>Property Importance：根据 CNN 的内在属性对筛选器进行修剪。</h5><p>这些修剪方法不会修改网络训练损失。修剪后，通过微调提高模型性能。在这些方法中，Hu et al.利用大型网络中输出的稀疏性来移除具有高百分比零激活的filter。基于l1范数的修剪方法假设参数或特征的范数小，那么具有更少的信息，应该首先被修剪。Molchanov et al.考虑了一阶梯度来评估filter的重要性。Hu et al.计算layers中的几何中位数，并修剪最接近此的滤镜。大多数filter评估功能的设计都是ad-hoc–为了某个特定目的，所建立起来的.这带来了低时间复杂度的优点，但也限制了加速度和压缩比。</p>
-<pre><code>#####     Adaptive Importance：不同于基于属性重要性的方法，另一个方向将修剪要求嵌入到网络训练损失中，并采用联合修剪优化来生成自适应修剪决策。</code></pre><p>Liu et al.批处理规范化层的缩放因子施加了空间约束，允许将具有较低缩放因子的通道标识为无极性。Huang et al.引入了一个新的缩放因子参数（也称为掩码），以学习稀疏结构修剪，其中删除与缩放因子为零的筛选器。与基于属性重要性的filter prune相比，自适应重要性方法通常由于联合优化而产生更好的压缩和加速度结果。然而，由于损失的变化，所需的再培训步骤在机器时间和人力方面都是沉重的，我们要求另一轮超参数调整。对于某些方法<em>，例如</em>，基于掩码的方案，修改后的损耗甚至需要专门的优化器，这会影响基于自适应重要性的方法的灵活性和易用性。</p>
-<p>总体而言，到目前为止，过滤器修剪仍然是一个开放的问题。一方面，我们追求更高的压缩/加速度比，另一方面，我们受到重型机器时间和人力的限制（特别是Adaptive Importance为基础的方法）。<strong>我们认为这些问题的核心是缺乏有关filter重要性和冗余的实际/理论指导。</strong>在这篇论文中，我们提出了一种有效和高效的滤镜修剪方法：探索CNN每层特征图的High Rank。我们所提出的 HRank 为基于属性重要性的筛选器修剪器提供指导。它消除了引入额外的辅助约束或重新训练模型的需要，从而简化了修剪的复杂性。此外，与现有的基于属性重要性的方法相比，HRank在加速和压缩方面也有显著改进，比最先进的基于重要性的自适应方法取得更好的效果。实施高等级特征图背后的动机来自经验和定量的观察。我们发现，无论CNN看到多少数据，单个filter生成的特征图的平均排名总是相同的。这表明，只使用一小部分输入图像就可以精确的估计DNN的特征图排名。基于这一理念，我们从数学上证明，较低等级的特征图对准确性的贡献较小。因此，可以首先删除生成这些要素映射的筛选器。我们在CIFAR-10和ImageNet上对诸多模型进行了测试。结果表明，HRank优于现有filter修剪方法，包括基于属性重要性的方法和最先进的自适应重要性模型。另外的试验表明，即使我们在修剪后微调期间冻结了带有高等级特征图的部分filter，模型仍保留高精度，这验证了我们的假设。主要贡献为：</p>
-<pre><code>- • 在广泛统计验证后，我们通过经验证明，单个filter生成的特征图的平均排名几乎保持不变。据我们所知，这是第一次报道这一观察。
-- 我们从数学上证明，具有较低等级特征图的filter信息较少，因此对保持精度不太重要，可以先删除。对于高等级要素地图，情况正好相反。
-- •  广泛的实验证明了HRank在各种最先进的模型压缩和加速度方面的有效性和高效性。</code></pre><h4 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h4><h5 id="Filter-Pruning"><a href="#Filter-Pruning" class="headerlink" title="Filter Pruning"></a>Filter Pruning</h5><p>与修剪重量矩阵的权重修剪相反，滤镜修剪会根据特定指标删除整个筛选器。滤波修剪不仅大大降低了存储使用，而且降低了在线推理的计算成本。如第 sec 中所讨论的。1、滤波修剪可分为两类：属性重要性方法和自适应重要性方法。基于属性重要性的筛选器修剪旨在利用CNN的内在属性（例如l1范数，第一梯度），然后使用它们作为区分不太重要的过滤器的标准。</p>
-<pre><code>#####     Low-rank Decomposition</code></pre><p>神经网络往往被过度参数化，这表明每个图层中的参数可以准确地从一个小子集中恢复。受此启发，低等级分解已成为网络压缩的替代方案。它通过将权重矩阵表示为两个较小矩阵的低级乘积来近似卷积操作。与修剪不同，它旨在降低网络的计算成本，而不是更改原始筛选器的数量。虽然低等级分解有利于CNN的压缩和加速，但通常在高压缩比下，精度会有较大的损失。</p>
-<h5 id="Discussions"><a href="#Discussions" class="headerlink" title="Discussions"></a>Discussions</h5><p>与权重W修剪相比，filter修剪在降低模型复杂性方面更为有利。此外，无需专门的软件或硬件支持，其结构化修剪可以轻松集成到高效BLAS库中。然而，现有的filter修剪方法受到低效的加速和压缩（基于属性重要性的filter修剪）或机器和人工成本（自适应导入基于filter修剪），如Sec所讨论的。1.这两个问题给在资源有限的设备上部署深度 CNN 带来了根本性的挑战。我们把这种两难处境归因于缺少有关filter的实用/理论指导。我们关注要素图的排名，并在理论和实验上分析其有效性。<strong>请注意，我们的方法与低级分解方法是正交的。</strong>我们的目标是修剪过滤器生成低等级的图图，而不是分解过滤器。请注意，低等级方法可以集成到我们的模型中（<em>例如，</em>分解完全连接的层），以实现更高的压缩和加速率。</p>
-<h4 id="The-Proposed-Method"><a href="#The-Proposed-Method" class="headerlink" title="The Proposed Method"></a>The Proposed Method</h4><p>具体见论文</p>
-<h4 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h4><pre><code>#####     Experimental Settings</code></pre><p><strong>Datasets and Baselines.</strong>数据集和基线。为了证明我们在降低模型复杂性方面的效率，我们在小型和大型数据集（CIFAR-10 和ImageNet）上进行了实验。我们研究主流CNN模型上不同算法的性能，包括结构简单结构的VGGNet，具有初始模块的GoogLeNet，带残余块的 ResNet和密集块的DenseNet。对于所有benchMark 和体系结构，<strong>我们随机采样 500 张图像，以估计每个要素图的平均排名</strong>。</p>
-<p><strong>Evaluation Protocols</strong>.我们采用广泛使用的协议，即<em>参数数</em>和所需的浮点操作（表示为FLOPs），以评估模型大小和计算要求。为了评估任务特定功能，我们提供修剪模型的前 1 精度和CIFAR-10 上的修剪率（表示为 PR），以及 ImageNet 上修剪模型的top1和top5精度。</p>
-<p><strong>Conﬁgurations.</strong>我们使用 PyTorch  来实施建议的 HRank 方法。我们使用随机梯度下降算法（SGD）解决优化问题，初始学习速率为0.01,批号、重量衰减和动量设置为 128,0.0005 和 0<em>.</em>9，分别。对于每一层，我们在修剪后重新训练网络30个纪元,训练更多的时代时，可以观察到更高的准确性。然而，它需要更多的培训时间。</p>
-<h4 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions"></a>Conclusions</h4><p>本文提出了一种名为HRank的新颖滤镜修剪方法，它通过确定特征图的排名来确定滤镜的相对重要性。为此，我们通过经验证明，单个筛选器生成的要素贴图的平均排名始终相同。然后，我们用数学方法证明，该代低等级要素图不太重要，应先删除，反之亦然，实验也验证了这一点。此外，我们建议冻结部分滤波器，以生成高等级特征图，以进一步降低微调成本，对模型性能几乎没有影响。对各种现代CN的广泛实验证明了HRank在降低计算复杂性和模型大小方面的有效性。在未来的工作中，我们将对为什么单个filter生成的特征图的平均排名始终相同进行理论分析。</p>
-]]></content>
-      <categories>
-        <category>Deep Learning</category>
-      </categories>
-      <tags>
-        <tag>Filter Prune</tag>
       </tags>
   </entry>
 </search>
