@@ -5,6 +5,8 @@
     <url>/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/</url>
     <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>本文提出了一种新的学习范式，即滤波器嫁接，旨在提高深度神经网络的表示能力。动机是DNNs具有不重要的(无效的)过滤器(例如，l1norm接近于0)。这些过滤器限制了DNNs的潜力，因为它们被认为对网络的影响很小。当过滤剪枝删除这些无效过滤器的效率考虑，过滤嫁接重新激活他们从准确性提高的观点。通过将外部信息(权重)嫁接到无效的过滤器中来处理激活。为了更好地执行嫁接过程，我们开发了一个基于熵的标准来衡量过滤器的信息，以及一个自适应加权策略来平衡网络间的嫁接信息。接枝操作后，与未接触状态相比，网络的无效滤波器非常少，使模型具有更大的表示能力。我们还对分类和识别任务进行了大量的实验，以证明我们的方法的优越性。例如，在CIFAR-100数据集上，嫁接的MobileNetV2比未嫁接的MobileNetV2性能好约7%。</p>
 <p><a href="https://github.com/fxmeng/filter-grafting.git" target="_blank" rel="noopener">https://github.com/fxmeng/filter-grafting.git</a>.</p>
+<a id="more"></a>
+
 <h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>自从Krizhevsky et al.在2012年ImageNet竞赛中取得突破以来，研究人员在探索DNNs的各种建筑方面取得了重大进展。在计算机视觉、语音识别和语言处理等领域，DNNs逐渐成为非常流行和强大的模型。</p>
 <p>![Filter Grafting for Deep Neural Networks1](.\Networks\Filter Grafting for Deep Neural Networks1.png)</p>
 <p>然而，最近的研究表明，DNNs有无效(不重要)过滤器[9]。这些滤波器被认为对输出精度有很小的影响。删除某些过滤器可以加速DNNs的推断，而不会对性能造成很大影响。这一发现激发了许多研究如何确定哪些滤波器是不重要的[13]，以及如何在可容忍的性能下降情况下有效地去除滤波器的工作[29,19]。然而，目前还不清楚是否直接放弃这种过滤器和组件是否是最好的选择。如果这些传统的无效过滤器在某种意义上确实有用呢?同样的情况也发生在像boosting这样的集成学习中，当单个弱分类器性能较差时，它们的组合和再训练可能会打开通往最佳性能的大门。此外，考虑到有多个网络，网络能否从其他网络学习还不清楚。<strong>在本文中，我们研究了在一个网络中通过引入外部信息来重新激活无效过滤器的可能性。</strong></p>
