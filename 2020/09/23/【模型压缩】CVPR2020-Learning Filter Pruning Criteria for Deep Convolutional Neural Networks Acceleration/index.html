@@ -27,11 +27,17 @@
 <meta property="og:site_name" content="Enplee&#39;s blog">
 <meta property="og:description" content="Abstract滤波器修剪(filter prune)在神经网络的压缩和加速中得到了广泛的应用。现有的方法通常利用预定义的修剪标准,例如ℓp-norm(范数),修剪不重要的filter。这些方法有两个主要的限制。首先，流行的方法没有考虑不同层次的filter分布的多样性。为了将粗级特征提取到细级特征，不同层的滤波器具有不同的分布。因此，对不同的功能层使用相同的修剪标准是不合适的。其次，主流的逐层剪">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria1.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria5.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria2.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria3.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria4.png">
 <meta property="article:published_time" content="2020-09-23T03:11:30.000Z">
-<meta property="article:modified_time" content="2020-09-23T08:01:58.034Z">
+<meta property="article:modified_time" content="2020-10-01T02:30:57.977Z">
 <meta property="article:author" content="lee-zee">
 <meta property="article:tag" content="Filter Prune">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria1.png">
 
 <link rel="canonical" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/">
 
@@ -226,10 +232,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-23 11:11:30 / Modified: 16:01:58" itemprop="dateCreated datePublished" datetime="2020-09-23T11:11:30+08:00">2020-09-23</time>
+              <time title="Created: 2020-09-23 11:11:30" itemprop="dateCreated datePublished" datetime="2020-09-23T11:11:30+08:00">2020-09-23</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-01 10:30:57" itemprop="dateModified" datetime="2020-10-01T10:30:57+08:00">2020-10-01</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -263,13 +275,13 @@
 <li>在三个基准测试上的实验证明了我们的LFPC的有效性。值得注意的是，它将ResNet110的速度提高了两倍，与CIFAR-10相比，它的相对精度甚至提高了0.31%。此外，我们在ResNet-50上减少了60%以上的失败，只有0.83%的top5精度损失。</li>
 </ul>
 <h3 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h3><p>以往的修剪工作可分为权重修剪和过滤修剪。权值修剪侧重于修剪过滤器的细粒度权值，从而导致模型的非结构化稀疏性。相比之下，通过对DNN进行过滤剪枝可以实现结构稀疏性，因此剪枝模型可以充分利用高效的基本线性代数子程序库(BLAS)，实现更好的加速。考虑到如何评估过滤器的重要性，我们可以将过滤器修剪方法大致分为两类，即基于权重的标准和基于活动的标准。此外，修剪算法还可以根据修剪频率进行大致分组，即“贪婪修剪”和“一次性修剪”。我们将在Tab中演示分类。</p>
-<p>![Learning Filter Pruning Criteria1](.\Networks\Learning Filter Pruning Criteria1.png)</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria1.png" alt="Learning Filter Pruning Criteria1"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不同类别的过滤剪枝算法。“W”和“A”表示基于权重和基于活动的标准。“O”和“G”表示一次性的贪婪修剪。</span><br></pre></td></tr></table></figure>
 
 <p><strong>基于权重的标准</strong>。一些方法利用过滤器的权重来确定过滤器的重要性。[18]利用ℓ2-norm标准选择过滤器并删除这些选中的过滤器。[51]引入批处理归一化(BN)层标度参数的稀疏性来对网络进行裁剪。[20]声称，靠近几何中值的滤波器应该被修剪。<strong>所有的工作对不同的层使用相同的修剪标准，没有考虑到不同的层有不同的功能和不同的过滤器分布。</strong></p>
 <p><strong>基于激活的标准</strong>。一些研究利用训练数据和过滤器激活来确定修剪过滤器。[45]采用主成分分析(PCA)方法来指定网络的哪一部分需要保留。[36]建议使用来自下一层的信息来指导过滤器的选择。[10]将训练集样本激活的重构误差最小化，并应用奇异值分解(SVD)得到滤波器的分解。[49]研究不同特征图之间的线性关系，消除卷积滤波器中的冗余。</p>
 <p><strong>贪婪的一次性修剪</strong>。贪婪剪枝，意味着修剪和再训练需要操作多次。贪婪剪枝虽然有利于提高剪枝的精度，但它需要大量的计算资源，且耗时较长。相比之下，一次热修剪[20,27]将网络修剪一次，再进行一次训练以恢复精度。它比贪婪剪枝更有效，但需要仔细的剪枝标准选择。在本文中，我们主要研究一次性剪枝。其他修剪和搜索方法。一些作品利用强化学习[19,23]或元学习[33]进行剪枝。相比之下，我们专注于通过差分采样器学习不同层次的适当剪枝标准。[4]提出向心SGD使多个滤波器收敛到一个单一点。[54]是一种全局剪枝方法，但剪枝神经元的重要性没有得到传播。我们的学习标准的思想与神经结构搜索(NAS)的工作[58,31]和自动增强[3]有一些相似之处，不同的是我们的搜索空间是修剪标准，而不是网络结构或增强策略。</p>
-<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><p>![Learning Filter Pruning Criteria5](.\Networks\Learning Filter Pruning Criteria5.png)</p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria5.png" alt="Learning Filter Pruning Criteria5"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">标准在层内向前。不同颜色的框表示不同的修剪标准。</span><br><span class="line">首先，我们根据不同的标准来评估过滤器的重要性。</span><br><span class="line">其次，我们对具有小重要性分数的过滤器进行修剪，得到四种不同概率的修剪层。</span><br><span class="line">然后输出的feature map是剪枝层的四个feature map的对齐加权和。</span><br></pre></td></tr></table></figure>
 
 
@@ -278,9 +290,9 @@
 <p><strong>结构设置</strong>。由于ResNet具有捷径结构，现有文献认为ResNet的冗余比VGGNet少，加速ResNet比加速VGGNet困难。因此，我们重点修剪具有挑战性的ResNet。</p>
 <p><strong>正常训练设置</strong>。对于CIFAR10和CIFAR-100的ResNet，我们使用与[55]相同的训练计划。在CIFAR实验中，我们将每个设置运行3次，并报告“mean±std”。在ILSVRC2012实验中，我们使用与[15,16]相同的默认参数设置，使用与官方PyTorch[40]示例相同的数据论证策略。</p>
 <p><strong>修剪设置</strong>。在对DCS进行训练后，我们使用优化的准则对网络进行修剪，并使用完整的训练集对网络进行微调。我们分析了修剪scratch模型与预训练模型的区别。为了修剪scratch模型，我们使用常规的训练计划，而不需要额外的微调。为了对预先训练好的模型进行裁剪，我们将学习率降低到原始学习率的十分之一。为了进行公平的比较，我们使用与[20]相同的基线模型进行修剪。在再训练过程中，我们使用余弦调度器[35,8]来获得一个稳定的结果。每一层的剪枝率采样方式与DCS1相同，可以自动自适应搜索比率[8]。</p>
-<h4 id="Experimental-results"><a href="#Experimental-results" class="headerlink" title="Experimental results"></a>Experimental results</h4><p>![Learning Filter Pruning Criteria2](.\Networks\Learning Filter Pruning Criteria2.png)</p>
-<p>![Learning Filter Pruning Criteria3](.\Networks\Learning Filter Pruning Criteria3.png)</p>
-<p>![Learning Filter Pruning Criteria4](.\Networks\Learning Filter Pruning Criteria4.png)</p>
+<h4 id="Experimental-results"><a href="#Experimental-results" class="headerlink" title="Experimental results"></a>Experimental results</h4><p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria2.png" alt="Learning Filter Pruning Criteria2"></p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria3.png" alt="Learning Filter Pruning Criteria3"></p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria4.png" alt="Learning Filter Pruning Criteria4"></p>
 <h3 id="Conclusion-and-Future-Work"><a href="#Conclusion-and-Future-Work" class="headerlink" title="Conclusion and Future Work"></a>Conclusion and Future Work</h3><p>在这篇文章中，我们提出了一个新的学习过滤器剪枝准则(LFPC)框架用于深度CNNs加速。与现有的方法不同，LFPC明确考虑了层之间的差异，并自适应地为不同的层选择一组合适的标准。为了有效地学习准则，我们利用Gumbel-softmax使准则可微化。<strong>在几个基准测试中，LFPC用最先进的方法取得了可比较的性能。在未来，我们可以考虑在LFPC中使用更多的准则，并结合其他加速算法，如矩阵分解[28]，进一步提高性能。此外，将该方法应用于最近的小型Cnn(MobileNet)也有一定的意义。</strong></p>
 
     </div>
@@ -465,7 +477,7 @@
 <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共17.8k字</span>
+  <span class="post-count">博客全站共17.7k字</span>
   <span class="post-meta-divider">|</span>
   本站总访问量<span id="busuanzi_value_site_pv"></span>次
   <span class="post-meta-divider">|</span>
