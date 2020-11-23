@@ -299,6 +299,8 @@
     <content><![CDATA[<h3 id="算法笔记之位运算"><a href="#算法笔记之位运算" class="headerlink" title="算法笔记之位运算"></a>算法笔记之位运算</h3><h4 id="Brian-Kernighan-算法"><a href="#Brian-Kernighan-算法" class="headerlink" title="Brian Kernighan 算法"></a>Brian Kernighan 算法</h4><p>内容：通过n&amp;(n-1), 清除二进制n的最右边1</p>
 <p>原理：n-1就是找到n最右边的1然后变为0，借1，同时最右边1的右边一定全是0，那么&amp;操作之后，最右边的1变为0.</p>
 <p>应用：Bk算法可用来求两个数的二进制公共前缀。</p>
+<a id="more"></a>
+
 <h4 id="题目·数字范围按位与"><a href="#题目·数字范围按位与" class="headerlink" title="题目·数字范围按位与"></a>题目·<a href="https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/" target="_blank" rel="noopener">数字范围按位与</a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定范围[m,n],返回此范围内所有书的按位与结果。</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 解法一 寻找公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> move = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (m!=n)&#123;</span><br><span class="line">        m &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        move++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m&lt;&lt;move;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -437,6 +439,8 @@
 <li>可靠性</li>
 <li><strong>高内聚，低耦合</strong></li>
 </ol>
+<a id="more"></a>
+
 <h5 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h5><p>描述</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对类来说，一个类应该只负责一项职责。</span><br></pre></td></tr></table></figure>
 
