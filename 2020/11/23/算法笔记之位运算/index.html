@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="算法笔记之二分法解决极小化极大问题引入：12345678Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。n &#x3D;&#x3D; p">
+  <meta name="description" content="算法笔记之位运算Brian Kernighan 算法内容：通过n&amp;(n-1), 清除二进制n的最右边1 原理：n-1就是找到n最右边的1然后变为0，借1，同时最右边1的右边一定全是0，那么&amp;操作之后，最右边的1变为0. 应用：Bk算法可用来求两个数的二进制公共前缀。 题目·数字范围按位与1给定范围[m,n],返回此范围内所有书的按位与结果。  12345678910&#x2F;&#x2F; 解法一 寻">
 <meta property="og:type" content="article">
-<meta property="og:title" content="算法笔记之二分法解决极小化极大">
-<meta property="og:url" content="https://enplee.github.io/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/index.html">
+<meta property="og:title" content="算法笔记之位运算">
+<meta property="og:url" content="https://enplee.github.io/2020/11/23/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%8D%E8%BF%90%E7%AE%97/index.html">
 <meta property="og:site_name" content="Enplee&#39;s blog">
-<meta property="og:description" content="算法笔记之二分法解决极小化极大问题引入：12345678Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。n &#x3D;&#x3D; p">
+<meta property="og:description" content="算法笔记之位运算Brian Kernighan 算法内容：通过n&amp;(n-1), 清除二进制n的最右边1 原理：n-1就是找到n最右边的1然后变为0，借1，同时最右边1的右边一定全是0，那么&amp;操作之后，最右边的1变为0. 应用：Bk算法可用来求两个数的二进制公共前缀。 题目·数字范围按位与1给定范围[m,n],返回此范围内所有书的按位与结果。  12345678910&#x2F;&#x2F; 解法一 寻">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-08-16T15:27:59.000Z">
-<meta property="article:modified_time" content="2020-08-18T15:02:46.193Z">
+<meta property="article:published_time" content="2020-11-23T03:06:27.000Z">
+<meta property="article:modified_time" content="2020-11-23T03:16:31.350Z">
 <meta property="article:author" content="lee-zee">
-<meta property="article:tag" content="math">
+<meta property="article:tag" content="byte">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://enplee.github.io/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/">
+<link rel="canonical" href="https://enplee.github.io/2020/11/23/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%8D%E8%BF%90%E7%AE%97/">
 
 
 <script id="page-configurations">
@@ -60,7 +60,7 @@
 <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 
 
-  <title>算法笔记之二分法解决极小化极大 | Enplee's blog</title>
+  <title>算法笔记之位运算 | Enplee's blog</title>
   
 
 
@@ -204,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/11/23/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%8D%E8%BF%90%E7%AE%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.jpg">
@@ -217,7 +217,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          算法笔记之二分法解决极小化极大
+          算法笔记之位运算
         </h1>
 
         <div class="post-meta">
@@ -226,16 +226,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-08-16 23:27:59" itemprop="dateCreated datePublished" datetime="2020-08-16T23:27:59+08:00">2020-08-16</time>
+              <time title="Created: 2020-11-23 11:06:27 / Modified: 11:16:31" itemprop="dateCreated datePublished" datetime="2020-11-23T11:06:27+08:00">2020-11-23</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-18 23:02:46" itemprop="dateModified" datetime="2020-08-18T23:02:46+08:00">2020-08-18</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -257,25 +251,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="算法笔记之二分法解决极小化极大"><a href="#算法笔记之二分法解决极小化极大" class="headerlink" title="算法笔记之二分法解决极小化极大"></a>算法笔记之二分法解决极小化极大</h3><h4 id="问题引入："><a href="#问题引入：" class="headerlink" title="问题引入："></a>问题引入：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。</span><br><span class="line">已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。</span><br><span class="line">给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。</span><br><span class="line">n &#x3D;&#x3D; position.length</span><br><span class="line">2 &lt;&#x3D; n &lt;&#x3D; 10^5</span><br><span class="line">1 &lt;&#x3D; position[i] &lt;&#x3D; 10^9</span><br><span class="line">所有 position 中的整数 互不相同 。</span><br><span class="line">2 &lt;&#x3D; m &lt;&#x3D; position.length</span><br></pre></td></tr></table></figure>
+        <h3 id="算法笔记之位运算"><a href="#算法笔记之位运算" class="headerlink" title="算法笔记之位运算"></a>算法笔记之位运算</h3><h4 id="Brian-Kernighan-算法"><a href="#Brian-Kernighan-算法" class="headerlink" title="Brian Kernighan 算法"></a>Brian Kernighan 算法</h4><p>内容：通过n&amp;(n-1), 清除二进制n的最右边1</p>
+<p>原理：n-1就是找到n最右边的1然后变为0，借1，同时最右边1的右边一定全是0，那么&amp;操作之后，最右边的1变为0.</p>
+<p>应用：Bk算法可用来求两个数的二进制公共前缀。</p>
+<h4 id="题目·数字范围按位与"><a href="#题目·数字范围按位与" class="headerlink" title="题目·数字范围按位与"></a>题目·<a href="https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/" target="_blank" rel="noopener">数字范围按位与</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">给定范围[m,n],返回此范围内所有书的按位与结果。</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 解法一 寻找公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> move = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (m!=n)&#123;</span><br><span class="line">        m &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        move++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m&lt;&lt;move;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h4><blockquote>
-<p>题目要求返回最大化的最小磁力，这是这类问题的一个典型的<strong>标志</strong>。</p>
-<p>正向分析题目，很难去解决。利用动态规划，贪心还是DFS都很棘手。</p>
-<p>但是，这个时候反过来从结果出发，能不能枚举所有可能的最小磁力获得最大的磁力呢？</p>
-<p>枚举是可以实现的，以为最小磁力可能出现的区间就是1到数组间隔最大值。</p>
-<p>同时，结果的集合又呈单调性。在某个临界点之前都符合题意，之后的所有可能都不符合。</p>
-<p>对于这种单调性的问题，二分法就是很好的解决方案了。</p>
-<p><strong>结论:从结果出发，二分搜索结果。见到极小化极大，极大化极小的问题，就可以考虑二分法</strong></p>
-</blockquote>
-<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><ol>
-<li>根据题目的数据范围，二分法搜索的区间是<strong>[0,pos[n]-pos[0]]</strong>;</li>
-<li>二分法的关键就是如何判定某个点是符合的：设k为某个最小的磁力，那么看数组上以k为距离可以放置多少小球，个数&gt;m成立。</li>
-<li>二分法另外一个复杂的点在于边界控制问题。</li>
-</ol>
-<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxMinDist</span><span class="params">(<span class="keyword">int</span>[] position,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">    Arrays.sort(position);</span><br><span class="line">    <span class="keyword">int</span> n = position.length;</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>,r=position[n-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(checkMid(mid,n,m,position))&#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            r = mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkMid</span><span class="params">(<span class="keyword">int</span> mid,<span class="keyword">int</span> n,<span class="keyword">int</span> m,<span class="keyword">int</span>[] position)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>,temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(position[i]-position[temp]&gt;=mid)&#123;</span><br><span class="line">            cnt++;</span><br><span class="line">            temp=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt&gt;=m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 利用BK算法 寻找最长公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (m&lt;n)&#123;</span><br><span class="line">        n &amp;= (n-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="题目·汉明距离"><a href="#题目·汉明距离" class="headerlink" title="题目·汉明距离"></a>题目·<a href="https://leetcode-cn.com/problems/hamming-distance/" target="_blank" rel="noopener">汉明距离</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x,y的汉明距离指的是二进制不同位置的数目，计算x,y的汉明距离</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 异或之后 求1个数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y,dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">32</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>((axr&amp;(<span class="number">1</span>&lt;&lt;i))!=<span class="number">0</span>) dist++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 利用BK消除1</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y;</span><br><span class="line">    <span class="keyword">int</span> dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (axr!=<span class="number">0</span>)&#123;</span><br><span class="line">        dist++;</span><br><span class="line">        axr &amp;= (axr-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -302,7 +291,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://enplee.github.io/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/" title="算法笔记之二分法解决极小化极大">https://enplee.github.io/2020/08/16/算法笔记之二分法解决极小化极大/</a>
+    <a href="https://enplee.github.io/2020/11/23/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%8D%E8%BF%90%E7%AE%97/" title="算法笔记之位运算">https://enplee.github.io/2020/11/23/算法笔记之位运算/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -313,7 +302,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/math/" rel="tag"># math</a>
+              <a href="/tags/byte/" rel="tag"># byte</a>
           </div>
 
         
@@ -322,13 +311,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/08/10/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8BManacher%E7%AE%97%E6%B3%95/" rel="prev" title="算法笔记之Manacher算法">
-      <i class="fa fa-chevron-left"></i> 算法笔记之Manacher算法
+    <a href="/2020/10/14/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Pruning%20via%20Geometric%20Median/" rel="prev" title="【模型压缩】CVPR2020-Filter Pruning via Geometric Median">
+      <i class="fa fa-chevron-left"></i> 【模型压缩】CVPR2020-Filter Pruning via Geometric Median
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/" rel="next" title="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map">
-      【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -387,7 +373,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法笔记之二分法解决极小化极大"><span class="nav-number">1.</span> <span class="nav-text">算法笔记之二分法解决极小化极大</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题引入："><span class="nav-number">1.1.</span> <span class="nav-text">问题引入：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#问题分析："><span class="nav-number">1.2.</span> <span class="nav-text">问题分析：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解题思路："><span class="nav-number">1.3.</span> <span class="nav-text">解题思路：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码："><span class="nav-number">1.4.</span> <span class="nav-text">代码：</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法笔记之位运算"><span class="nav-number">1.</span> <span class="nav-text">算法笔记之位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Brian-Kernighan-算法"><span class="nav-number">1.1.</span> <span class="nav-text">Brian Kernighan 算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目·数字范围按位与"><span class="nav-number">1.2.</span> <span class="nav-text">题目·数字范围按位与</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#题目·汉明距离"><span class="nav-number">1.3.</span> <span class="nav-text">题目·汉明距离</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

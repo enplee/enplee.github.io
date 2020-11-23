@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2020/04/29/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>【模型压缩】CVPR2020-Filter Pruning via Geometric Median</title>
+    <url>/2020/10/14/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Pruning%20via%20Geometric%20Median/</url>
+    <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>以前的工作使用“<strong>较小范数不太重要</strong>”的标准来修剪卷积神经网络中具有较小范数值的滤波器。本文分析了这种基于范数的准则，指出其有效性取决于两个不总是满足的要求:<strong>(1)滤波器的范数偏差应该很大；(2)滤波器的最小范数应该很小。</strong>为了解决这个问题，我们提出了一种新的滤波剪枝方法，即基于几何中值(FPGM)的滤波剪枝，来压缩模型而不考虑这两个要求。与以前的方法不同，FPGM通过修剪冗余过滤器来压缩CNN模型，而不是那些“相对不太重要”的过滤器。当应用于两个图像分类基准时，我们的方法验证了它的有用性和优势。值得注意的是，在CIF  AR-10上，FPGM在ResNet-110上减少了52%以上的浮点运算，相对精度提高了2.69%。此外，在ILSVRC2012上，FPGM在ResNet101上减少了超过42%的浮点运算，而没有前5名的精度下降，这提高了最先进的水平。</p>
+<p>GitHub:<br><a href="https://github.com/he-y/filter-pruning-geometric-median" target="_blank" rel="noopener">https://github.com/he-y/filter-pruning-geometric-median</a></p>
+<h4 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h4><p>深层神经网络更深更广的体系结构带来了计算机视觉任务的卓越性能[6，26，45]。然而，它们也导致了极其昂贵的计算成本，并使得在移动设备上部署模型变得困难，如果不是不可能的话。即使是最新的高效率架构，如剩余连接[12]或初始模块[34]，也有数百万个参数需要数十亿次浮点运算(FLOPs)  [15]。</p>
+<p>因此，有必要获得计算成本相对较低但精度较高的深层CNN模型。</p>
+<p>![CVPR2020-Filter Pruning via Geometric Median](D:\blogs\source_posts\CVPR\CVPR2020-Filter Pruning via Geometric Median.png)</p>
+<p>修剪的最新发展可分为两类，即权重修剪[11，1]和过滤修剪[21，39]。权重修剪直接删除过滤器中的权重值，这可能会导致非结构化稀疏性。这种不规则的结构使得利用高效的基本线性代数子程序库变得困难[25]。相比之下，过滤器修剪直接丢弃整个选定的过滤器，并留下具有规则结构的模型。因此，为了加速网络和减小模型尺寸，过滤器修剪是更优选的。</p>
+<p>目前的实践[21，38，15]通过遵循“较小范数不太重要”的标准来执行过滤器修剪，该标准认为具有较小范数的过滤器由于其不太重要而可以被安全地修剪。如图1(a)的右上角所示，在计算模型中过滤器的规范之后，使用预先指定的阈值T来选择其规范小于它的过滤器。</p>
+<p>然而，如图1(b)所示，利用这个“较小的规范不太重要”的标准有两个先决条件。第一，过滤规范的偏差应该是显著的。这一要求使得阈值T的搜索空间足够宽，因此分离那些需要修剪的过滤器将是一项简单的任务。第二，那些可以删减的滤波器的范数应该任意小，即接近于零；换句话说，具有较小规范的过滤器被期望对网络作出绝对小的贡献，而不是相对小但肯定大的贡献。令人满意地满足这两个要求时的理想范数分布如图1中的蓝色曲线所示。不幸的是，根据我们的分析和实验观察，这并不总是正确的。</p>
+<p>为了解决上述问题，我们提出了一种新的滤波修剪方法，称为几何中值滤波修剪(FPGM)。与以前修剪贡献相对较小的过滤器的方法不同，FPGM选择贡献最可替换的过滤器。具体来说，我们计算同一层内滤波器的几何中值(GM)  [8]。根据遗传算法的特点，它附近的滤波器可以用剩余的滤波器来表示。因此，修剪这些过滤器不会对模型性能产生实质性的负面影响。请注意，FPGM没有使用基于规范的标准来选择要修剪的过滤器，这意味着即使在未能满足基于规范的标准的要求时，其性能也不会恶化。</p>
+<p><strong>我们有三个贡献:</strong></p>
+<p>(1)我们分析了以前工作中使用的基于规范的准则，它删减了相对不太重要的过滤器。我们详细阐述了导致其局限性的两个基本要求；(2)我们提出FPGM剪枝包含冗余信息的最可替换的过滤器，当基于规范的准则失败时仍能获得良好的性能；(3)对两个基准的广泛试验证明了FPGM的有效性和效率。</p>
+<h4 id="2-Related-Works"><a href="#2-Related-Works" class="headerlink" title="2. Related Works"></a>2. Related Works</h4><p>以往大多数关于加速CNNs的工作大致可以分为四类，即矩阵分解[42，35]、低精度权重[44，43，32]、知识提取[17，19]和剪枝。基于剪枝的方法旨在去除神经网络中不必要的连接[11，21，24]。本质上，权重修剪总是导致非结构化模型，这使得部署高效的BLAS库变得困难，而过滤器修剪不仅减少了设备上的存储使用，而且降低了计算成本以加速推理。我们可以根据训练数据是否用于确定被修剪的过滤器，将过滤器修剪方法大致分为两类，即数据相关的和数据无关的过滤器修剪。与数据无关的方法比与数据相关的方法更有效，因为训练数据的利用是计算消耗。</p>
+<p><strong>Weight Pruning.</strong>。最近的许多工作[11，10，9，36，1，15，41，4]集中在修剪过滤器的细粒度权重。例如，[11]提出了一种迭代方法来丢弃其值低于预定阈值的小权重。[1]将修剪公式化为在满足修剪成本条件的同时找到最小化损失的权重的优化问题。</p>
+<p><strong>Data Dependent Filter Pruning</strong> 一些过滤器修剪方法[23，25，16，27，7，33，39，37，46，14，18，22]需要利用训练数据来确定被修剪的过滤器。[25]采用下一层的统计信息来指导过滤器的选择。[7]旨在通过最小化训练集样本激活的重构误差来获得分解。[33]提出了一种固有的数据驱动方法，该方法使用主成分分析来指定应该保留的能量比例。[37]将子空间聚类应用于特征映射，以消除卷积滤波器中的冗余。</p>
+<p><strong>Data Independent Filter Pruning.</strong>与我们的工作同时，已经探索了一些数据独立的过滤器修剪策略[21，15，38，47]。[21]使用一个“1”标准来删减不重要的过滤器。[15]建议用“2范数”标准选择过滤器，并以软方式删减那些选择的过滤器。[38]提出通过加强批量标准化层的缩放参数的稀疏性来修剪模型。[47]在过滤器上使用光谱聚类来选择不重要的过滤器。</p>
+<p>据我们所知，只有一个先前的工作重新考虑了较小的规范不太重要的标准[38]。我们希望强调我们与这种方法相比的优势如下:(1)  [38]更注意在批处理规范化操作符中对缩放参数实施稀疏性，这对于没有批处理规范化的结构是不友好的。我们的方法不受这一限制。(2)选择修剪通道后，[38]需要微调以减少性能下降。然而，我们的方法结合了修剪操作和正常的训练程序。因此，不需要额外的微调。(3)[38]需要计算比例因子的梯度；因此，大量的计算成本是不可避免的，而我们的方法可以在不计算比例因子梯度的情况下加速神经网络。</p>
+<h4 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4. Experiments"></a>4. Experiments</h4><p>我们根据两个基准评估FPGM的单分支网络(VGGNet [31])和多分支网络(ResNet):CIFAR-10[20]和ILSVRC-2012  [29]3。CIFAR-10 [20]数据集包含10个不同类别的60，000幅32 ×  32彩色图像，其中包括50，000幅训练图像和10，000幅测试图像。ILSVRC2012  [29]是包含128万个训练图像和1000个类的50k个验证图像的大规模数据集。</p>
+<p><strong>4.1. Experimental Settings</strong></p>
+<p>Training setting。在CIFAR-10上，参数设置与[13]相同，训练计划与[40]相同。在ILSVRC-2012实验中，我们使用了与[12，13]相同的默认参数设置。ILSVRC-2012的数据论证策略与PyTorch  [28]官方示例相同。我们分析了从零开始和预先训练的模型之间的区别。为了从头开始修剪模型，我们使用正常的训练时间表，而没有额外的微调过程。对于预训练模型的剪枝，我们将学习率降低到原始学习率的十分之一。为了对修剪模型和预训练模型进行公平的比较，我们使用相同的训练时期来训练/微调网络。以前的工作[21]可能使用较少的时期来微调修剪后的模型，但它收敛得太早，即使使用更多的时期，其精度也不能提高，这可以在第4.2节中显示。</p>
+<p>Pruning setting。在过滤器修剪步骤中，我们简单地同时以相同的修剪率修剪所有加权层，这与[15]相同。因此只需要一个超参数Pi=  P就可以平衡加速度和精度。修剪操作在每个训练周期结束时进行。与以前的工作[21]不同，灵敏度分析在FPGM并不是实现良好性能的必要条件，这将在后面的章节中演示。</p>
+<p>![CVPR2020-Filter Pruning via Geometric Median (2)](D:\blogs\source_posts\CVPR\CVPR2020-Filter Pruning via Geometric Median (2).png)</p>
+<p>除了FPGM唯一准则外，我们还使用了FPGM和以前基于规范的方法[15]的混合，以表明FPGM可以作为以前方法的补充。FPGM唯一标准表示为“FPGM混合标准”，FPGM和基于规范的标准相结合的标准表示为“混合标准”。“FPGM-仅40%”表示该层的40%过滤器仅由FPGM选择，而“FPGM-混合40%”表示该层的30%过滤器由基于规范的标准选择[15]，其余10%过滤器由FPGM选择。我们将FPGM与以前的加速算法进行了比较，例如MIL  [5]，PFEC [21]，CP [16]，ThiNet [25]，SFP [15]，NISP  [39]，重新思考[38]。毫不奇怪，我们的FPGM方法达到了最先进的结果。</p>
+<p><strong>4.2. Single-Branch Network Pruning</strong></p>
+<p>CIFAR-10上的VGGNet。由于[21]的训练设置不公开，我们重新实施了修剪程序，并获得了与原始论文相似的结果。表3和表4分别显示了修剪预训练模型和擦除模型的结果。毫不奇怪，FPGM在这两种情况下都取得了比[21]更好的表现。</p>
+<p><strong>4.3. Multiple-Branch Network Pruning</strong></p>
+<p>CIFAR-10上的ResNet。对于CIFAR-10数据集，我们在ResNet-20、32、56和110上用两种不同的修剪率测试了我们的FPGM:30%和40%。如表1所示，我们的FPGM实现了最先进的性能。例如，没有微调的MIL  [5]将ResNet-32的加速比提高了31.2%，精度下降了1.59%，但我们没有微调的FPGM实现了53.2%的加速比，精度甚至提高了0.19%。与SFP  [15]相比，当修剪ResNet-56的52.6%的浮点运算时，我们的FPGM只有0.66%的精度下降，远远小于SFP [15]  (1.33%)。对于修剪预先训练的ResNet-110，我们的方法获得了高得多(52.3% vs . s .  38.6%)的加速比，性能提高了0.16%，而PFEC [21]损害了加速比较低的性能。这些结果表明，FPGM可以产生一个性能相当甚至更好的压缩模型。</p>
+<p>关于ILSVRC-2012的ResNet。对于ILSVRC-2012数据集，我们在ResNet-18、34、50和101上测试了我们的FPGM，剪枝率分别为30%和40%。与[15]相同，为了简化，我们不修剪投影快捷键。</p>
+<h4 id="5-Conclusion-and-Future-Work"><a href="#5-Conclusion-and-Future-Work" class="headerlink" title="5. Conclusion and Future Work"></a>5. Conclusion and Future Work</h4><p>在本文中，我们详细阐述了基于规范的过滤器修剪标准的基本要求，并指出其局限性。为了解决这个问题，我们提出了一种基于几何中值的新的滤波修剪策略，命名为FPGM，以加速深层神经网络。与以前的标准不同，FPGM明确考虑了过滤器之间的相互关系。由于这一点，FPGM在几个基准中实现了最先进的性能。未来，我们计划研究如何将FPGM与其他加速算法(如矩阵分解和低精度权重)相结合，将性能推向更高的阶段。</p>
+]]></content>
+      <categories>
+        <category>Deep Learning</category>
+      </categories>
+      <tags>
+        <tag>Filter Graft</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks</title>
     <url>/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/</url>
     <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>本文提出了一种新的学习范式，即滤波器嫁接，旨在提高深度神经网络的表示能力。动机是DNNs具有不重要的(无效的)过滤器(例如，l1norm接近于0)。这些过滤器限制了DNNs的潜力，因为它们被认为对网络的影响很小。当过滤剪枝删除这些无效过滤器的效率考虑，过滤嫁接重新激活他们从准确性提高的观点。通过将外部信息(权重)嫁接到无效的过滤器中来处理激活。为了更好地执行嫁接过程，我们开发了一个基于熵的标准来衡量过滤器的信息，以及一个自适应加权策略来平衡网络间的嫁接信息。接枝操作后，与未接触状态相比，网络的无效滤波器非常少，使模型具有更大的表示能力。我们还对分类和识别任务进行了大量的实验，以证明我们的方法的优越性。例如，在CIFAR-100数据集上，嫁接的MobileNetV2比未嫁接的MobileNetV2性能好约7%。</p>
@@ -54,30 +111,21 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2020/04/29/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
+    <title>【模型压缩】CVPR2020-Towards Efficient Model Compression via Learned Global Ranking</title>
+    <url>/2020/10/04/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Towards%20Efficient%20Model%20Compression%20via%20Learned%20Global%20Ranking/</url>
+    <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3>]]></content>
+      <categories>
+        <category>Deep Learning</category>
+      </categories>
+      <tags>
+        <tag>Filter Prune</tag>
+      </tags>
   </entry>
   <entry>
     <title>【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</title>
     <url>/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/</url>
     <content><![CDATA[<h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
 <p><a href="https://github.com/lmbxmu/HRank" target="_blank" rel="noopener">https://github.com/lmbxmu/HRank</a></p>
-<a id="more"></a>
-
 <h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>卷积神经网络（CNN）在计算机视觉应用方面取得了巨大成功，如分类，检测 和分割。然而，它们对计算能力和内存的高要求阻止将大多数最先进的 CNN 部署在边缘设备（如智能手机或可穿戴设备）中。虽然在设计新的硬件和/或硬件特定的CNN加速框架（如TensorRT）方面已经取得了良好的进展，但是是通过在acc方面的妥协来实现降低FLOPs和CNN的大小。流行的技术包括：filter压缩，参数量化和网络修剪。</p>
 <p>其中，网络修剪已显示出广阔的应用前景。典型的工作或者修剪Weight矩阵来获得sparse(稀疏)权重矩阵(weight pruning);或者从网络中删除整个过滤器(filter pruning)。除了网络压缩，权重修剪方法也可以实现加速在专用软件或硬件 .但是，它们在通用硬件或 BLAS 库上的应用上受限。相比之下，滤镜修剪方法没有此限制，因为整个filter都已删除。本文重点介绍filter修剪以实现模型压缩（参数减少）和加速度（FLOPs的减少），旨在为计算能力较低的设备提供多功能解决方案。</p>
 <p>filter修剪的核心在于filter的选择，用较低的准确率换取高压缩率。基于filter评价函数的设计，对filter进行了实证分类基于过滤器评估函数的设计，我们根据经验将过滤器修剪分为两组，如下所述。</p>
@@ -152,34 +200,6 @@
       </tags>
   </entry>
   <entry>
-    <title>序/Introduction</title>
-    <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
-    <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br></center> 
-<center><font size="4">大大的船帆满满地承受着风势</font><br></center>  
-<center><font size="4">直面前往新世界</font><br></center>  
-<center><font color="#dd0000"> </font><br></center>
-
-
-<center>Rewrite CANOE</center> 
-
-
-
-<center><font color="#dd0000"> </font><br></center>
-<center><font color="#dd0000"> </font><br></center>
-<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br></center>                  
-
-
-
-
-<a id="more"></a>]]></content>
-      <categories>
-        <category>序</category>
-      </categories>
-      <tags>
-        <tag>Introduction</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>多级反馈队列调度算法</title>
     <url>/2020/08/06/%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h3 id="操作系统之多级反馈队列调度算法"><a href="#操作系统之多级反馈队列调度算法" class="headerlink" title="操作系统之多级反馈队列调度算法"></a>操作系统之多级反馈队列调度算法</h3><h6 id="多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"><a href="#多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。" class="headerlink" title="多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"></a>多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。</h6><a id="more"></a>
@@ -204,37 +224,6 @@
       </categories>
       <tags>
         <tag>System</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>算法笔记之二分法解决极小化极大</title>
-    <url>/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/</url>
-    <content><![CDATA[<h3 id="算法笔记之二分法解决极小化极大"><a href="#算法笔记之二分法解决极小化极大" class="headerlink" title="算法笔记之二分法解决极小化极大"></a>算法笔记之二分法解决极小化极大</h3><h4 id="问题引入："><a href="#问题引入：" class="headerlink" title="问题引入："></a>问题引入：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。</span><br><span class="line">已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。</span><br><span class="line">给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。</span><br><span class="line">n &#x3D;&#x3D; position.length</span><br><span class="line">2 &lt;&#x3D; n &lt;&#x3D; 10^5</span><br><span class="line">1 &lt;&#x3D; position[i] &lt;&#x3D; 10^9</span><br><span class="line">所有 position 中的整数 互不相同 。</span><br><span class="line">2 &lt;&#x3D; m &lt;&#x3D; position.length</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h4 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h4><blockquote>
-<p>题目要求返回最大化的最小磁力，这是这类问题的一个典型的<strong>标志</strong>。</p>
-<p>正向分析题目，很难去解决。利用动态规划，贪心还是DFS都很棘手。</p>
-<p>但是，这个时候反过来从结果出发，能不能枚举所有可能的最小磁力获得最大的磁力呢？</p>
-<p>枚举是可以实现的，以为最小磁力可能出现的区间就是1到数组间隔最大值。</p>
-<p>同时，结果的集合又呈单调性。在某个临界点之前都符合题意，之后的所有可能都不符合。</p>
-<p>对于这种单调性的问题，二分法就是很好的解决方案了。</p>
-<p><strong>结论:从结果出发，二分搜索结果。见到极小化极大，极大化极小的问题，就可以考虑二分法</strong></p>
-</blockquote>
-<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><ol>
-<li>根据题目的数据范围，二分法搜索的区间是<strong>[0,pos[n]-pos[0]]</strong>;</li>
-<li>二分法的关键就是如何判定某个点是符合的：设k为某个最小的磁力，那么看数组上以k为距离可以放置多少小球，个数&gt;m成立。</li>
-<li>二分法另外一个复杂的点在于边界控制问题。</li>
-</ol>
-<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxMinDist</span><span class="params">(<span class="keyword">int</span>[] position,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">    Arrays.sort(position);</span><br><span class="line">    <span class="keyword">int</span> n = position.length;</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>,r=position[n-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(checkMid(mid,n,m,position))&#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            r = mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkMid</span><span class="params">(<span class="keyword">int</span> mid,<span class="keyword">int</span> n,<span class="keyword">int</span> m,<span class="keyword">int</span>[] position)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>,temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(position[i]-position[temp]&gt;=mid)&#123;</span><br><span class="line">            cnt++;</span><br><span class="line">            temp=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt&gt;=m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Algorithm</category>
-      </categories>
-      <tags>
-        <tag>math</tag>
       </tags>
   </entry>
   <entry>
@@ -277,47 +266,88 @@
       </tags>
   </entry>
   <entry>
-    <title>设计模式之七大设计原则</title>
-    <url>/2020/08/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%83%E5%A4%A7%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</url>
-    <content><![CDATA[<h4 id="设计模式之七大设计原则"><a href="#设计模式之七大设计原则" class="headerlink" title="设计模式之七大设计原则"></a>设计模式之七大设计原则</h4><ol>
-<li>重用性</li>
-<li>可读性(编程规范性)</li>
-<li>可扩展性</li>
-<li>可靠性</li>
-<li><strong>高内聚，低耦合</strong></li>
-</ol>
-<h5 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对类来说，一个类应该只负责一项职责。</span><br></pre></td></tr></table></figure>
+    <title>序/Introduction</title>
+    <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
+    <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br></center> 
+<center><font size="4">大大的船帆满满地承受着风势</font><br></center>  
+<center><font size="4">直面前往新世界</font><br></center>  
+<center><font color="#dd0000"> </font><br></center>
 
-<h5 id="接口隔离原则"><a href="#接口隔离原则" class="headerlink" title="接口隔离原则"></a>接口隔离原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">客户端不应该依赖它不需要的接口，即一个类对另一个类的依赖应该建立在最小的接口上。</span><br></pre></td></tr></table></figure>
 
-<h5 id="依赖倒转原则"><a href="#依赖倒转原则" class="headerlink" title="依赖倒转原则"></a>依赖倒转原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 高层模块不应该依赖底层模块，二者都应该依赖其抽象</span><br><span class="line">2. 抽象不应该依赖细节，细节应该依赖抽象</span><br><span class="line">3. 依赖倒置的中心思想是面向接口编程</span><br></pre></td></tr></table></figure>
+<center>Rewrite CANOE</center> 
 
-<p>实现依赖的三种方式</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 通过接口传递实现依赖</span><br><span class="line">2. 通过构造方法实现依赖</span><br><span class="line">3. 通过setter方法实现依赖</span><br></pre></td></tr></table></figure>
 
-<h5 id="里氏替换原则"><a href="#里氏替换原则" class="headerlink" title="里氏替换原则"></a>里氏替换原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">引用基类的地方必须能透明的使用其子类的对象</span><br><span class="line">使用继承时，根据里氏替换原则，尽量不要重写父类方法</span><br></pre></td></tr></table></figure>
 
-<h5 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对扩展开放，对修改关闭。</span><br><span class="line">用抽象构建框架，用实现扩展细节。</span><br></pre></td></tr></table></figure>
+<center><font color="#dd0000"> </font><br></center>
+<center><font color="#dd0000"> </font><br></center>
+<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br></center>                  
 
-<h5 id="迪米特法则"><a href="#迪米特法则" class="headerlink" title="迪米特法则"></a>迪米特法则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 迪米特法则(最少知道原则),一个类对自己依赖的类知道的越少越好。</span><br><span class="line">2. 类和类之间的关系越密切，耦合度越大。</span><br></pre></td></tr></table></figure>
 
-<h5 id="合成复用原则"><a href="#合成复用原则" class="headerlink" title="合成复用原则"></a>合成复用原则</h5><p>描述</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">尽量使用合成&#x2F;聚合的方式，而不是继承。</span><br></pre></td></tr></table></figure>
 
-<h5 id="总结：设计原则的核心思想"><a href="#总结：设计原则的核心思想" class="headerlink" title="总结：设计原则的核心思想"></a>总结：设计原则的核心思想</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 找出应用中的可能变化之处，把他们独立出来</span><br><span class="line">2. 针对接口编程，而不是针对实现编程</span><br><span class="line">3. 为了交互对象的松耦合设计而努力</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>]]></content>
+      <categories>
+        <category>序</category>
+      </categories>
+      <tags>
+        <tag>Introduction</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法笔记之位运算</title>
+    <url>/2020/11/23/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    <content><![CDATA[<h3 id="算法笔记之位运算"><a href="#算法笔记之位运算" class="headerlink" title="算法笔记之位运算"></a>算法笔记之位运算</h3><h4 id="Brian-Kernighan-算法"><a href="#Brian-Kernighan-算法" class="headerlink" title="Brian Kernighan 算法"></a>Brian Kernighan 算法</h4><p>内容：通过n&amp;(n-1), 清除二进制n的最右边1</p>
+<p>原理：n-1就是找到n最右边的1然后变为0，借1，同时最右边1的右边一定全是0，那么&amp;操作之后，最右边的1变为0.</p>
+<p>应用：Bk算法可用来求两个数的二进制公共前缀。</p>
+<h4 id="题目·数字范围按位与"><a href="#题目·数字范围按位与" class="headerlink" title="题目·数字范围按位与"></a>题目·<a href="https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/" target="_blank" rel="noopener">数字范围按位与</a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定范围[m,n],返回此范围内所有书的按位与结果。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 解法一 寻找公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> move = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (m!=n)&#123;</span><br><span class="line">        m &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        move++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m&lt;&lt;move;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用BK算法 寻找最长公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (m&lt;n)&#123;</span><br><span class="line">        n &amp;= (n-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="题目·汉明距离"><a href="#题目·汉明距离" class="headerlink" title="题目·汉明距离"></a>题目·<a href="https://leetcode-cn.com/problems/hamming-distance/" target="_blank" rel="noopener">汉明距离</a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x,y的汉明距离指的是二进制不同位置的数目，计算x,y的汉明距离</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 异或之后 求1个数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y,dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">32</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>((axr&amp;(<span class="number">1</span>&lt;&lt;i))!=<span class="number">0</span>) dist++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用BK消除1</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y;</span><br><span class="line">    <span class="keyword">int</span> dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (axr!=<span class="number">0</span>)&#123;</span><br><span class="line">        dist++;</span><br><span class="line">        axr &amp;= (axr-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
-        <category>设计模式</category>
+        <category>Algorithm</category>
       </categories>
       <tags>
-        <tag>design pattern</tag>
+        <tag>byte</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法笔记之二分法解决极小化极大</title>
+    <url>/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/</url>
+    <content><![CDATA[<h3 id="算法笔记之二分法解决极小化极大"><a href="#算法笔记之二分法解决极小化极大" class="headerlink" title="算法笔记之二分法解决极小化极大"></a>算法笔记之二分法解决极小化极大</h3><h4 id="问题引入："><a href="#问题引入：" class="headerlink" title="问题引入："></a>问题引入：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。</span><br><span class="line">已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。</span><br><span class="line">给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。</span><br><span class="line">n &#x3D;&#x3D; position.length</span><br><span class="line">2 &lt;&#x3D; n &lt;&#x3D; 10^5</span><br><span class="line">1 &lt;&#x3D; position[i] &lt;&#x3D; 10^9</span><br><span class="line">所有 position 中的整数 互不相同 。</span><br><span class="line">2 &lt;&#x3D; m &lt;&#x3D; position.length</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h4 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h4><blockquote>
+<p>题目要求返回最大化的最小磁力，这是这类问题的一个典型的<strong>标志</strong>。</p>
+<p>正向分析题目，很难去解决。利用动态规划，贪心还是DFS都很棘手。</p>
+<p>但是，这个时候反过来从结果出发，能不能枚举所有可能的最小磁力获得最大的磁力呢？</p>
+<p>枚举是可以实现的，以为最小磁力可能出现的区间就是1到数组间隔最大值。</p>
+<p>同时，结果的集合又呈单调性。在某个临界点之前都符合题意，之后的所有可能都不符合。</p>
+<p>对于这种单调性的问题，二分法就是很好的解决方案了。</p>
+<p><strong>结论:从结果出发，二分搜索结果。见到极小化极大，极大化极小的问题，就可以考虑二分法</strong></p>
+</blockquote>
+<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><ol>
+<li>根据题目的数据范围，二分法搜索的区间是<strong>[0,pos[n]-pos[0]]</strong>;</li>
+<li>二分法的关键就是如何判定某个点是符合的：设k为某个最小的磁力，那么看数组上以k为距离可以放置多少小球，个数&gt;m成立。</li>
+<li>二分法另外一个复杂的点在于边界控制问题。</li>
+</ol>
+<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxMinDist</span><span class="params">(<span class="keyword">int</span>[] position,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">    Arrays.sort(position);</span><br><span class="line">    <span class="keyword">int</span> n = position.length;</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>,r=position[n-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(checkMid(mid,n,m,position))&#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            r = mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkMid</span><span class="params">(<span class="keyword">int</span> mid,<span class="keyword">int</span> n,<span class="keyword">int</span> m,<span class="keyword">int</span>[] position)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>,temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(position[i]-position[temp]&gt;=mid)&#123;</span><br><span class="line">            cnt++;</span><br><span class="line">            temp=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt&gt;=m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>math</tag>
       </tags>
   </entry>
   <entry>
@@ -395,6 +425,50 @@
       </categories>
       <tags>
         <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之七大设计原则</title>
+    <url>/2020/08/08/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%83%E5%A4%A7%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</url>
+    <content><![CDATA[<h4 id="设计模式之七大设计原则"><a href="#设计模式之七大设计原则" class="headerlink" title="设计模式之七大设计原则"></a>设计模式之七大设计原则</h4><ol>
+<li>重用性</li>
+<li>可读性(编程规范性)</li>
+<li>可扩展性</li>
+<li>可靠性</li>
+<li><strong>高内聚，低耦合</strong></li>
+</ol>
+<h5 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对类来说，一个类应该只负责一项职责。</span><br></pre></td></tr></table></figure>
+
+<h5 id="接口隔离原则"><a href="#接口隔离原则" class="headerlink" title="接口隔离原则"></a>接口隔离原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">客户端不应该依赖它不需要的接口，即一个类对另一个类的依赖应该建立在最小的接口上。</span><br></pre></td></tr></table></figure>
+
+<h5 id="依赖倒转原则"><a href="#依赖倒转原则" class="headerlink" title="依赖倒转原则"></a>依赖倒转原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 高层模块不应该依赖底层模块，二者都应该依赖其抽象</span><br><span class="line">2. 抽象不应该依赖细节，细节应该依赖抽象</span><br><span class="line">3. 依赖倒置的中心思想是面向接口编程</span><br></pre></td></tr></table></figure>
+
+<p>实现依赖的三种方式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 通过接口传递实现依赖</span><br><span class="line">2. 通过构造方法实现依赖</span><br><span class="line">3. 通过setter方法实现依赖</span><br></pre></td></tr></table></figure>
+
+<h5 id="里氏替换原则"><a href="#里氏替换原则" class="headerlink" title="里氏替换原则"></a>里氏替换原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">引用基类的地方必须能透明的使用其子类的对象</span><br><span class="line">使用继承时，根据里氏替换原则，尽量不要重写父类方法</span><br></pre></td></tr></table></figure>
+
+<h5 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">对扩展开放，对修改关闭。</span><br><span class="line">用抽象构建框架，用实现扩展细节。</span><br></pre></td></tr></table></figure>
+
+<h5 id="迪米特法则"><a href="#迪米特法则" class="headerlink" title="迪米特法则"></a>迪米特法则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 迪米特法则(最少知道原则),一个类对自己依赖的类知道的越少越好。</span><br><span class="line">2. 类和类之间的关系越密切，耦合度越大。</span><br></pre></td></tr></table></figure>
+
+<h5 id="合成复用原则"><a href="#合成复用原则" class="headerlink" title="合成复用原则"></a>合成复用原则</h5><p>描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">尽量使用合成&#x2F;聚合的方式，而不是继承。</span><br></pre></td></tr></table></figure>
+
+<h5 id="总结：设计原则的核心思想"><a href="#总结：设计原则的核心思想" class="headerlink" title="总结：设计原则的核心思想"></a>总结：设计原则的核心思想</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 找出应用中的可能变化之处，把他们独立出来</span><br><span class="line">2. 针对接口编程，而不是针对实现编程</span><br><span class="line">3. 为了交互对象的松耦合设计而努力</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>design pattern</tag>
       </tags>
   </entry>
   <entry>
