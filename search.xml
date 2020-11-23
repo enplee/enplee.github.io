@@ -23,6 +23,8 @@
     <url>/2020/10/14/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Pruning%20via%20Geometric%20Median/</url>
     <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>以前的工作使用“<strong>较小范数不太重要</strong>”的标准来修剪卷积神经网络中具有较小范数值的滤波器。本文分析了这种基于范数的准则，指出其有效性取决于两个不总是满足的要求:<strong>(1)滤波器的范数偏差应该很大；(2)滤波器的最小范数应该很小。</strong>为了解决这个问题，我们提出了一种新的滤波剪枝方法，即基于几何中值(FPGM)的滤波剪枝，来压缩模型而不考虑这两个要求。与以前的方法不同，FPGM通过修剪冗余过滤器来压缩CNN模型，而不是那些“相对不太重要”的过滤器。当应用于两个图像分类基准时，我们的方法验证了它的有用性和优势。值得注意的是，在CIF  AR-10上，FPGM在ResNet-110上减少了52%以上的浮点运算，相对精度提高了2.69%。此外，在ILSVRC2012上，FPGM在ResNet101上减少了超过42%的浮点运算，而没有前5名的精度下降，这提高了最先进的水平。</p>
 <p>GitHub:<br><a href="https://github.com/he-y/filter-pruning-geometric-median" target="_blank" rel="noopener">https://github.com/he-y/filter-pruning-geometric-median</a></p>
+<a id="more"></a>
+
 <h4 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h4><p>深层神经网络更深更广的体系结构带来了计算机视觉任务的卓越性能[6，26，45]。然而，它们也导致了极其昂贵的计算成本，并使得在移动设备上部署模型变得困难，如果不是不可能的话。即使是最新的高效率架构，如剩余连接[12]或初始模块[34]，也有数百万个参数需要数十亿次浮点运算(FLOPs)  [15]。</p>
 <p>因此，有必要获得计算成本相对较低但精度较高的深层CNN模型。</p>
 <p>![CVPR2020-Filter Pruning via Geometric Median](D:\blogs\source_posts\CVPR\CVPR2020-Filter Pruning via Geometric Median.png)</p>
@@ -126,6 +128,8 @@
     <url>/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/</url>
     <content><![CDATA[<h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
 <p><a href="https://github.com/lmbxmu/HRank" target="_blank" rel="noopener">https://github.com/lmbxmu/HRank</a></p>
+<a id="more"></a>
+
 <h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>卷积神经网络（CNN）在计算机视觉应用方面取得了巨大成功，如分类，检测 和分割。然而，它们对计算能力和内存的高要求阻止将大多数最先进的 CNN 部署在边缘设备（如智能手机或可穿戴设备）中。虽然在设计新的硬件和/或硬件特定的CNN加速框架（如TensorRT）方面已经取得了良好的进展，但是是通过在acc方面的妥协来实现降低FLOPs和CNN的大小。流行的技术包括：filter压缩，参数量化和网络修剪。</p>
 <p>其中，网络修剪已显示出广阔的应用前景。典型的工作或者修剪Weight矩阵来获得sparse(稀疏)权重矩阵(weight pruning);或者从网络中删除整个过滤器(filter pruning)。除了网络压缩，权重修剪方法也可以实现加速在专用软件或硬件 .但是，它们在通用硬件或 BLAS 库上的应用上受限。相比之下，滤镜修剪方法没有此限制，因为整个filter都已删除。本文重点介绍filter修剪以实现模型压缩（参数减少）和加速度（FLOPs的减少），旨在为计算能力较低的设备提供多功能解决方案。</p>
 <p>filter修剪的核心在于filter的选择，用较低的准确率换取高压缩率。基于filter评价函数的设计，对filter进行了实证分类基于过滤器评估函数的设计，我们根据经验将过滤器修剪分为两组，如下所述。</p>
