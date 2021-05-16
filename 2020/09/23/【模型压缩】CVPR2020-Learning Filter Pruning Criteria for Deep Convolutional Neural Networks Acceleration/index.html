@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon3.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon3.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Abstract滤波器修剪(filter prune)在神经网络的压缩和加速中得到了广泛的应用。现有的方法通常利用预定义的修剪标准,例如ℓp-norm(范数),修剪不重要的filter。这些方法有两个主要的限制。首先，流行的方法没有考虑不同层次的filter分布的多样性。为了将粗级特征提取到细级特征，不同层的滤波器具有不同的分布。因此，对不同的功能层使用相同的修剪标准是不合适的。其次，主流的逐层剪">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration">
+<meta property="og:url" content="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/index.html">
+<meta property="og:site_name" content="Enplee&#39;s blog">
+<meta property="og:description" content="Abstract滤波器修剪(filter prune)在神经网络的压缩和加速中得到了广泛的应用。现有的方法通常利用预定义的修剪标准,例如ℓp-norm(范数),修剪不重要的filter。这些方法有两个主要的限制。首先，流行的方法没有考虑不同层次的filter分布的多样性。为了将粗级特征提取到细级特征，不同层的滤波器具有不同的分布。因此，对不同的功能层使用相同的修剪标准是不合适的。其次，主流的逐层剪">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria1.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria5.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria2.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria3.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria4.png">
+<meta property="article:published_time" content="2020-09-23T03:11:30.000Z">
+<meta property="article:modified_time" content="2020-10-01T02:30:57.977Z">
+<meta property="article:author" content="lee-zee">
+<meta property="article:tag" content="Filter Prune">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria1.png">
+
+<link rel="canonical" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<!-- 打字礼花及震动特效 -->
+
+<div id="append_parent"></div><div id="ajaxwaitid"></div>
+<script type="text/javascript" src="/lib/activate-power-mode/activate-power-mode.js"></script>
+<script>
+	POWERMODE.colorful = true;
+	POWERMODE.shake = true;
+	document.body.addEventListener('input',POWERMODE);
+</script>
+
+<!-- jquery -->
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+  <title>【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration | Enplee's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Enplee's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">饮岭南茶 恋塞北家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-23 11:11:30" itemprop="dateCreated datePublished" datetime="2020-09-23T11:11:30+08:00">2020-09-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-01 10:30:57" itemprop="dateModified" datetime="2020-10-01T10:30:57+08:00">2020-10-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>滤波器修剪(filter prune)在神经网络的压缩和加速中得到了广泛的应用。现有的方法通常利用预定义的修剪标准,例如ℓp-norm(范数),修剪不重要的filter。这些方法有两个主要的限制。<strong>首先，流行的方法没有考虑不同层次的filter分布的多样性。为了将粗级特征提取到细级特征，不同层的滤波器具有不同的分布。</strong>因此，对不同的功能层使用相同的修剪标准是不合适的。<strong>其次，主流的逐层剪枝方法独立、顺序地处理每一层，没有考虑到网络中的所有层协同做出最终预测。</strong>在本文中，我们提出了学习filter剪枝准则(LFPC)来解决上述问题。具体地说，<strong>我们开发了一个可微的剪枝标准采样器。该采样器是可学习的，并通过采样准则得到的剪枝网络的验证损失来优化</strong>。通过这种方式，我们可以为不同的功能层自适应地选择合适的剪枝标准。此外，LFPC在评价采样准则时，同时综合考虑了各层的贡献。在三种图像分类基准上的实验验证了我们的方法。</p>
+<a id="more"></a>
+
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>卷积神经网络在各种计算机视觉研究应用中取得了显著进展。然而，这些手工设计的架构，如VGG ，  ResNet，通常都有巨大的模型尺寸和繁重的计算成本。很难将这些模型部署到实时响应的场景中。近年来，对模型压缩和加速的研究逐渐兴起。修剪策略由于其有效性，在前人的研究中备受关注。剪枝的最新进展可以分为两类，即权重剪枝[14]和过滤剪枝[27]。滤波器剪枝可以使剪枝模型更加结构化，实现实际的加速剪枝。现有的过滤器修剪方法遵循三个阶段准则。(1)训练:在目标数据集上训练一个大模型。(2)剪枝:根据特定的准则，对预训练模型中的不重要滤波器进行剪枝。(3)微调(再训练):对修剪后的模型进行再训练，恢复原始性能。在这三个阶段中，选择合适的修剪标准是关键因素。</p>
+<p>但是，之前的作品有一些缺点，可能不是真实应用场景的最佳选择。首先，先前的工作人为的指定一个剪枝标准，<strong>并对不同的层使用相同的剪枝标准</strong>。如[52]所示，不同的层具有不同的filter分布和变量方法。较低的层倾向于提取粗糙的层次特征，如线、点和曲线，而较高的层倾向于提取精细的层次特征，如常见的对象和形状。在这种情况下，为所有功能层固定一个修剪标准可能不合适。换句话说，最好能并发评估所有层的过滤器重要性。</p>
+<p>我们提出了学习过滤器剪枝准则(LFPC)来解决这些问题。LFPC的核心部件是可区分准则采样器(DCS)，其目的是针对不同的层采样不同的准则。这个采样器，因为它是可微的，可以有效地更新，以找到合适的样本。首先，DCS为所有层初始化一个可学习的标准概率。对于每一层，DCS根据滤波器和准则概率进行准则转发，得到准则特征图。在对各层进行准则转发后，得到准则丢失，并将其作为监督信号加以利用。可以通过对准则损失进行反向传播来更新准则概率分布，从而更好地适应网络的滤波分布。与以往的逐层修剪工作不同，我们的LFPC可以通过准则丢失来同时考虑所有的层次和所有的修剪准则。DCS训练完成后，优化后的criteria服务器作为网络的剪枝标准，如图1所示。剪枝后，对剪枝后的模型进行一次微调，得到一个高效、准确的模型。</p>
+<p>所作的贡献总结如下：</p>
+<ul>
+<li>提出了一种有效的学习框架——<strong>学习过滤器剪枝准则(LFPC)。这个框架可以学习为每个功能层选择最合适的修剪标准。此外，所提出的可微准则采样器(DCS)可以端到端训练，并在剪枝时同时考虑所有层</strong>。据我们所知，这是该研究方向的第一项工作。</li>
+<li>在三个基准测试上的实验证明了我们的LFPC的有效性。值得注意的是，它将ResNet110的速度提高了两倍，与CIFAR-10相比，它的相对精度甚至提高了0.31%。此外，我们在ResNet-50上减少了60%以上的失败，只有0.83%的top5精度损失。</li>
+</ul>
+<h3 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h3><p>以往的修剪工作可分为权重修剪和过滤修剪。权值修剪侧重于修剪过滤器的细粒度权值，从而导致模型的非结构化稀疏性。相比之下，通过对DNN进行过滤剪枝可以实现结构稀疏性，因此剪枝模型可以充分利用高效的基本线性代数子程序库(BLAS)，实现更好的加速。考虑到如何评估过滤器的重要性，我们可以将过滤器修剪方法大致分为两类，即基于权重的标准和基于活动的标准。此外，修剪算法还可以根据修剪频率进行大致分组，即“贪婪修剪”和“一次性修剪”。我们将在Tab中演示分类。</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria1.png" alt="Learning Filter Pruning Criteria1"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不同类别的过滤剪枝算法。“W”和“A”表示基于权重和基于活动的标准。“O”和“G”表示一次性的贪婪修剪。</span><br></pre></td></tr></table></figure>
+
+<p><strong>基于权重的标准</strong>。一些方法利用过滤器的权重来确定过滤器的重要性。[18]利用ℓ2-norm标准选择过滤器并删除这些选中的过滤器。[51]引入批处理归一化(BN)层标度参数的稀疏性来对网络进行裁剪。[20]声称，靠近几何中值的滤波器应该被修剪。<strong>所有的工作对不同的层使用相同的修剪标准，没有考虑到不同的层有不同的功能和不同的过滤器分布。</strong></p>
+<p><strong>基于激活的标准</strong>。一些研究利用训练数据和过滤器激活来确定修剪过滤器。[45]采用主成分分析(PCA)方法来指定网络的哪一部分需要保留。[36]建议使用来自下一层的信息来指导过滤器的选择。[10]将训练集样本激活的重构误差最小化，并应用奇异值分解(SVD)得到滤波器的分解。[49]研究不同特征图之间的线性关系，消除卷积滤波器中的冗余。</p>
+<p><strong>贪婪的一次性修剪</strong>。贪婪剪枝，意味着修剪和再训练需要操作多次。贪婪剪枝虽然有利于提高剪枝的精度，但它需要大量的计算资源，且耗时较长。相比之下，一次热修剪[20,27]将网络修剪一次，再进行一次训练以恢复精度。它比贪婪剪枝更有效，但需要仔细的剪枝标准选择。在本文中，我们主要研究一次性剪枝。其他修剪和搜索方法。一些作品利用强化学习[19,23]或元学习[33]进行剪枝。相比之下，我们专注于通过差分采样器学习不同层次的适当剪枝标准。[4]提出向心SGD使多个滤波器收敛到一个单一点。[54]是一种全局剪枝方法，但剪枝神经元的重要性没有得到传播。我们的学习标准的思想与神经结构搜索(NAS)的工作[58,31]和自动增强[3]有一些相似之处，不同的是我们的搜索空间是修剪标准，而不是网络结构或增强策略。</p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria5.png" alt="Learning Filter Pruning Criteria5"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">标准在层内向前。不同颜色的框表示不同的修剪标准。</span><br><span class="line">首先，我们根据不同的标准来评估过滤器的重要性。</span><br><span class="line">其次，我们对具有小重要性分数的过滤器进行修剪，得到四种不同概率的修剪层。</span><br><span class="line">然后输出的feature map是剪枝层的四个feature map的对齐加权和。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><h4 id="Experimental-Setting"><a href="#Experimental-Setting" class="headerlink" title="Experimental Setting"></a>Experimental Setting</h4><p><strong>数据集</strong>。在本节中，我们在三个基准数据集，CIFAR-10,  CIFAR-100和ILSVRC-2012上验证了我们的加速方法的有效性。CIFAR-10数据集包含5万幅训练图像和1万幅测试图像，共6万幅32×32彩色图像，分布在10个不同的类中。CIFAR-100有100个类，图像数量与CIFAR-10相同。ILSVRC-2012包含128万张训练图像和1000个类的50k张验证图像。</p>
+<p><strong>结构设置</strong>。由于ResNet具有捷径结构，现有文献认为ResNet的冗余比VGGNet少，加速ResNet比加速VGGNet困难。因此，我们重点修剪具有挑战性的ResNet。</p>
+<p><strong>正常训练设置</strong>。对于CIFAR10和CIFAR-100的ResNet，我们使用与[55]相同的训练计划。在CIFAR实验中，我们将每个设置运行3次，并报告“mean±std”。在ILSVRC2012实验中，我们使用与[15,16]相同的默认参数设置，使用与官方PyTorch[40]示例相同的数据论证策略。</p>
+<p><strong>修剪设置</strong>。在对DCS进行训练后，我们使用优化的准则对网络进行修剪，并使用完整的训练集对网络进行微调。我们分析了修剪scratch模型与预训练模型的区别。为了修剪scratch模型，我们使用常规的训练计划，而不需要额外的微调。为了对预先训练好的模型进行裁剪，我们将学习率降低到原始学习率的十分之一。为了进行公平的比较，我们使用与[20]相同的基线模型进行修剪。在再训练过程中，我们使用余弦调度器[35,8]来获得一个稳定的结果。每一层的剪枝率采样方式与DCS1相同，可以自动自适应搜索比率[8]。</p>
+<h4 id="Experimental-results"><a href="#Experimental-results" class="headerlink" title="Experimental results"></a>Experimental results</h4><p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria2.png" alt="Learning Filter Pruning Criteria2"></p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria3.png" alt="Learning Filter Pruning Criteria3"></p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Learning%20Filter%20Pruning%20Criteria4.png" alt="Learning Filter Pruning Criteria4"></p>
+<h3 id="Conclusion-and-Future-Work"><a href="#Conclusion-and-Future-Work" class="headerlink" title="Conclusion and Future Work"></a>Conclusion and Future Work</h3><p>在这篇文章中，我们提出了一个新的学习过滤器剪枝准则(LFPC)框架用于深度CNNs加速。与现有的方法不同，LFPC明确考虑了层之间的差异，并自适应地为不同的层选择一组合适的标准。为了有效地学习准则，我们利用Gumbel-softmax使准则可微化。<strong>在几个基准测试中，LFPC用最先进的方法取得了可比较的性能。在未来，我们可以考虑在LFPC中使用更多的准则，并结合其他加速算法，如矩阵分解[28]，进一步提高性能。此外，将该方法应用于最近的小型Cnn(MobileNet)也有一定的意义。</strong></p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>lee-zee
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/" title="【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration">https://enplee.github.io/2020/09/23/【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Filter-Prune/" rel="tag"># Filter Prune</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/" rel="prev" title="【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks">
+      <i class="fa fa-chevron-left"></i> 【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/04/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Towards%20Efficient%20Model%20Compression%20via%20Learned%20Global%20Ranking/" rel="next" title="【模型压缩】CVPR2020-Towards Efficient Model Compression via Learned Global Ranking">
+      【模型压缩】CVPR2020-Towards Efficient Model Compression via Learned Global Ranking <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Related-Work"><span class="nav-number">3.</span> <span class="nav-text">Related Work</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Methods"><span class="nav-number">4.</span> <span class="nav-text">Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">5.</span> <span class="nav-text">Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Experimental-Setting"><span class="nav-number">5.1.</span> <span class="nav-text">Experimental Setting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Experimental-results"><span class="nav-number">5.2.</span> <span class="nav-text">Experimental results</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Conclusion-and-Future-Work"><span class="nav-number">6.</span> <span class="nav-text">Conclusion and Future Work</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="lee-zee"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">lee-zee</p>
+  <div class="site-description" itemprop="description">我们都是阴沟里的虫子,但总还是得有人仰望星空.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/enplee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;enplee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizhe_1814@136.com" title="E-Mail → mailto:lizhe_1814@136.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+  
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lee-zee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共24.1k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+/* 鼠标点击特效 - 7Core.CN */
+var a_idx = 0;
+jQuery(document).ready(function($) {
+    $("body").click(function(e) {
+        var a = new Array("杨老师","棒棒!");
+        var $i = $("<span/>").text(a[a_idx]);
+        a_idx = (a_idx + 1) % a.length;
+        var x = e.pageX,
+        y = e.pageY;
+        $i.css({
+            "z-index": 100000000,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": "#ff6651"
+        });
+        $("body").append($i);
+        $i.animate({
+            "top": y - 180,
+            "opacity": 0
+        },
+        1500,
+        function() {
+            $i.remove();
+        });
+    });
+});
+</script>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+

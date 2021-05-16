@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon3.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon3.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Abstract本文提出了一种新的学习范式，即滤波器嫁接，旨在提高深度神经网络的表示能力。动机是DNNs具有不重要的(无效的)过滤器(例如，l1norm接近于0)。这些过滤器限制了DNNs的潜力，因为它们被认为对网络的影响很小。当过滤剪枝删除这些无效过滤器的效率考虑，过滤嫁接重新激活他们从准确性提高的观点。通过将外部信息(权重)嫁接到无效的过滤器中来处理激活。为了更好地执行嫁接过程，我们开发了一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks">
+<meta property="og:url" content="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/index.html">
+<meta property="og:site_name" content="Enplee&#39;s blog">
+<meta property="og:description" content="Abstract本文提出了一种新的学习范式，即滤波器嫁接，旨在提高深度神经网络的表示能力。动机是DNNs具有不重要的(无效的)过滤器(例如，l1norm接近于0)。这些过滤器限制了DNNs的潜力，因为它们被认为对网络的影响很小。当过滤剪枝删除这些无效过滤器的效率考虑，过滤嫁接重新激活他们从准确性提高的观点。通过将外部信息(权重)嫁接到无效的过滤器中来处理激活。为了更好地执行嫁接过程，我们开发了一个">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks1.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks2.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks3.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks4.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks4.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks6.png">
+<meta property="og:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks7.png">
+<meta property="article:published_time" content="2020-09-23T03:02:44.000Z">
+<meta property="article:modified_time" content="2020-10-14T07:11:25.256Z">
+<meta property="article:author" content="lee-zee">
+<meta property="article:tag" content="Filter Graft">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks1.png">
+
+<link rel="canonical" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<!-- 打字礼花及震动特效 -->
+
+<div id="append_parent"></div><div id="ajaxwaitid"></div>
+<script type="text/javascript" src="/lib/activate-power-mode/activate-power-mode.js"></script>
+<script>
+	POWERMODE.colorful = true;
+	POWERMODE.shake = true;
+	document.body.addEventListener('input',POWERMODE);
+</script>
+
+<!-- jquery -->
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+  <title>【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks | Enplee's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Enplee's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">饮岭南茶 恋塞北家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-23 11:02:44" itemprop="dateCreated datePublished" datetime="2020-09-23T11:02:44+08:00">2020-09-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-14 15:11:25" itemprop="dateModified" datetime="2020-10-14T15:11:25+08:00">2020-10-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>本文提出了一种新的学习范式，即滤波器嫁接，旨在提高深度神经网络的表示能力。动机是DNNs具有不重要的(无效的)过滤器(例如，l1norm接近于0)。这些过滤器限制了DNNs的潜力，因为它们被认为对网络的影响很小。当过滤剪枝删除这些无效过滤器的效率考虑，过滤嫁接重新激活他们从准确性提高的观点。通过将外部信息(权重)嫁接到无效的过滤器中来处理激活。为了更好地执行嫁接过程，我们开发了一个基于熵的标准来衡量过滤器的信息，以及一个自适应加权策略来平衡网络间的嫁接信息。接枝操作后，与未接触状态相比，网络的无效滤波器非常少，使模型具有更大的表示能力。我们还对分类和识别任务进行了大量的实验，以证明我们的方法的优越性。例如，在CIFAR-100数据集上，嫁接的MobileNetV2比未嫁接的MobileNetV2性能好约7%。</p>
+<p><a href="https://github.com/fxmeng/filter-grafting.git" target="_blank" rel="noopener">https://github.com/fxmeng/filter-grafting.git</a>.</p>
+<a id="more"></a>
+
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>自从Krizhevsky et al.在2012年ImageNet竞赛中取得突破以来，研究人员在探索DNNs的各种建筑方面取得了重大进展。在计算机视觉、语音识别和语言处理等领域，DNNs逐渐成为非常流行和强大的模型。</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks1.png" alt="Filter Grafting for Deep Neural Networks1"></p>
+<p>然而，最近的研究表明，DNNs有无效(不重要)过滤器[9]。这些滤波器被认为对输出精度有很小的影响。删除某些过滤器可以加速DNNs的推断，而不会对性能造成很大影响。这一发现激发了许多研究如何确定哪些滤波器是不重要的[13]，以及如何在可容忍的性能下降情况下有效地去除滤波器的工作[29,19]。然而，目前还不清楚是否直接放弃这种过滤器和组件是否是最好的选择。如果这些传统的无效过滤器在某种意义上确实有用呢?同样的情况也发生在像boosting这样的集成学习中，当单个弱分类器性能较差时，它们的组合和再训练可能会打开通往最佳性能的大门。此外，考虑到有多个网络，网络能否从其他网络学习还不清楚。<strong>在本文中，我们研究了在一个网络中通过引入外部信息来重新激活无效过滤器的可能性。</strong></p>
+<p>我们通过提出一种新颖的滤波嫁接方案来实现这一点，如图1所示。过滤器嫁接在意义上不同于过滤器剪枝，我们重新激活过滤器分配新的权重，它保持每一层中的层和过滤器的数量相同。由于网络中有更多有效的滤波器参与信息处理，因此嫁接后的网络具有更高的表示能力。</p>
+<p>滤波器嫁接的一个关键步骤是选择合适的信息源(即，我们应该从哪里嫁接信息)。在本文中，我们对这一问题进行了深入的研究，并提出应该从外部(其他网络)嫁接信息，而不是从内部(自网络)嫁接信息。一般来说，我们可以并行地训练几个网络。在特定时期的训练中，我们将一个网络的有意义的滤波器嫁接到另一个网络的无效滤波器中。通过嫁接，每个网络可以从其他网络学习外部信息。详情请参阅第3节。本文主要有三个贡献:</p>
+<ul>
+<li>我们提出了一种新的学习范式，称为DNNs的滤波器嫁接。嫁接可以在不改变网络结构的情况下，重新激活失效的过滤器，提高DNNs的潜力。</li>
+<li>为进一步提高滤波接枝方法的性能，<strong>提出了一种基于熵的准则和自适应加权策略。</strong></li>
+<li>我们在分类和识别任务上进行了广泛的实验，表明嫁接可以显著提高DNNS的性能。例如，嫁接的MobileNetV2达到了CIFAR-100上的78.32%的准确率，这比没有嫁接的MobileNetV2高出约7%。</li>
+</ul>
+<h3 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h3><p><strong>Filter Pruning.</strong>过滤器修剪的目的是去除无效的过滤器，加速网络推理。[9]首先利用l1范数准则对不重要的滤波器进行修剪。从那以后，更多的标准出现来衡量过滤器的重要性。[29]利用光谱聚类来决定需要去除哪个滤波器。[19]提出了一种固有的数据驱动方法，它利用主成分分析(PCA)来指定应该保留的能量比例。[21]将子空间聚类应用于特征图，消除卷积滤波器中的冗余。<strong>相比放弃无效的过滤器，过滤嫁接打算激活它们。</strong></p>
+<p>值得注意的是，即使嫁接过滤器的动机与嫁接相反，嫁接仍然涉及选择一个适当的标准来决定哪些过滤器是不重要的。<strong>因此，不同的标准修剪容易适用于嫁接。</strong></p>
+<p><strong>Distillation and Mutual Learning.</strong>嫁接可能需要同时训练多个网络。因此这个过程类似于蒸馏[6]和互学习[25]。接枝和蒸馏的区别在于，蒸馏是一个“两阶段”的过程。首先，我们需要培养一个大模型(教师)，然后用训练好的模型去教一个小模型(学生)。虽然嫁接是一个“单阶段”的过程，但我们在训练过程中嫁接权重。互学习和嫁接的区别在于，互学习需要一个互损失来监督每个网络进行学习，不能很好地推广到多个网络。而嫁接不需要监督损失，当我们在训练过程中加入更多的网络时，其表现会好得多。同时，我们将权值在每个epoch而不是每个迭代进行嫁接，从而大大降低了网络间的通信成本。</p>
+<p><strong>RePr.</strong> RePr[14]与我们的工作类似，我们考虑在过滤器级别上改进网络。然而，使用RePr的动机是网络过滤器捕获的特性中存在不必要的重叠。首先对重叠滤波器进行修剪以训练子网络，然后恢复修剪后的滤波器并重新训练整个网络。从这个意义上讲，RePr是一个多阶段的训练算法。相比之下，滤波器嫁接的动机是l1norm越小的滤波器对网络输出贡献越少。因此，每个方法操作的过滤器是不同的。此外，嫁接是一种更有效的单阶段训练算法。为了更好地说明嫁接与上述学习类型的区别。我们在表1中画了一个表。从表1可以看出，滤波器嫁接是一种单阶段学习方法，不改变网络结构，也不需要监督损失。</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks2.png" alt="Filter Grafting for Deep Neural Networks2"></p>
+<h3 id="Filter-Grafting"><a href="#Filter-Grafting" class="headerlink" title="Filter Grafting"></a>Filter Grafting</h3><h4 id="Information-Source-for-Grafting"><a href="#Information-Source-for-Grafting" class="headerlink" title="Information Source for Grafting"></a>Information Source for Grafting</h4><p><strong>Noise as Scions</strong> 一种简单的方法是将高斯噪声嫁接到无效滤波器中，因为高斯噪声通常用于DNNs的权值初始化[8,3]。在嫁接之前，无效滤波器的l1norm较小，对输出的影响较小。但嫁接后，无效滤波器l1范数增大，对DNNs的影响开始增大。</p>
+<p>*<em>Internal Filters as Scions *</em>我们将其他滤波器(l1norm较大)的权值加入到无效滤波器(l1norm较小)中，而不是加入随机噪声。嫁接是在单个网络内进行的。具体来说，对于每一层，我们根据l1norm对过滤器进行排序，并设置一个阈值。对于l1norm小于right的过滤器，我们将这些过滤器视为无效的。然后我们将第i个最大的滤波器的权值嫁接到第i个最小的滤波器中。</p>
+<p>由于无效过滤器具有具有更大l1规范的新权重，因此可以激活它们以对输出产生更大的影响。但由于权值是在自网络内部嫁接的，因此该方法并没有给网络带来新的信息。我们通过语言信息理论对其进行了进一步的评价。为了简化证明过程，我们在网络的某一层中处理两个滤波器(见定理1，证明可以在补充材料中找到)。从定理m1中，选择内部过滤器作为scions不会带来新的信息。第4.1节中的实验也与我们的分析一致。</p>
+<p><strong>External Filters as Scions</strong> 针对在单一网络中添加随机噪声和权值的缺点，我们从其他网络中选择外部滤波器作为scions。具体来说，我们可以并行训练两个网络，分别表示为m1和M2。在一定时期的训练中，我们将有效滤波器m1的权重嫁接到无效滤波器M2中。与3.1.2节中的嫁接过程相比，我们做了两处修改:</p>
+<ul>
+<li>嫁接是在层而不是滤波层进行的，这意味着我们将M1中某一层的所有过滤器的权重嫁接到M2的同一层中(也就是M2到M1中，反向)。由于两个网络用不同的权值初始化，无效滤波器的位置在统计上是不同的，仅将信息嫁接到某一层的部分滤波器中可能会破坏层的一致性(详见补充资料中的分析和实验结果)。通过嫁接，两个网络的无效滤波器可以相互学习对方的信息。</li>
+<li>在进行嫁接时，对其内在信息和外在信息进行加权。</li>
+</ul>
+<h4 id="Criterions-for-Calculating-Information-of-Filters-and-Layers"><a href="#Criterions-for-Calculating-Information-of-Filters-and-Layers" class="headerlink" title="Criterions for Calculating Information of Filters and Layers"></a>Criterions for Calculating Information of Filters and Layers</h4><p><strong>L1norm</strong> l1norm准则在很多研究中被广泛使用[9,23,22]。但最近的研究表明，更小的正常重要性标准并不总是正确的。一种特殊情况是0-1有规则的过滤器比所有1个过滤器更好。[5]还指出，使用这个更小的标准不那么重要的标准有一些先决条件。否则，修剪可能会损害有效的过滤器。</p>
+<p><strong>Entropy</strong> 而l1norm准则只关注滤波器权值的绝对值，我们更关注权值的变化。l1范数准则的一个问题是l1范数忽略了权重的变化。假设一个滤波器的权值Wi,j∈RNi×K×ksatisfy  Wi,j(n, k1, k2) = a，对于每个n∈{1，…， Ni}和k1, k2∈{1，…， K}， Wi,  j中每个单个值将是相同的。因此，当使用Wi,j对输入进行卷积运算时，即使a很大，输入的每一部分对输出的贡献也是相等的。因此，滤波器不能区分输入的哪个部分更重要。基于以上分析，我们选择测量权重的变化。我们假设Wi,jis的每个值都是从随机变量X的分布中取样，并使用熵来测量分布。假设分布满足P(X  = a) =  1，则Wi、j中各单值相同，熵为0。虽然计算连续分布的熵值比较困难，但我们遵循[17,1]的策略。我们首先将连续分布转换为离散分布。具体地说，我们将值的范围分成m个不同的箱子并计算每个箱子的概率。最后，可以计算出变量的熵。</p>
+<h3 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h3><h4 id="Selecting-Useful-Information-Source"><a href="#Selecting-Useful-Information-Source" class="headerlink" title="Selecting Useful Information Source"></a>Selecting Useful Information Source</h4><p>我们在第3节中提出了三种获取scions的方法，并在表2中的CIFAR-10和CIFAR-100数据集上实验检验了这三种方法。Vanilla  DNN训练不嫁接为基线。所有的方法都使用MobileNetV2作为基础模型。为了进行公平的比较，为每个方法部署了相同的超参数:mini-batch size(256)、optimizer(SGD)、initial learning rate(0.1)、momentum(0.9)、weight decay(0.0005)、epochs (200)、learning rate decay(每60  epoch  0.1)。这里的“外部”包括并行地训练两个网络。在实践中，我们发现“外部”方法中的每个网络的性能都非常接近。因此，在剩余的时间里，我们总是记录第一个网络的性能。</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks3.png" alt="Filter Grafting for Deep Neural Networks3"></p>
+<h4 id="Comparison-of-L1norm-amp-Entropy-Criterions"><a href="#Comparison-of-L1norm-amp-Entropy-Criterions" class="headerlink" title="Comparison of L1norm &amp; Entropy Criterions"></a>Comparison of L1norm &amp; Entropy Criterions</h4><p>在第3.2节中，我们提出了测量滤波器固有信息的两个标准。在这一部分中，我们对基于l1normbased嫁接和基于熵的嫁接在CIFAR-10和CIFAR-100数据集上进行了定量评价。结果如表3所示。采用两个网络进行嫁接，具有相同的模型结构和训练超参数。从表3可以看出，在每个模型和数据集的设置上，基于熵的嫁接都优于基于l1norm1的嫁接.</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks4.png" alt="Filter Grafting for Deep Neural Networks4"></p>
+<h4 id="Evaluation-of-Training-Diversity-in-Grafting"><a href="#Evaluation-of-Training-Diversity-in-Grafting" class="headerlink" title="Evaluation of Training Diversity in Grafting"></a>Evaluation of Training Diversity in Grafting</h4><p>我们发现当我们增加两个网络的训练多样性时，网络的性能得到了提高。<strong>由于嫁接是关于在模型之间转移权重，如果外部信息(权重)有更多的变化，网络可以更好地学习</strong>。为了实现这一点，我们可以多样化超参数设置(在我们的例子中采样顺序和学习率)，看看这些因素是如何影响嫁接性能的。结果如表4所示。在不同的LR情况下，为每个模型设置了具有不同初始学习率的余弦退火LR调度(这确保了在每一步，每个模型的学习率是不同的)。我们发现，采样顺序和学习率带来的权值变化丰富了嫁接信息，从而促进了模型更好地学习。在剩下的，当执行嫁接时，所有网络在数据加载器和学习速率方面的不同焓变参数。</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks4.png" alt="Filter Grafting for Deep Neural Networks5"></p>
+<h4 id="Comparing-Grafting-with-Other-Methods"><a href="#Comparing-Grafting-with-Other-Methods" class="headerlink" title="Comparing Grafting with Other Methods"></a>Comparing Grafting with Other Methods</h4><p>我们在表1中详细研究了嫁接和其他学习方法的区别。在这一部分中，我们在表5的CIFAR10和CIFAR-100数据集上实验比较了与其他方法的嫁接。为了进行公平的比较，“蒸馏”、“相互学习”和“过滤嫁接”都涉及到训练两个网络。蒸馏和嫁接的区别在于蒸馏是一个两阶段的训练过程。在进行蒸馏时，我们首先训练一个网络直到收敛，然后我们利用网络，作为教师，提取知识到学生网络。为了与嫁接公平比较，教师和学生的网络结构是相同的，这与[25]中的设置是一致的。而光栅的训练是一次性完成的，不需要再训练过程。互学习和嫁接的区别在于，互学习对两个网络进行了另一个强大的监督损失训练，网络之间的通信成本也很高。在使用互学习方法时，应仔细选择互监督损失和主损失的系数。而嫁接时，转移重量不需要监督。利用熵对权重进行嫁接，自适应地计算权重系数，效率更高。从表5可以看出，在所有的学习方法中，滤波嫁接的效果最好。</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks6.png" alt="Filter Grafting for Deep Neural Networks6"></p>
+<h4 id="Grafting-with-Multiple-Networks"><a href="#Grafting-with-Multiple-Networks" class="headerlink" title="Grafting with Multiple Networks"></a>Grafting with Multiple Networks</h4><p>滤波器接枝算法的强大之处在于，通过在接枝算法中加入更多的网络，可以大大提高算法的性能。我们在表6中检验了多项式嫁接的效果。随着网络数量的增加，性能会越来越好。例如，6个模型的性能可以比基线高出7%，这是一个很大的改进。</p>
+<p>原因是MobileNetV2是基于深度可分卷积的，他的过滤器可能学习不足的知识滤波器嫁接可以帮助滤波器从其他网络中学习互补知识，极大地提高了网络的潜力。值得注意的是，6个模型的嫁接效果优于6个模型的组合。但与ensemble不同的是，grafting只维护了一个用于测试的网络。然而，当我们将模型数量增加到8时，嫁接算法的性能有所下降。我们认为原因可能是网络从外界接收了过多的信息，影响了其学习的自我信息。如何很好地解释这一现象是一项有趣的未来工作。</p>
+<h4 id="Grafting-on-ImageNet"><a href="#Grafting-on-ImageNet" class="headerlink" title="Grafting on ImageNet"></a>Grafting on ImageNet</h4><p>为了测试在较大数据集上进行嫁接的性能，我们还对ImageNet进行了嫁接验证，ImageNet是一个拥有超过1400万张图像的图像分类数据集。我们将移植与ResNet18和ResNet34模型上的基线进行比较。基准超参数的设置与ImageNet1的官方PyTorch设置一致:小批量大小(256)、初始学习速率(0.1)、学习速率衰减(每30个epoch  0.1)、动量(0.9)、重量衰减(0.0001)、epoch数量(90)和优化器(SGD)。为了增加训练的多样性，我们对两个网络在进行嫁接时使用了不同的学习速率和不同的数据加载器。其他超参数的设置与基线一致。结果如表7所示。</p>
+<p><img src="http://qhi3etyt1.hn-bkt.clouddn.com/Filter%20Grafting%20for%20Deep%20Neural%20Networks7.png" alt="Filter Grafting for Deep Neural Networks7"></p>
+<h3 id="Conclusion-and-Discussion"><a href="#Conclusion-and-Discussion" class="headerlink" title="Conclusion and Discussion"></a>Conclusion and Discussion</h3><p>在这项工作中，提出了一种新的学习范式，称为“滤波器嫁接”。我们认为有效应用滤波器嫁接算法有两个关键:1)如何选择合适的准则来计算DNNs中滤波器的固有信息。2)如何平衡网络之间的信息系数。针对这两个问题，我们提出了基于熵的判据和自适应加权策略来提高网络的性能。但这不是唯一的解决方案。为了进一步改进该算法，还可以发展其他的标准或方法。启发性地，有一些未来的方向需要考虑:1)在嫁接算法中如何在网络数量更多的情况下提高网络的性能;2)如何在不同网络结构的多个网络上应用嫁接。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>lee-zee
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/" title="【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks">https://enplee.github.io/2020/09/23/【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Filter-Graft/" rel="tag"># Filter Graft</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/" rel="prev" title="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map">
+      <i class="fa fa-chevron-left"></i> 【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/" rel="next" title="【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration">
+      【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Related-Work"><span class="nav-number">3.</span> <span class="nav-text">Related Work</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter-Grafting"><span class="nav-number">4.</span> <span class="nav-text">Filter Grafting</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Information-Source-for-Grafting"><span class="nav-number">4.1.</span> <span class="nav-text">Information Source for Grafting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Criterions-for-Calculating-Information-of-Filters-and-Layers"><span class="nav-number">4.2.</span> <span class="nav-text">Criterions for Calculating Information of Filters and Layers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiment"><span class="nav-number">5.</span> <span class="nav-text">Experiment</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Selecting-Useful-Information-Source"><span class="nav-number">5.1.</span> <span class="nav-text">Selecting Useful Information Source</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Comparison-of-L1norm-amp-Entropy-Criterions"><span class="nav-number">5.2.</span> <span class="nav-text">Comparison of L1norm &amp; Entropy Criterions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Evaluation-of-Training-Diversity-in-Grafting"><span class="nav-number">5.3.</span> <span class="nav-text">Evaluation of Training Diversity in Grafting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Comparing-Grafting-with-Other-Methods"><span class="nav-number">5.4.</span> <span class="nav-text">Comparing Grafting with Other Methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Grafting-with-Multiple-Networks"><span class="nav-number">5.5.</span> <span class="nav-text">Grafting with Multiple Networks</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Grafting-on-ImageNet"><span class="nav-number">5.6.</span> <span class="nav-text">Grafting on ImageNet</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Conclusion-and-Discussion"><span class="nav-number">6.</span> <span class="nav-text">Conclusion and Discussion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="lee-zee"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">lee-zee</p>
+  <div class="site-description" itemprop="description">我们都是阴沟里的虫子,但总还是得有人仰望星空.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/enplee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;enplee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizhe_1814@136.com" title="E-Mail → mailto:lizhe_1814@136.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+  
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lee-zee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共24.1k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+/* 鼠标点击特效 - 7Core.CN */
+var a_idx = 0;
+jQuery(document).ready(function($) {
+    $("body").click(function(e) {
+        var a = new Array("杨老师","棒棒!");
+        var $i = $("<span/>").text(a[a_idx]);
+        a_idx = (a_idx + 1) % a.length;
+        var x = e.pageX,
+        y = e.pageY;
+        $i.css({
+            "z-index": 100000000,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": "#ff6651"
+        });
+        $("body").append($i);
+        $i.animate({
+            "top": y - 180,
+            "opacity": 0
+        },
+        1500,
+        function() {
+            $i.remove();
+        });
+    });
+});
+</script>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+

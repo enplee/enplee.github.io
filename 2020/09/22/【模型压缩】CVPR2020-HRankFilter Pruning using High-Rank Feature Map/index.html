@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon3.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon3.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Abstract神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map">
+<meta property="og:url" content="https://enplee.github.io/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/index.html">
+<meta property="og:site_name" content="Enplee&#39;s blog">
+<meta property="og:description" content="Abstract神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-22T09:49:59.000Z">
+<meta property="article:modified_time" content="2020-11-23T03:23:14.793Z">
+<meta property="article:author" content="lee-zee">
+<meta property="article:tag" content="Filter Prune">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://enplee.github.io/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<!-- 打字礼花及震动特效 -->
+
+<div id="append_parent"></div><div id="ajaxwaitid"></div>
+<script type="text/javascript" src="/lib/activate-power-mode/activate-power-mode.js"></script>
+<script>
+	POWERMODE.colorful = true;
+	POWERMODE.shake = true;
+	document.body.addEventListener('input',POWERMODE);
+</script>
+
+<!-- jquery -->
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+  <title>【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map | Enplee's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Enplee's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">饮岭南茶 恋塞北家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-22 17:49:59" itemprop="dateCreated datePublished" datetime="2020-09-22T17:49:59+08:00">2020-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-23 11:23:14" itemprop="dateModified" datetime="2020-11-23T11:23:14+08:00">2020-11-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
+<p><a href="https://github.com/lmbxmu/HRank" target="_blank" rel="noopener">https://github.com/lmbxmu/HRank</a></p>
+<a id="more"></a>
+
+<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>卷积神经网络（CNN）在计算机视觉应用方面取得了巨大成功，如分类，检测 和分割。然而，它们对计算能力和内存的高要求阻止将大多数最先进的 CNN 部署在边缘设备（如智能手机或可穿戴设备）中。虽然在设计新的硬件和/或硬件特定的CNN加速框架（如TensorRT）方面已经取得了良好的进展，但是是通过在acc方面的妥协来实现降低FLOPs和CNN的大小。流行的技术包括：filter压缩，参数量化和网络修剪。</p>
+<p>其中，网络修剪已显示出广阔的应用前景。典型的工作或者修剪Weight矩阵来获得sparse(稀疏)权重矩阵(weight pruning);或者从网络中删除整个过滤器(filter pruning)。除了网络压缩，权重修剪方法也可以实现加速在专用软件或硬件 .但是，它们在通用硬件或 BLAS 库上的应用上受限。相比之下，滤镜修剪方法没有此限制，因为整个filter都已删除。本文重点介绍filter修剪以实现模型压缩（参数减少）和加速度（FLOPs的减少），旨在为计算能力较低的设备提供多功能解决方案。</p>
+<p>filter修剪的核心在于filter的选择，用较低的准确率换取高压缩率。基于filter评价函数的设计，对filter进行了实证分类基于过滤器评估函数的设计，我们根据经验将过滤器修剪分为两组，如下所述。</p>
+<h5 id="Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。"><a href="#Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。" class="headerlink" title="Property Importance：根据 CNN 的内在属性对筛选器进行修剪。"></a>Property Importance：根据 CNN 的内在属性对筛选器进行修剪。</h5><p>这些修剪方法不会修改网络训练损失。修剪后，通过微调提高模型性能。在这些方法中，Hu et al.利用大型网络中输出的稀疏性来移除具有高百分比零激活的filter。基于l1范数的修剪方法假设参数或特征的范数小，那么具有更少的信息，应该首先被修剪。Molchanov et al.考虑了一阶梯度来评估filter的重要性。Hu et al.计算layers中的几何中位数，并修剪最接近此的滤镜。大多数filter评估功能的设计都是ad-hoc–为了某个特定目的，所建立起来的.这带来了低时间复杂度的优点，但也限制了加速度和压缩比。</p>
+<p><strong>Adaptive Importance</strong>：不同于基于属性重要性的方法，另一个方向将修剪要求嵌入到网络训练损失中，并采用联合修剪优化来生成自适应修剪决策。</p>
+<p>Liu et al.批处理规范化层的缩放因子施加了空间约束，允许将具有较低缩放因子的通道标识为无极性。Huang et al.引入了一个新的缩放因子参数（也称为掩码），以学习稀疏结构修剪，其中删除与缩放因子为零的筛选器。与基于属性重要性的filter prune相比，自适应重要性方法通常由于联合优化而产生更好的压缩和加速度结果。然而，由于损失的变化，所需的再培训步骤在机器时间和人力方面都是沉重的，我们要求另一轮超参数调整。对于某些方法<em>，例如</em>，基于掩码的方案，修改后的损耗甚至需要专门的优化器，这会影响基于自适应重要性的方法的灵活性和易用性。</p>
+<p>总体而言，到目前为止，过滤器修剪仍然是一个开放的问题。一方面，我们追求更高的压缩/加速度比，另一方面，我们受到重型机器时间和人力的限制（特别是Adaptive Importance为基础的方法）。<strong>我们认为这些问题的核心是缺乏有关filter重要性和冗余的实际/理论指导。</strong>在这篇论文中，我们提出了一种有效和高效的滤镜修剪方法：探索CNN每层特征图的High Rank。我们所提出的 HRank 为基于属性重要性的筛选器修剪器提供指导。它消除了引入额外的辅助约束或重新训练模型的需要，从而简化了修剪的复杂性。此外，与现有的基于属性重要性的方法相比，HRank在加速和压缩方面也有显著改进，比最先进的基于重要性的自适应方法取得更好的效果。实施高等级特征图背后的动机来自经验和定量的观察。我们发现，无论CNN看到多少数据，单个filter生成的特征图的平均排名总是相同的。这表明，只使用一小部分输入图像就可以精确的估计DNN的特征图排名。基于这一理念，我们从数学上证明，较低等级的特征图对准确性的贡献较小。因此，可以首先删除生成这些要素映射的筛选器。我们在CIFAR-10和ImageNet上对诸多模型进行了测试。结果表明，HRank优于现有filter修剪方法，包括基于属性重要性的方法和最先进的自适应重要性模型。另外的试验表明，即使我们在修剪后微调期间冻结了带有高等级特征图的部分filter，模型仍保留高精度，这验证了我们的假设。主要贡献为：</p>
+<ul>
+<li>在广泛统计验证后，我们通过经验证明，单个filter生成的特征图的平均排名几乎保持不变。据我们所知，这是第一次报道这一观察。</li>
+</ul>
+<ul>
+<li>我们从数学上证明，具有较低等级特征图的filter信息较少，因此对保持精度不太重要，可以先删除。对于高等级要素地图，情况正好相反。<br>•  广泛的实验证明了HRank在各种最先进的模型压缩和加速度方面的有效性和高效性。</li>
+</ul>
+<h4 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h4><h5 id="Filter-Pruning"><a href="#Filter-Pruning" class="headerlink" title="Filter Pruning"></a>Filter Pruning</h5><p>与修剪重量矩阵的权重修剪相反，滤镜修剪会根据特定指标删除整个筛选器。滤波修剪不仅大大降低了存储使用，而且降低了在线推理的计算成本。如第 sec 中所讨论的。1、滤波修剪可分为两类：属性重要性方法和自适应重要性方法。基于属性重要性的筛选器修剪旨在利用CNN的内在属性（例如l1范数，第一梯度），然后使用它们作为区分不太重要的过滤器的标准。</p>
+<p><strong>Low-rank Decomposition</strong></p>
+<p>神经网络往往被过度参数化，这表明每个图层中的参数可以准确地从一个小子集中恢复。受此启发，低等级分解已成为网络压缩的替代方案。它通过将权重矩阵表示为两个较小矩阵的低级乘积来近似卷积操作。与修剪不同，它旨在降低网络的计算成本，而不是更改原始筛选器的数量。虽然低等级分解有利于CNN的压缩和加速，但通常在高压缩比下，精度会有较大的损失。</p>
+<h5 id="Discussions"><a href="#Discussions" class="headerlink" title="Discussions"></a>Discussions</h5><p>与权重W修剪相比，filter修剪在降低模型复杂性方面更为有利。此外，无需专门的软件或硬件支持，其结构化修剪可以轻松集成到高效BLAS库中。然而，现有的filter修剪方法受到低效的加速和压缩（基于属性重要性的filter修剪）或机器和人工成本（自适应导入基于filter修剪），如Sec所讨论的。1.这两个问题给在资源有限的设备上部署深度 CNN 带来了根本性的挑战。我们把这种两难处境归因于缺少有关filter的实用/理论指导。我们关注要素图的排名，并在理论和实验上分析其有效性。<strong>请注意，我们的方法与低级分解方法是正交的。</strong>我们的目标是修剪过滤器生成低等级的图图，而不是分解过滤器。请注意，低等级方法可以集成到我们的模型中（<em>例如，</em>分解完全连接的层），以实现更高的压缩和加速率。</p>
+<h4 id="The-Proposed-Method"><a href="#The-Proposed-Method" class="headerlink" title="The Proposed Method"></a>The Proposed Method</h4><p>具体见论文</p>
+<h4 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h4><p><strong>Experimental Settings</strong></p>
+<p><strong>Datasets and Baselines.</strong>数据集和基线。为了证明我们在降低模型复杂性方面的效率，我们在小型和大型数据集（CIFAR-10 和ImageNet）上进行了实验。我们研究主流CNN模型上不同算法的性能，包括结构简单结构的VGGNet，具有初始模块的GoogLeNet，带残余块的 ResNet和密集块的DenseNet。对于所有benchMark 和体系结构，<strong>我们随机采样 500 张图像，以估计每个要素图的平均排名</strong>。</p>
+<p><strong>Evaluation Protocols</strong>.我们采用广泛使用的协议，即<em>参数数</em>和所需的浮点操作（表示为FLOPs），以评估模型大小和计算要求。为了评估任务特定功能，我们提供修剪模型的前 1 精度和CIFAR-10 上的修剪率（表示为 PR），以及 ImageNet 上修剪模型的top1和top5精度。</p>
+<p><strong>Conﬁgurations.</strong>我们使用 PyTorch  来实施建议的 HRank 方法。我们使用随机梯度下降算法（SGD）解决优化问题，初始学习速率为0.01,批号、重量衰减和动量设置为 128,0.0005 和 0<em>.</em>9，分别。对于每一层，我们在修剪后重新训练网络30个纪元,训练更多的时代时，可以观察到更高的准确性。然而，它需要更多的培训时间。</p>
+<h4 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions"></a>Conclusions</h4><p>本文提出了一种名为HRank的新颖滤镜修剪方法，它通过确定特征图的排名来确定滤镜的相对重要性。为此，我们通过经验证明，单个筛选器生成的要素贴图的平均排名始终相同。然后，我们用数学方法证明，该代低等级要素图不太重要，应先删除，反之亦然，实验也验证了这一点。此外，我们建议冻结部分滤波器，以生成高等级特征图，以进一步降低微调成本，对模型性能几乎没有影响。对各种现代CN的广泛实验证明了HRank在降低计算复杂性和模型大小方面的有效性。在未来的工作中，我们将对为什么单个filter生成的特征图的平均排名始终相同进行理论分析。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>lee-zee
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://enplee.github.io/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/" title="【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map">https://enplee.github.io/2020/09/22/【模型压缩】CVPR2020-HRankFilter Pruning using High-Rank Feature Map/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Filter-Prune/" rel="tag"># Filter Prune</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/" rel="prev" title="算法笔记之二分法解决极小化极大">
+      <i class="fa fa-chevron-left"></i> 算法笔记之二分法解决极小化极大
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/" rel="next" title="【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks">
+      【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Property-Importance：根据-CNN-的内在属性对筛选器进行修剪。"><span class="nav-number">2.1.</span> <span class="nav-text">Property Importance：根据 CNN 的内在属性对筛选器进行修剪。</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Related-Work"><span class="nav-number">3.</span> <span class="nav-text">Related Work</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Filter-Pruning"><span class="nav-number">3.1.</span> <span class="nav-text">Filter Pruning</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Discussions"><span class="nav-number">3.2.</span> <span class="nav-text">Discussions</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#The-Proposed-Method"><span class="nav-number">4.</span> <span class="nav-text">The Proposed Method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Experiments"><span class="nav-number">5.</span> <span class="nav-text">Experiments</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusions"><span class="nav-number">6.</span> <span class="nav-text">Conclusions</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="lee-zee"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">lee-zee</p>
+  <div class="site-description" itemprop="description">我们都是阴沟里的虫子,但总还是得有人仰望星空.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/enplee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;enplee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizhe_1814@136.com" title="E-Mail → mailto:lizhe_1814@136.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+  
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lee-zee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共24.1k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+/* 鼠标点击特效 - 7Core.CN */
+var a_idx = 0;
+jQuery(document).ready(function($) {
+    $("body").click(function(e) {
+        var a = new Array("杨老师","棒棒!");
+        var $i = $("<span/>").text(a[a_idx]);
+        a_idx = (a_idx + 1) % a.length;
+        var x = e.pageX,
+        y = e.pageY;
+        $i.css({
+            "z-index": 100000000,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": "#ff6651"
+        });
+        $("body").append($i);
+        $i.animate({
+            "top": y - 180,
+            "opacity": 0
+        },
+        1500,
+        function() {
+            $i.remove();
+        });
+    });
+});
+</script>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
