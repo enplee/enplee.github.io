@@ -201,6 +201,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/" class="post-title-link" itemprop="url">【模型压缩】CVPR2020-HRank:Filter Pruning using High-Rank Feature Map</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-22 17:49:59" itemprop="dateCreated datePublished" datetime="2020-09-22T17:49:59+08:00">2020-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-23 11:23:14" itemprop="dateModified" datetime="2020-11-23T11:23:14+08:00">2020-11-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>神经网络剪枝为深度神经网络在资源受限设备上的应用提供了广阔的前景。然而，现有的剪枝方法由于缺乏对非显著网络成分的理论指导，在剪枝设计中存在训练效率低、人工成本高的问题。本文通过对高秩特征图的研究，提出了一种新的滤波剪枝方法。<strong>我们的HRank的灵感来自于这样一个发现，即由单个过滤器生成的多个特征图的平均秩总是相同的，而不考虑接收到的CNNs图像batch的数量。在此基础上，本文提出了一种用数学方法对低秩特征图进行滤波的方法。我们的剪枝背后的原则是，低秩特征图包含的信息较少，因此剪枝的结果可以很容易地复制</strong>。此外，我们还通过实验证明了高秩特征图的权值包含了更多的重要信息，即使不更新一部分，对模型性能的影响也很小。在不引入任何额外约束的情况下，HRank在计算和参数减少方面比现有技术有了显著的改进，并且具有相似的准确性。</p>
+<p><a href="https://github.com/lmbxmu/HRank" target="_blank" rel="noopener">https://github.com/lmbxmu/HRank</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/09/22/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-HRankFilter%20Pruning%20using%20High-Rank%20Feature%20Map/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1019,7 +1104,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1080,7 +1165,7 @@
 <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共24.1k字</span>
+  <span class="post-count">博客全站共24.9k字</span>
   <span class="post-meta-divider">|</span>
   本站总访问量<span id="busuanzi_value_site_pv"></span>次
   <span class="post-meta-divider">|</span>
