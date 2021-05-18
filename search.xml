@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>2021-05-16周赛题解</title>
+    <url>/2021/05/16/2021-05-16%E5%91%A8%E8%B5%9B%E9%A2%98%E8%A7%A3/</url>
+    <content><![CDATA[<h3 id="题目一：找出所有子集的异或总和再求和"><a href="#题目一：找出所有子集的异或总和再求和" class="headerlink" title="题目一：找出所有子集的异或总和再求和"></a>题目一：<a href="https://leetcode-cn.com/problems/sum-of-all-subset-xor-totals/" target="_blank" rel="noopener">找出所有子集的异或总和再求和</a></h3><h4 id="方法一：枚举子集"><a href="#方法一：枚举子集" class="headerlink" title="方法一：枚举子集"></a>方法一：枚举子集</h4><p>数据范围有限，直接枚举子集计算异或和。</p>
+<ul>
+<li>时间复杂度 O(mn)</li>
+<li>空间复杂度 O(1)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subsetXORSum</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.length;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;(<span class="number">1</span>&lt;&lt;len);i++)&#123;</span><br><span class="line">        res += getXOR(nums,i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getXOR</span><span class="params">(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">31</span>;k++)&#123;</span><br><span class="line">        <span class="keyword">if</span>((i&amp;k)!=<span class="number">0</span>) sum^= nums[k];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="题目二：构成交替字符串需要的最小交换次数"><a href="#题目二：构成交替字符串需要的最小交换次数" class="headerlink" title="题目二：构成交替字符串需要的最小交换次数"></a>题目二：<a href="https://leetcode-cn.com/problems/minimum-number-of-swaps-to-make-the-binary-string-alternating/" target="_blank" rel="noopener">构成交替字符串需要的最小交换次数</a></h3><h4 id="方法一：模拟"><a href="#方法一：模拟" class="headerlink" title="方法一：模拟"></a>方法一：模拟</h4><p>可以交换：abs(OneN-ZeroN)&lt;=1 否则返回-1</p>
+<p>交换次数：字符串只有0，1,最少交换次数一定是最终字符串和当前字符串差异/2</p>
+<ul>
+<li>时间复杂度 O(n)</li>
+<li>空间复杂度 O(1)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minSwaps</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> OneN = count(s,<span class="string">'1'</span>),ZeorN = count(s,<span class="string">'0'</span>);</span><br><span class="line">    <span class="keyword">if</span>(Math.abs(OneN-ZeorN)&gt;<span class="number">1</span>) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> cnt1 = <span class="number">0</span>,cnt2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(i%<span class="number">2</span>==<span class="number">0</span>) c = <span class="string">'1'</span>;</span><br><span class="line">        <span class="keyword">else</span> c = <span class="string">'0'</span>;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(i)!=c) cnt1++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(i%<span class="number">2</span>==<span class="number">0</span>) c = <span class="string">'0'</span>;</span><br><span class="line">        <span class="keyword">else</span> c = <span class="string">'1'</span>;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(i)!=c) cnt2++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(OneN==ZeorN) <span class="keyword">return</span> Math.min(cnt1,cnt2)/<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span>(OneN &gt;ZeorN) <span class="keyword">return</span> cnt1/<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> cnt2/<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">(String s,<span class="keyword">char</span> c)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">char</span> ch : s.toCharArray())&#123;</span><br><span class="line">        <span class="keyword">if</span>(ch==c) res++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="题目三：找出和为指定值的下标对"><a href="#题目三：找出和为指定值的下标对" class="headerlink" title="题目三：找出和为指定值的下标对"></a>题目三：<a href="https://leetcode-cn.com/problems/finding-pairs-with-a-certain-sum/" target="_blank" rel="noopener">找出和为指定值的下标对</a></h3><h3 id="方法一：-hash"><a href="#方法一：-hash" class="headerlink" title="方法一： hash"></a>方法一： hash</h3><p>设计题，寻找两数之和可以用Map优化查询时间，本题依然可以采用Map优化，关于Add修改数组，只需要修改map即可；</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FindSumPairs</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] nums1;</span><br><span class="line">    <span class="keyword">int</span>[] nums2;</span><br><span class="line">    Map&lt;Integer,Integer&gt; map;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FindSumPairs</span><span class="params">(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.nums1 = nums1;</span><br><span class="line">        <span class="keyword">this</span>.nums2 = nums2;</span><br><span class="line">        <span class="keyword">this</span>.map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i: nums2)&#123;</span><br><span class="line">            map.put(i, map.getOrDefault(i,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> newVal = nums2[index]+val;</span><br><span class="line">        map.put(newVal, map.getOrDefault(newVal,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">        map.put(nums2[index], map.getOrDefault(nums2[index],<span class="number">0</span>)-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">(<span class="keyword">int</span> tot)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i:nums1)&#123;</span><br><span class="line">            <span class="keyword">if</span>(map.containsKey(tot-i))&#123;</span><br><span class="line">                res += map.get(tot-i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="题目四：恰有-K-根木棍可以看到的排列数目"><a href="#题目四：恰有-K-根木棍可以看到的排列数目" class="headerlink" title="题目四：恰有 K 根木棍可以看到的排列数目"></a>题目四：<a href="https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/" target="_blank" rel="noopener">恰有 K 根木棍可以看到的排列数目</a></h3><h4 id="方法一：DP"><a href="#方法一：DP" class="headerlink" title="方法一：DP"></a>方法一：DP</h4><p>看大佬题解，应该是常见板子题。思路是：由于数组1-n,选择恰好可以看到k个，就是将n个数分成m个集合，有几种分配方式。</p>
+<p>定义：dp[i][j] 为i个数分为j个集合的方案数，dp[i][j] = dp[i-1][j-1] + (i-1)dp[i-1][j], 即：若i-1个数分成了m-1个集合，那么第i个数自己独立成集合，如果i-1个数分配成了m个集合，第i个数任意插入i-1的集合中。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> MOD = <span class="number">1000000000</span>+<span class="number">7</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rearrangeSticks</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span>[][] dp = <span class="keyword">new</span> <span class="keyword">long</span>[n+<span class="number">1</span>][n+<span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=Math.min(i,k);j++)&#123;</span><br><span class="line">                dp[i][j] = dp[i-<span class="number">1</span>][j-<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">if</span>(i-<span class="number">1</span>&gt;=j) dp[i][j] += (i-<span class="number">1</span>)*dp[i-<span class="number">1</span>][j];</span><br><span class="line">                dp[i][j] %= MOD; </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)dp[n][k];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="思考：如果题目要求左看为m，右看为n求组合数，如何解。斯特林数"><a href="#思考：如果题目要求左看为m，右看为n求组合数，如何解。斯特林数" class="headerlink" title="思考：如果题目要求左看为m，右看为n求组合数，如何解。斯特林数"></a>思考：如果题目要求左看为m，右看为n求组合数，如何解。<a href="https://baike.baidu.com/item/%E6%96%AF%E7%89%B9%E6%9E%97%E6%95%B0/4938529?fr=aladdin" target="_blank" rel="noopener">斯特林数</a></h4>]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>2021-05-09周赛题解</title>
     <url>/2021/05/09/2021-05-09%E5%91%A8%E8%B5%9B%E9%A2%98%E8%A7%A3/</url>
     <content><![CDATA[<h3 id="题目一：人口最多的年份"><a href="#题目一：人口最多的年份" class="headerlink" title="题目一：人口最多的年份"></a>题目一：人口最多的年份</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;maximum-population-year&#x2F;</span><br><span class="line">## 参考 https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;living-people-lcci&#x2F; 存活人数</span><br></pre></td></tr></table></figure>
@@ -58,6 +93,47 @@
       </categories>
       <tags>
         <tag>题解</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【模型压缩】CVPR2020-Filter Pruning via Geometric Median</title>
+    <url>/2020/10/14/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Pruning%20via%20Geometric%20Median/</url>
+    <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>以前的工作使用“<strong>较小范数不太重要</strong>”的标准来修剪卷积神经网络中具有较小范数值的滤波器。本文分析了这种基于范数的准则，指出其有效性取决于两个不总是满足的要求:<strong>(1)滤波器的范数偏差应该很大；(2)滤波器的最小范数应该很小。</strong>为了解决这个问题，我们提出了一种新的滤波剪枝方法，即基于几何中值(FPGM)的滤波剪枝，来压缩模型而不考虑这两个要求。与以前的方法不同，FPGM通过修剪冗余过滤器来压缩CNN模型，而不是那些“相对不太重要”的过滤器。当应用于两个图像分类基准时，我们的方法验证了它的有用性和优势。值得注意的是，在CIF  AR-10上，FPGM在ResNet-110上减少了52%以上的浮点运算，相对精度提高了2.69%。此外，在ILSVRC2012上，FPGM在ResNet101上减少了超过42%的浮点运算，而没有前5名的精度下降，这提高了最先进的水平。</p>
+<p>GitHub:<br><a href="https://github.com/he-y/filter-pruning-geometric-median" target="_blank" rel="noopener">https://github.com/he-y/filter-pruning-geometric-median</a></p>
+<a id="more"></a>
+
+<h4 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h4><p>深层神经网络更深更广的体系结构带来了计算机视觉任务的卓越性能[6，26，45]。然而，它们也导致了极其昂贵的计算成本，并使得在移动设备上部署模型变得困难，如果不是不可能的话。即使是最新的高效率架构，如剩余连接[12]或初始模块[34]，也有数百万个参数需要数十亿次浮点运算(FLOPs)  [15]。</p>
+<p>因此，有必要获得计算成本相对较低但精度较高的深层CNN模型。</p>
+<p>![CVPR2020-Filter Pruning via Geometric Median](D:\blogs\source_posts\CVPR\CVPR2020-Filter Pruning via Geometric Median.png)</p>
+<p>修剪的最新发展可分为两类，即权重修剪[11，1]和过滤修剪[21，39]。权重修剪直接删除过滤器中的权重值，这可能会导致非结构化稀疏性。这种不规则的结构使得利用高效的基本线性代数子程序库变得困难[25]。相比之下，过滤器修剪直接丢弃整个选定的过滤器，并留下具有规则结构的模型。因此，为了加速网络和减小模型尺寸，过滤器修剪是更优选的。</p>
+<p>目前的实践[21，38，15]通过遵循“较小范数不太重要”的标准来执行过滤器修剪，该标准认为具有较小范数的过滤器由于其不太重要而可以被安全地修剪。如图1(a)的右上角所示，在计算模型中过滤器的规范之后，使用预先指定的阈值T来选择其规范小于它的过滤器。</p>
+<p>然而，如图1(b)所示，利用这个“较小的规范不太重要”的标准有两个先决条件。第一，过滤规范的偏差应该是显著的。这一要求使得阈值T的搜索空间足够宽，因此分离那些需要修剪的过滤器将是一项简单的任务。第二，那些可以删减的滤波器的范数应该任意小，即接近于零；换句话说，具有较小规范的过滤器被期望对网络作出绝对小的贡献，而不是相对小但肯定大的贡献。令人满意地满足这两个要求时的理想范数分布如图1中的蓝色曲线所示。不幸的是，根据我们的分析和实验观察，这并不总是正确的。</p>
+<p>为了解决上述问题，我们提出了一种新的滤波修剪方法，称为几何中值滤波修剪(FPGM)。与以前修剪贡献相对较小的过滤器的方法不同，FPGM选择贡献最可替换的过滤器。具体来说，我们计算同一层内滤波器的几何中值(GM)  [8]。根据遗传算法的特点，它附近的滤波器可以用剩余的滤波器来表示。因此，修剪这些过滤器不会对模型性能产生实质性的负面影响。请注意，FPGM没有使用基于规范的标准来选择要修剪的过滤器，这意味着即使在未能满足基于规范的标准的要求时，其性能也不会恶化。</p>
+<p><strong>我们有三个贡献:</strong></p>
+<p>(1)我们分析了以前工作中使用的基于规范的准则，它删减了相对不太重要的过滤器。我们详细阐述了导致其局限性的两个基本要求；(2)我们提出FPGM剪枝包含冗余信息的最可替换的过滤器，当基于规范的准则失败时仍能获得良好的性能；(3)对两个基准的广泛试验证明了FPGM的有效性和效率。</p>
+<h4 id="2-Related-Works"><a href="#2-Related-Works" class="headerlink" title="2. Related Works"></a>2. Related Works</h4><p>以往大多数关于加速CNNs的工作大致可以分为四类，即矩阵分解[42，35]、低精度权重[44，43，32]、知识提取[17，19]和剪枝。基于剪枝的方法旨在去除神经网络中不必要的连接[11，21，24]。本质上，权重修剪总是导致非结构化模型，这使得部署高效的BLAS库变得困难，而过滤器修剪不仅减少了设备上的存储使用，而且降低了计算成本以加速推理。我们可以根据训练数据是否用于确定被修剪的过滤器，将过滤器修剪方法大致分为两类，即数据相关的和数据无关的过滤器修剪。与数据无关的方法比与数据相关的方法更有效，因为训练数据的利用是计算消耗。</p>
+<p><strong>Weight Pruning.</strong>。最近的许多工作[11，10，9，36，1，15，41，4]集中在修剪过滤器的细粒度权重。例如，[11]提出了一种迭代方法来丢弃其值低于预定阈值的小权重。[1]将修剪公式化为在满足修剪成本条件的同时找到最小化损失的权重的优化问题。</p>
+<p><strong>Data Dependent Filter Pruning</strong> 一些过滤器修剪方法[23，25，16，27，7，33，39，37，46，14，18，22]需要利用训练数据来确定被修剪的过滤器。[25]采用下一层的统计信息来指导过滤器的选择。[7]旨在通过最小化训练集样本激活的重构误差来获得分解。[33]提出了一种固有的数据驱动方法，该方法使用主成分分析来指定应该保留的能量比例。[37]将子空间聚类应用于特征映射，以消除卷积滤波器中的冗余。</p>
+<p><strong>Data Independent Filter Pruning.</strong>与我们的工作同时，已经探索了一些数据独立的过滤器修剪策略[21，15，38，47]。[21]使用一个“1”标准来删减不重要的过滤器。[15]建议用“2范数”标准选择过滤器，并以软方式删减那些选择的过滤器。[38]提出通过加强批量标准化层的缩放参数的稀疏性来修剪模型。[47]在过滤器上使用光谱聚类来选择不重要的过滤器。</p>
+<p>据我们所知，只有一个先前的工作重新考虑了较小的规范不太重要的标准[38]。我们希望强调我们与这种方法相比的优势如下:(1)  [38]更注意在批处理规范化操作符中对缩放参数实施稀疏性，这对于没有批处理规范化的结构是不友好的。我们的方法不受这一限制。(2)选择修剪通道后，[38]需要微调以减少性能下降。然而，我们的方法结合了修剪操作和正常的训练程序。因此，不需要额外的微调。(3)[38]需要计算比例因子的梯度；因此，大量的计算成本是不可避免的，而我们的方法可以在不计算比例因子梯度的情况下加速神经网络。</p>
+<h4 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4. Experiments"></a>4. Experiments</h4><p>我们根据两个基准评估FPGM的单分支网络(VGGNet [31])和多分支网络(ResNet):CIFAR-10[20]和ILSVRC-2012  [29]3。CIFAR-10 [20]数据集包含10个不同类别的60，000幅32 ×  32彩色图像，其中包括50，000幅训练图像和10，000幅测试图像。ILSVRC2012  [29]是包含128万个训练图像和1000个类的50k个验证图像的大规模数据集。</p>
+<p><strong>4.1. Experimental Settings</strong></p>
+<p>Training setting。在CIFAR-10上，参数设置与[13]相同，训练计划与[40]相同。在ILSVRC-2012实验中，我们使用了与[12，13]相同的默认参数设置。ILSVRC-2012的数据论证策略与PyTorch  [28]官方示例相同。我们分析了从零开始和预先训练的模型之间的区别。为了从头开始修剪模型，我们使用正常的训练时间表，而没有额外的微调过程。对于预训练模型的剪枝，我们将学习率降低到原始学习率的十分之一。为了对修剪模型和预训练模型进行公平的比较，我们使用相同的训练时期来训练/微调网络。以前的工作[21]可能使用较少的时期来微调修剪后的模型，但它收敛得太早，即使使用更多的时期，其精度也不能提高，这可以在第4.2节中显示。</p>
+<p>Pruning setting。在过滤器修剪步骤中，我们简单地同时以相同的修剪率修剪所有加权层，这与[15]相同。因此只需要一个超参数Pi=  P就可以平衡加速度和精度。修剪操作在每个训练周期结束时进行。与以前的工作[21]不同，灵敏度分析在FPGM并不是实现良好性能的必要条件，这将在后面的章节中演示。</p>
+<p>![CVPR2020-Filter Pruning via Geometric Median (2)](D:\blogs\source_posts\CVPR\CVPR2020-Filter Pruning via Geometric Median (2).png)</p>
+<p>除了FPGM唯一准则外，我们还使用了FPGM和以前基于规范的方法[15]的混合，以表明FPGM可以作为以前方法的补充。FPGM唯一标准表示为“FPGM混合标准”，FPGM和基于规范的标准相结合的标准表示为“混合标准”。“FPGM-仅40%”表示该层的40%过滤器仅由FPGM选择，而“FPGM-混合40%”表示该层的30%过滤器由基于规范的标准选择[15]，其余10%过滤器由FPGM选择。我们将FPGM与以前的加速算法进行了比较，例如MIL  [5]，PFEC [21]，CP [16]，ThiNet [25]，SFP [15]，NISP  [39]，重新思考[38]。毫不奇怪，我们的FPGM方法达到了最先进的结果。</p>
+<p><strong>4.2. Single-Branch Network Pruning</strong></p>
+<p>CIFAR-10上的VGGNet。由于[21]的训练设置不公开，我们重新实施了修剪程序，并获得了与原始论文相似的结果。表3和表4分别显示了修剪预训练模型和擦除模型的结果。毫不奇怪，FPGM在这两种情况下都取得了比[21]更好的表现。</p>
+<p><strong>4.3. Multiple-Branch Network Pruning</strong></p>
+<p>CIFAR-10上的ResNet。对于CIFAR-10数据集，我们在ResNet-20、32、56和110上用两种不同的修剪率测试了我们的FPGM:30%和40%。如表1所示，我们的FPGM实现了最先进的性能。例如，没有微调的MIL  [5]将ResNet-32的加速比提高了31.2%，精度下降了1.59%，但我们没有微调的FPGM实现了53.2%的加速比，精度甚至提高了0.19%。与SFP  [15]相比，当修剪ResNet-56的52.6%的浮点运算时，我们的FPGM只有0.66%的精度下降，远远小于SFP [15]  (1.33%)。对于修剪预先训练的ResNet-110，我们的方法获得了高得多(52.3% vs . s .  38.6%)的加速比，性能提高了0.16%，而PFEC [21]损害了加速比较低的性能。这些结果表明，FPGM可以产生一个性能相当甚至更好的压缩模型。</p>
+<p>关于ILSVRC-2012的ResNet。对于ILSVRC-2012数据集，我们在ResNet-18、34、50和101上测试了我们的FPGM，剪枝率分别为30%和40%。与[15]相同，为了简化，我们不修剪投影快捷键。</p>
+<h4 id="5-Conclusion-and-Future-Work"><a href="#5-Conclusion-and-Future-Work" class="headerlink" title="5. Conclusion and Future Work"></a>5. Conclusion and Future Work</h4><p>在本文中，我们详细阐述了基于规范的过滤器修剪标准的基本要求，并指出其局限性。为了解决这个问题，我们提出了一种基于几何中值的新的滤波修剪策略，命名为FPGM，以加速深层神经网络。与以前的标准不同，FPGM明确考虑了过滤器之间的相互关系。由于这一点，FPGM在几个基准中实现了最先进的性能。未来，我们计划研究如何将FPGM与其他加速算法(如矩阵分解和低精度权重)相结合，将性能推向更高的阶段。</p>
+]]></content>
+      <categories>
+        <category>Deep Learning</category>
+      </categories>
+      <tags>
+        <tag>Filter Graft</tag>
       </tags>
   </entry>
   <entry>
@@ -178,113 +254,6 @@
       </tags>
   </entry>
   <entry>
-    <title>【模型压缩】CVPR2020-Towards Efficient Model Compression via Learned Global Ranking</title>
-    <url>/2020/10/04/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Towards%20Efficient%20Model%20Compression%20via%20Learned%20Global%20Ranking/</url>
-    <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3>]]></content>
-      <categories>
-        <category>Deep Learning</category>
-      </categories>
-      <tags>
-        <tag>Filter Prune</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>【模型压缩】CVPR2020-Filter Pruning via Geometric Median</title>
-    <url>/2020/10/14/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Pruning%20via%20Geometric%20Median/</url>
-    <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>以前的工作使用“<strong>较小范数不太重要</strong>”的标准来修剪卷积神经网络中具有较小范数值的滤波器。本文分析了这种基于范数的准则，指出其有效性取决于两个不总是满足的要求:<strong>(1)滤波器的范数偏差应该很大；(2)滤波器的最小范数应该很小。</strong>为了解决这个问题，我们提出了一种新的滤波剪枝方法，即基于几何中值(FPGM)的滤波剪枝，来压缩模型而不考虑这两个要求。与以前的方法不同，FPGM通过修剪冗余过滤器来压缩CNN模型，而不是那些“相对不太重要”的过滤器。当应用于两个图像分类基准时，我们的方法验证了它的有用性和优势。值得注意的是，在CIF  AR-10上，FPGM在ResNet-110上减少了52%以上的浮点运算，相对精度提高了2.69%。此外，在ILSVRC2012上，FPGM在ResNet101上减少了超过42%的浮点运算，而没有前5名的精度下降，这提高了最先进的水平。</p>
-<p>GitHub:<br><a href="https://github.com/he-y/filter-pruning-geometric-median" target="_blank" rel="noopener">https://github.com/he-y/filter-pruning-geometric-median</a></p>
-<a id="more"></a>
-
-<h4 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h4><p>深层神经网络更深更广的体系结构带来了计算机视觉任务的卓越性能[6，26，45]。然而，它们也导致了极其昂贵的计算成本，并使得在移动设备上部署模型变得困难，如果不是不可能的话。即使是最新的高效率架构，如剩余连接[12]或初始模块[34]，也有数百万个参数需要数十亿次浮点运算(FLOPs)  [15]。</p>
-<p>因此，有必要获得计算成本相对较低但精度较高的深层CNN模型。</p>
-<p>![CVPR2020-Filter Pruning via Geometric Median](D:\blogs\source_posts\CVPR\CVPR2020-Filter Pruning via Geometric Median.png)</p>
-<p>修剪的最新发展可分为两类，即权重修剪[11，1]和过滤修剪[21，39]。权重修剪直接删除过滤器中的权重值，这可能会导致非结构化稀疏性。这种不规则的结构使得利用高效的基本线性代数子程序库变得困难[25]。相比之下，过滤器修剪直接丢弃整个选定的过滤器，并留下具有规则结构的模型。因此，为了加速网络和减小模型尺寸，过滤器修剪是更优选的。</p>
-<p>目前的实践[21，38，15]通过遵循“较小范数不太重要”的标准来执行过滤器修剪，该标准认为具有较小范数的过滤器由于其不太重要而可以被安全地修剪。如图1(a)的右上角所示，在计算模型中过滤器的规范之后，使用预先指定的阈值T来选择其规范小于它的过滤器。</p>
-<p>然而，如图1(b)所示，利用这个“较小的规范不太重要”的标准有两个先决条件。第一，过滤规范的偏差应该是显著的。这一要求使得阈值T的搜索空间足够宽，因此分离那些需要修剪的过滤器将是一项简单的任务。第二，那些可以删减的滤波器的范数应该任意小，即接近于零；换句话说，具有较小规范的过滤器被期望对网络作出绝对小的贡献，而不是相对小但肯定大的贡献。令人满意地满足这两个要求时的理想范数分布如图1中的蓝色曲线所示。不幸的是，根据我们的分析和实验观察，这并不总是正确的。</p>
-<p>为了解决上述问题，我们提出了一种新的滤波修剪方法，称为几何中值滤波修剪(FPGM)。与以前修剪贡献相对较小的过滤器的方法不同，FPGM选择贡献最可替换的过滤器。具体来说，我们计算同一层内滤波器的几何中值(GM)  [8]。根据遗传算法的特点，它附近的滤波器可以用剩余的滤波器来表示。因此，修剪这些过滤器不会对模型性能产生实质性的负面影响。请注意，FPGM没有使用基于规范的标准来选择要修剪的过滤器，这意味着即使在未能满足基于规范的标准的要求时，其性能也不会恶化。</p>
-<p><strong>我们有三个贡献:</strong></p>
-<p>(1)我们分析了以前工作中使用的基于规范的准则，它删减了相对不太重要的过滤器。我们详细阐述了导致其局限性的两个基本要求；(2)我们提出FPGM剪枝包含冗余信息的最可替换的过滤器，当基于规范的准则失败时仍能获得良好的性能；(3)对两个基准的广泛试验证明了FPGM的有效性和效率。</p>
-<h4 id="2-Related-Works"><a href="#2-Related-Works" class="headerlink" title="2. Related Works"></a>2. Related Works</h4><p>以往大多数关于加速CNNs的工作大致可以分为四类，即矩阵分解[42，35]、低精度权重[44，43，32]、知识提取[17，19]和剪枝。基于剪枝的方法旨在去除神经网络中不必要的连接[11，21，24]。本质上，权重修剪总是导致非结构化模型，这使得部署高效的BLAS库变得困难，而过滤器修剪不仅减少了设备上的存储使用，而且降低了计算成本以加速推理。我们可以根据训练数据是否用于确定被修剪的过滤器，将过滤器修剪方法大致分为两类，即数据相关的和数据无关的过滤器修剪。与数据无关的方法比与数据相关的方法更有效，因为训练数据的利用是计算消耗。</p>
-<p><strong>Weight Pruning.</strong>。最近的许多工作[11，10，9，36，1，15，41，4]集中在修剪过滤器的细粒度权重。例如，[11]提出了一种迭代方法来丢弃其值低于预定阈值的小权重。[1]将修剪公式化为在满足修剪成本条件的同时找到最小化损失的权重的优化问题。</p>
-<p><strong>Data Dependent Filter Pruning</strong> 一些过滤器修剪方法[23，25，16，27，7，33，39，37，46，14，18，22]需要利用训练数据来确定被修剪的过滤器。[25]采用下一层的统计信息来指导过滤器的选择。[7]旨在通过最小化训练集样本激活的重构误差来获得分解。[33]提出了一种固有的数据驱动方法，该方法使用主成分分析来指定应该保留的能量比例。[37]将子空间聚类应用于特征映射，以消除卷积滤波器中的冗余。</p>
-<p><strong>Data Independent Filter Pruning.</strong>与我们的工作同时，已经探索了一些数据独立的过滤器修剪策略[21，15，38，47]。[21]使用一个“1”标准来删减不重要的过滤器。[15]建议用“2范数”标准选择过滤器，并以软方式删减那些选择的过滤器。[38]提出通过加强批量标准化层的缩放参数的稀疏性来修剪模型。[47]在过滤器上使用光谱聚类来选择不重要的过滤器。</p>
-<p>据我们所知，只有一个先前的工作重新考虑了较小的规范不太重要的标准[38]。我们希望强调我们与这种方法相比的优势如下:(1)  [38]更注意在批处理规范化操作符中对缩放参数实施稀疏性，这对于没有批处理规范化的结构是不友好的。我们的方法不受这一限制。(2)选择修剪通道后，[38]需要微调以减少性能下降。然而，我们的方法结合了修剪操作和正常的训练程序。因此，不需要额外的微调。(3)[38]需要计算比例因子的梯度；因此，大量的计算成本是不可避免的，而我们的方法可以在不计算比例因子梯度的情况下加速神经网络。</p>
-<h4 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4. Experiments"></a>4. Experiments</h4><p>我们根据两个基准评估FPGM的单分支网络(VGGNet [31])和多分支网络(ResNet):CIFAR-10[20]和ILSVRC-2012  [29]3。CIFAR-10 [20]数据集包含10个不同类别的60，000幅32 ×  32彩色图像，其中包括50，000幅训练图像和10，000幅测试图像。ILSVRC2012  [29]是包含128万个训练图像和1000个类的50k个验证图像的大规模数据集。</p>
-<p><strong>4.1. Experimental Settings</strong></p>
-<p>Training setting。在CIFAR-10上，参数设置与[13]相同，训练计划与[40]相同。在ILSVRC-2012实验中，我们使用了与[12，13]相同的默认参数设置。ILSVRC-2012的数据论证策略与PyTorch  [28]官方示例相同。我们分析了从零开始和预先训练的模型之间的区别。为了从头开始修剪模型，我们使用正常的训练时间表，而没有额外的微调过程。对于预训练模型的剪枝，我们将学习率降低到原始学习率的十分之一。为了对修剪模型和预训练模型进行公平的比较，我们使用相同的训练时期来训练/微调网络。以前的工作[21]可能使用较少的时期来微调修剪后的模型，但它收敛得太早，即使使用更多的时期，其精度也不能提高，这可以在第4.2节中显示。</p>
-<p>Pruning setting。在过滤器修剪步骤中，我们简单地同时以相同的修剪率修剪所有加权层，这与[15]相同。因此只需要一个超参数Pi=  P就可以平衡加速度和精度。修剪操作在每个训练周期结束时进行。与以前的工作[21]不同，灵敏度分析在FPGM并不是实现良好性能的必要条件，这将在后面的章节中演示。</p>
-<p>![CVPR2020-Filter Pruning via Geometric Median (2)](D:\blogs\source_posts\CVPR\CVPR2020-Filter Pruning via Geometric Median (2).png)</p>
-<p>除了FPGM唯一准则外，我们还使用了FPGM和以前基于规范的方法[15]的混合，以表明FPGM可以作为以前方法的补充。FPGM唯一标准表示为“FPGM混合标准”，FPGM和基于规范的标准相结合的标准表示为“混合标准”。“FPGM-仅40%”表示该层的40%过滤器仅由FPGM选择，而“FPGM-混合40%”表示该层的30%过滤器由基于规范的标准选择[15]，其余10%过滤器由FPGM选择。我们将FPGM与以前的加速算法进行了比较，例如MIL  [5]，PFEC [21]，CP [16]，ThiNet [25]，SFP [15]，NISP  [39]，重新思考[38]。毫不奇怪，我们的FPGM方法达到了最先进的结果。</p>
-<p><strong>4.2. Single-Branch Network Pruning</strong></p>
-<p>CIFAR-10上的VGGNet。由于[21]的训练设置不公开，我们重新实施了修剪程序，并获得了与原始论文相似的结果。表3和表4分别显示了修剪预训练模型和擦除模型的结果。毫不奇怪，FPGM在这两种情况下都取得了比[21]更好的表现。</p>
-<p><strong>4.3. Multiple-Branch Network Pruning</strong></p>
-<p>CIFAR-10上的ResNet。对于CIFAR-10数据集，我们在ResNet-20、32、56和110上用两种不同的修剪率测试了我们的FPGM:30%和40%。如表1所示，我们的FPGM实现了最先进的性能。例如，没有微调的MIL  [5]将ResNet-32的加速比提高了31.2%，精度下降了1.59%，但我们没有微调的FPGM实现了53.2%的加速比，精度甚至提高了0.19%。与SFP  [15]相比，当修剪ResNet-56的52.6%的浮点运算时，我们的FPGM只有0.66%的精度下降，远远小于SFP [15]  (1.33%)。对于修剪预先训练的ResNet-110，我们的方法获得了高得多(52.3% vs . s .  38.6%)的加速比，性能提高了0.16%，而PFEC [21]损害了加速比较低的性能。这些结果表明，FPGM可以产生一个性能相当甚至更好的压缩模型。</p>
-<p>关于ILSVRC-2012的ResNet。对于ILSVRC-2012数据集，我们在ResNet-18、34、50和101上测试了我们的FPGM，剪枝率分别为30%和40%。与[15]相同，为了简化，我们不修剪投影快捷键。</p>
-<h4 id="5-Conclusion-and-Future-Work"><a href="#5-Conclusion-and-Future-Work" class="headerlink" title="5. Conclusion and Future Work"></a>5. Conclusion and Future Work</h4><p>在本文中，我们详细阐述了基于规范的过滤器修剪标准的基本要求，并指出其局限性。为了解决这个问题，我们提出了一种基于几何中值的新的滤波修剪策略，命名为FPGM，以加速深层神经网络。与以前的标准不同，FPGM明确考虑了过滤器之间的相互关系。由于这一点，FPGM在几个基准中实现了最先进的性能。未来，我们计划研究如何将FPGM与其他加速算法(如矩阵分解和低精度权重)相结合，将性能推向更高的阶段。</p>
-]]></content>
-      <categories>
-        <category>Deep Learning</category>
-      </categories>
-      <tags>
-        <tag>Filter Graft</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>序/Introduction</title>
-    <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
-    <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br></center> 
-<center><font size="4">大大的船帆满满地承受着风势</font><br></center>  
-<center><font size="4">直面前往新世界</font><br></center>  
-<center><font color="#dd0000"> </font><br></center>
-
-
-<center>Rewrite CANOE</center> 
-
-
-
-<center><font color="#dd0000"> </font><br></center>
-<center><font color="#dd0000"> </font><br></center>
-<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br></center>                  
-
-
-
-
-<a id="more"></a>]]></content>
-      <categories>
-        <category>序</category>
-      </categories>
-      <tags>
-        <tag>Introduction</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>多级反馈队列调度算法</title>
-    <url>/2020/08/06/%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h3 id="操作系统之多级反馈队列调度算法"><a href="#操作系统之多级反馈队列调度算法" class="headerlink" title="操作系统之多级反馈队列调度算法"></a>操作系统之多级反馈队列调度算法</h3><h6 id="多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"><a href="#多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。" class="headerlink" title="多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"></a>多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。</h6><a id="more"></a>
-
-<h5 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 设有N个队列（Q1,Q2....QN），其中各个队列对于处理机的优先级不同,即位于各个队列中的作业(进程)的优先级也是不一样的。</span><br><span class="line">   一般来说，优先级Priority(Q1) &gt; Priority(Q2) &gt; ... &gt; Priority(QN)。</span><br><span class="line">   位于Q1中的任何一个作业(进程)都要比Q2中的任何一个作业(进程)相对于CPU的优先级要高，依次类推其它的队列。</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2. 对于优先级最低的队列(QN)，作业调度遵循时间片轮转法。位于队列QN中有M个作业，运行时间是通过QN这个队列所设定的时间片来确定的；</span><br><span class="line">   对于其他队列，遵循的是先来先服务算法,同时每一进程分配一定的时间片，若时间片运行完时进程未结束，则进入下一优先级队列的末尾。</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">3. 各个队列的时间片是随着优先级的增加而减少的，也就是说，优先级越高的队列中它的时间片就越短。</span><br><span class="line">   同时，为了便于那些超大作业的完成，最后一个队列QN(优先级最低的队列)的时间片一般很大。</span><br></pre></td></tr></table></figure>
-
-<h5 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h5><ol>
-<li>进程在进入待调度的队列等待时，首先进入优先级最高的Q1等待。</li>
-<li>首先调度优先级高的队列中的进程。若Q1中没有调度的进程，则调度次优先级队列中的进程。当且仅当高优先级队列中没有调度的进程是，才调度次优先级。</li>
-<li>对于同一个进程中的进程，采用先来先服务(FCFS)分配固定时间片调度(除了最后一个对列)。分配的时间片大小取决去当前队列。如果当前作业在固定时间片内未完成，进入下一级队列，直至完成。</li>
-<li>在最后一个对列的进程，采用时间片轮转调度方式调度。</li>
-<li>当低优先级队列中的进程正在运行时，有新的作业到达，此时须立即把正在运行的进程放回当前队列的队尾，然后把处理机分给高优先级进程(抢占式)。或者等待当前进程执行结束，重新回到高优先级队列中(非抢占式)。</li>
-</ol>
-<h5 id="算法总结"><a href="#算法总结" class="headerlink" title="算法总结"></a>算法总结</h5><p>​    多级反馈队列调度算法既能最小化交互工作的<strong>响应时间</strong>，又能减少对工作长度的先验知识，从而<strong>最小化周转时间</strong>。</p>
-]]></content>
-      <categories>
-        <category>操作系统</category>
-      </categories>
-      <tags>
-        <tag>System</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>【模型压缩】CVPR2020-Learning Filter Pruning Criteria for Deep Convolutional Neural Networks Acceleration</title>
     <url>/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Learning%20Filter%20Pruning%20Criteria%20for%20Deep%20Convolutional%20Neural%20Networks%20Acceleration/</url>
     <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>滤波器修剪(filter prune)在神经网络的压缩和加速中得到了广泛的应用。现有的方法通常利用预定义的修剪标准,例如ℓp-norm(范数),修剪不重要的filter。这些方法有两个主要的限制。<strong>首先，流行的方法没有考虑不同层次的filter分布的多样性。为了将粗级特征提取到细级特征，不同层的滤波器具有不同的分布。</strong>因此，对不同的功能层使用相同的修剪标准是不合适的。<strong>其次，主流的逐层剪枝方法独立、顺序地处理每一层，没有考虑到网络中的所有层协同做出最终预测。</strong>在本文中，我们提出了学习filter剪枝准则(LFPC)来解决上述问题。具体地说，<strong>我们开发了一个可微的剪枝标准采样器。该采样器是可学习的，并通过采样准则得到的剪枝网络的验证损失来优化</strong>。通过这种方式，我们可以为不同的功能层自适应地选择合适的剪枝标准。此外，LFPC在评价采样准则时，同时综合考虑了各层的贡献。在三种图像分类基准上的实验验证了我们的方法。</p>
@@ -327,31 +296,123 @@
       </tags>
   </entry>
   <entry>
-    <title>算法笔记之位运算</title>
-    <url>/2020/11/23/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
-    <content><![CDATA[<h3 id="算法笔记之位运算"><a href="#算法笔记之位运算" class="headerlink" title="算法笔记之位运算"></a>算法笔记之位运算</h3><h4 id="Brian-Kernighan-算法"><a href="#Brian-Kernighan-算法" class="headerlink" title="Brian Kernighan 算法"></a>Brian Kernighan 算法</h4><p>内容：通过n&amp;(n-1), 清除二进制n的最右边1</p>
-<p>原理：n-1就是找到n最右边的1然后变为0，借1，同时最右边1的右边一定全是0，那么&amp;操作之后，最右边的1变为0.</p>
-<p>应用：Bk算法可用来求两个数的二进制公共前缀。</p>
-<a id="more"></a>
-
-<h4 id="题目·数字范围按位与"><a href="#题目·数字范围按位与" class="headerlink" title="题目·数字范围按位与"></a>题目·<a href="https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/" target="_blank" rel="noopener">数字范围按位与</a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定范围[m,n],返回此范围内所有书的按位与结果。</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 解法一 寻找公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> move = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (m!=n)&#123;</span><br><span class="line">        m &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        move++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m&lt;&lt;move;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用BK算法 寻找最长公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (m&lt;n)&#123;</span><br><span class="line">        n &amp;= (n-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="题目·汉明距离"><a href="#题目·汉明距离" class="headerlink" title="题目·汉明距离"></a>题目·<a href="https://leetcode-cn.com/problems/hamming-distance/" target="_blank" rel="noopener">汉明距离</a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x,y的汉明距离指的是二进制不同位置的数目，计算x,y的汉明距离</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 异或之后 求1个数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y,dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">32</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>((axr&amp;(<span class="number">1</span>&lt;&lt;i))!=<span class="number">0</span>) dist++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用BK消除1</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y;</span><br><span class="line">    <span class="keyword">int</span> dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (axr!=<span class="number">0</span>)&#123;</span><br><span class="line">        dist++;</span><br><span class="line">        axr &amp;= (axr-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
+    <title>【模型压缩】CVPR2020-Towards Efficient Model Compression via Learned Global Ranking</title>
+    <url>/2020/10/04/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Towards%20Efficient%20Model%20Compression%20via%20Learned%20Global%20Ranking/</url>
+    <content><![CDATA[<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3>]]></content>
       <categories>
-        <category>Algorithm</category>
+        <category>Deep Learning</category>
       </categories>
       <tags>
-        <tag>byte</tag>
+        <tag>Filter Prune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多级反馈队列调度算法</title>
+    <url>/2020/08/06/%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h3 id="操作系统之多级反馈队列调度算法"><a href="#操作系统之多级反馈队列调度算法" class="headerlink" title="操作系统之多级反馈队列调度算法"></a>操作系统之多级反馈队列调度算法</h3><h6 id="多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"><a href="#多级反馈队列调度-MLFQ-算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。" class="headerlink" title="多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。"></a>多级反馈队列调度(MLFQ)算法是一种CPU处理机调度算法，UNIX操作系统采取的便是这种调度算法。多级反馈队列调度算法是目前操作系统调度算法中被公认的一种较好的调度算法。它可以满足各种类型进程的需要，既能使高优先级的作业得到响应又能使短作业（进程）迅速完成。</h6><a id="more"></a>
+
+<h5 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 设有N个队列（Q1,Q2....QN），其中各个队列对于处理机的优先级不同,即位于各个队列中的作业(进程)的优先级也是不一样的。</span><br><span class="line">   一般来说，优先级Priority(Q1) &gt; Priority(Q2) &gt; ... &gt; Priority(QN)。</span><br><span class="line">   位于Q1中的任何一个作业(进程)都要比Q2中的任何一个作业(进程)相对于CPU的优先级要高，依次类推其它的队列。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2. 对于优先级最低的队列(QN)，作业调度遵循时间片轮转法。位于队列QN中有M个作业，运行时间是通过QN这个队列所设定的时间片来确定的；</span><br><span class="line">   对于其他队列，遵循的是先来先服务算法,同时每一进程分配一定的时间片，若时间片运行完时进程未结束，则进入下一优先级队列的末尾。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">3. 各个队列的时间片是随着优先级的增加而减少的，也就是说，优先级越高的队列中它的时间片就越短。</span><br><span class="line">   同时，为了便于那些超大作业的完成，最后一个队列QN(优先级最低的队列)的时间片一般很大。</span><br></pre></td></tr></table></figure>
+
+<h5 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h5><ol>
+<li>进程在进入待调度的队列等待时，首先进入优先级最高的Q1等待。</li>
+<li>首先调度优先级高的队列中的进程。若Q1中没有调度的进程，则调度次优先级队列中的进程。当且仅当高优先级队列中没有调度的进程是，才调度次优先级。</li>
+<li>对于同一个进程中的进程，采用先来先服务(FCFS)分配固定时间片调度(除了最后一个对列)。分配的时间片大小取决去当前队列。如果当前作业在固定时间片内未完成，进入下一级队列，直至完成。</li>
+<li>在最后一个对列的进程，采用时间片轮转调度方式调度。</li>
+<li>当低优先级队列中的进程正在运行时，有新的作业到达，此时须立即把正在运行的进程放回当前队列的队尾，然后把处理机分给高优先级进程(抢占式)。或者等待当前进程执行结束，重新回到高优先级队列中(非抢占式)。</li>
+</ol>
+<h5 id="算法总结"><a href="#算法总结" class="headerlink" title="算法总结"></a>算法总结</h5><p>​    多级反馈队列调度算法既能最小化交互工作的<strong>响应时间</strong>，又能减少对工作长度的先验知识，从而<strong>最小化周转时间</strong>。</p>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>序/Introduction</title>
+    <url>/2020/05/11/%E5%BA%8F-Introduction/</url>
+    <content><![CDATA[<center><font size="4">木舟远远地越过这片海域</font><br></center> 
+<center><font size="4">大大的船帆满满地承受着风势</font><br></center>  
+<center><font size="4">直面前往新世界</font><br></center>  
+<center><font color="#dd0000"> </font><br></center>
+
+
+<center>Rewrite CANOE</center> 
+
+
+
+<center><font color="#dd0000"> </font><br></center>
+<center><font color="#dd0000"> </font><br></center>
+<center><font size="6">你好 欢迎来到 Enplee's Blog!</font><br></center>                  
+
+
+
+
+<a id="more"></a>]]></content>
+      <categories>
+        <category>序</category>
+      </categories>
+      <tags>
+        <tag>Introduction</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>操作系统之死锁</title>
+    <url>/2020/08/04/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B9%8B%E6%AD%BB%E9%94%81/</url>
+    <content><![CDATA[<h3 id="操作系统之死锁"><a href="#操作系统之死锁" class="headerlink" title="操作系统之死锁"></a>操作系统之死锁</h3><ul>
+<li><h4 id="什么是死锁-Deadlock"><a href="#什么是死锁-Deadlock" class="headerlink" title="什么是死锁(Deadlock)"></a>什么是死锁(Deadlock)</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者相互通信而造成的一种阻塞的现象。</span><br><span class="line">若无外力推动，它们都无法进行下去。</span><br><span class="line">此时系统处于了死锁的状态或产生了死锁。</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h6 id="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"><a href="#举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。" class="headerlink" title="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"></a>举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。</h6></li>
+<li><h4 id="死锁的四个必要条件"><a href="#死锁的四个必要条件" class="headerlink" title="死锁的四个必要条件"></a>死锁的四个必要条件</h4><h5 id="死锁的产生必须具备以下四个条件："><a href="#死锁的产生必须具备以下四个条件：" class="headerlink" title="死锁的产生必须具备以下四个条件："></a>死锁的产生必须具备以下四个条件：</h5><ul>
+<li><h5 id="互斥条件-mutual-exclusion"><a href="#互斥条件-mutual-exclusion" class="headerlink" title="互斥条件(mutual exclusion)"></a>互斥条件(mutual exclusion)</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">指进程对所分配到的资源进行排它性使用，即在一段时间内某资源只由一个进程占用。</span><br><span class="line">如果此时还有其它进程请求资源，则请求者只能等待，直至占有资源的进程用毕释放。</span><br></pre></td></tr></table></figure>
+
+<p>例子中的饭勺和饭碗是竞争的资源，每个饭碗和饭勺在同一时间内只能一个人使用，如果可以同时使用，竞争的条件就不存在了，竞争都不存在，更不会出现死锁了。</p>
+</li>
+<li><h5 id="请求和保持条件-hold-and-wait"><a href="#请求和保持条件-hold-and-wait" class="headerlink" title="请求和保持条件(hold and wait)"></a>请求和保持条件(hold and wait)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已经保持至少一个资源，但又提出了新的资源请求，而该资源已被其它进程占有；</span><br><span class="line">此时请求进程阻塞，但又对自己已获得的其它资源保持不放。</span><br></pre></td></tr></table></figure>
+
+<p>对于所有去打饭的进程，比如作为饭勺的获得者，拿到了饭勺，那么会一直等待饭碗(阻塞)，但是不会主动放弃饭勺。如果可以主动放弃了饭勺，那么又可以继续推动了。</p>
+</li>
+<li><h5 id="不剥夺条件-no-preemption"><a href="#不剥夺条件-no-preemption" class="headerlink" title="不剥夺条件(no preemption)"></a>不剥夺条件(no preemption)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已获得的资源，在未使用完之前，不能被剥夺，只能在使用完时由自己释放。</span><br></pre></td></tr></table></figure>
+
+<p>作为一个资源的持有者，一个进程占据了饭碗，别的进程想要饭碗的时候，虽然占据饭碗的进程还在等待，但是别的进程不可以来抢我的饭碗(笑。就是资源一旦获得，除非使用结束，不能被剥夺。</p>
+</li>
+<li><h5 id="环路等待-circular-waiting"><a href="#环路等待-circular-waiting" class="headerlink" title="环路等待(circular waiting)"></a>环路等待(circular waiting)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指在发生死锁时，必然存在一个进程——资源的环形链，即进程集合&#123;P0，P1，P2，···，Pn&#125;中的P0正在等待一个P1占用的资源；</span><br><span class="line">P1正在等待P2占用的资源，……，Pn正在等待已被P0占用的资源。</span><br></pre></td></tr></table></figure>
+
+<p>死锁的出现，一定存在循环依赖。勺与碗的例子中就是一个环，A-&gt;B的碗，B-&gt;A的勺。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="死锁的预防"><a href="#死锁的预防" class="headerlink" title="死锁的预防"></a>死锁的预防</h4><h5 id="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"><a href="#死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。" class="headerlink" title="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"></a>死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。</h5><ul>
+<li><h5 id="破坏互斥条件"><a href="#破坏互斥条件" class="headerlink" title="破坏互斥条件"></a>破坏互斥条件</h5><p><strong>方法：</strong>如果允许系统资源都能共享使用，则系统不会进入死锁状态。</p>
+<p><strong>缺点：</strong>基本不可能实现，某些资源只能互斥的使用，而且有时还应保护互斥性。</p>
+</li>
+<li><h5 id="破坏请求与保持条件"><a href="#破坏请求与保持条件" class="headerlink" title="破坏请求与保持条件"></a>破坏请求与保持条件</h5><p><strong>方法：</strong>釆用预先静态分配方法，即进程在运行前一次申请完它所需要的全部资源，在它的资源未满足前，不把它投入运行。一旦投入运行后，这些资源就一直归它所有，也不再提出其他资源请求，这样就可以保证系统不会发生死锁。</p>
+<p><strong>缺点：</strong>系统资源被严重浪费，其中有些资源可能仅在运行初期或运行快结束时才使用，甚至根本不使用。而且还会导致“饥饿”现象，当由于个别资源长期被其他进程占用时，将致使等待该资源的进程迟迟不能开始运行。</p>
+</li>
+<li><h5 id="破坏不可剥夺条件"><a href="#破坏不可剥夺条件" class="headerlink" title="破坏不可剥夺条件"></a>破坏不可剥夺条件</h5><p><strong>方法：</strong>当一个已保持了某些不可剥夺资源的进程，请求新的资源而得不到满足时，它必须释放已经保持的所有资源，待以后需要时再重新申请。这意味着，一个进程已占有的资源会被暂时释放，或者说是被剥夺了，或从而破坏了不可剥夺条件。</p>
+<p><strong>缺点：</strong>该策略实现起来比较复杂，释放已获得的资源可能造成前一阶段工作的失效，反复地申请和释放资源会增加系统开销，降低系统吞吐量。这种方法常用于状态易于保存和恢复的资源，如CPU的寄存器及内存资源，一般不能用于打印机之类的资源。</p>
+</li>
+<li><h5 id="破坏循环等待条件"><a href="#破坏循环等待条件" class="headerlink" title="破坏循环等待条件"></a>破坏循环等待条件</h5><p><strong>方法：</strong>可釆用顺序资源分配法。首先给系统中的资源编号，规定每个进程，必须按编号递增的顺序请求资源，同类资源一次申请完。也就是说，只要进程提出申请分配资源Ri，则该进程在以后的资源申请中，只能申请编号大于Ri的资源。</p>
+<p><strong>缺点：</strong> 这种方法存在的问题是，编号必须相对稳定，这就限制了新类型设备的增加；尽管在为资源编号时已考虑到大多数作业实际使用这些资源的顺序，但也经常会发生作业使用资源的顺序与系统规定顺序不同的情况，造成资源的浪费；此外，这种按规定次序申请资源的方法，也必然会给用户的编程带来麻烦。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="死锁的避免"><a href="#死锁的避免" class="headerlink" title="死锁的避免"></a>死锁的避免</h4><h5 id="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"><a href="#在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。" class="headerlink" title="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"></a>在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。</h5><h5 id="Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"><a href="#Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。" class="headerlink" title="Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"></a>Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。</h5><p>未完待续……..ing</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>System</tag>
       </tags>
   </entry>
   <entry>
@@ -391,6 +452,65 @@
       </categories>
       <tags>
         <tag>String</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法笔记之位运算</title>
+    <url>/2020/11/23/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    <content><![CDATA[<h3 id="算法笔记之位运算"><a href="#算法笔记之位运算" class="headerlink" title="算法笔记之位运算"></a>算法笔记之位运算</h3><h4 id="Brian-Kernighan-算法"><a href="#Brian-Kernighan-算法" class="headerlink" title="Brian Kernighan 算法"></a>Brian Kernighan 算法</h4><p>内容：通过n&amp;(n-1), 清除二进制n的最右边1</p>
+<p>原理：n-1就是找到n最右边的1然后变为0，借1，同时最右边1的右边一定全是0，那么&amp;操作之后，最右边的1变为0.</p>
+<p>应用：Bk算法可用来求两个数的二进制公共前缀。</p>
+<a id="more"></a>
+
+<h4 id="题目·数字范围按位与"><a href="#题目·数字范围按位与" class="headerlink" title="题目·数字范围按位与"></a>题目·<a href="https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/" target="_blank" rel="noopener">数字范围按位与</a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定范围[m,n],返回此范围内所有书的按位与结果。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 解法一 寻找公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> move = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (m!=n)&#123;</span><br><span class="line">        m &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        move++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m&lt;&lt;move;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用BK算法 寻找最长公共前缀</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rangeBitwiseAnd</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (m&lt;n)&#123;</span><br><span class="line">        n &amp;= (n-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="题目·汉明距离"><a href="#题目·汉明距离" class="headerlink" title="题目·汉明距离"></a>题目·<a href="https://leetcode-cn.com/problems/hamming-distance/" target="_blank" rel="noopener">汉明距离</a></h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x,y的汉明距离指的是二进制不同位置的数目，计算x,y的汉明距离</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 异或之后 求1个数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y,dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">32</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>((axr&amp;(<span class="number">1</span>&lt;&lt;i))!=<span class="number">0</span>) dist++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 利用BK消除1</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> axr = x^y;</span><br><span class="line">    <span class="keyword">int</span> dist = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (axr!=<span class="number">0</span>)&#123;</span><br><span class="line">        dist++;</span><br><span class="line">        axr &amp;= (axr-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dist;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>byte</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法笔记之二分法解决极小化极大</title>
+    <url>/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/</url>
+    <content><![CDATA[<h3 id="算法笔记之二分法解决极小化极大"><a href="#算法笔记之二分法解决极小化极大" class="headerlink" title="算法笔记之二分法解决极小化极大"></a>算法笔记之二分法解决极小化极大</h3><h4 id="问题引入："><a href="#问题引入：" class="headerlink" title="问题引入："></a>问题引入：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。</span><br><span class="line">已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。</span><br><span class="line">给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。</span><br><span class="line">n &#x3D;&#x3D; position.length</span><br><span class="line">2 &lt;&#x3D; n &lt;&#x3D; 10^5</span><br><span class="line">1 &lt;&#x3D; position[i] &lt;&#x3D; 10^9</span><br><span class="line">所有 position 中的整数 互不相同 。</span><br><span class="line">2 &lt;&#x3D; m &lt;&#x3D; position.length</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h4 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h4><blockquote>
+<p>题目要求返回最大化的最小磁力，这是这类问题的一个典型的<strong>标志</strong>。</p>
+<p>正向分析题目，很难去解决。利用动态规划，贪心还是DFS都很棘手。</p>
+<p>但是，这个时候反过来从结果出发，能不能枚举所有可能的最小磁力获得最大的磁力呢？</p>
+<p>枚举是可以实现的，以为最小磁力可能出现的区间就是1到数组间隔最大值。</p>
+<p>同时，结果的集合又呈单调性。在某个临界点之前都符合题意，之后的所有可能都不符合。</p>
+<p>对于这种单调性的问题，二分法就是很好的解决方案了。</p>
+<p><strong>结论:从结果出发，二分搜索结果。见到极小化极大，极大化极小的问题，就可以考虑二分法</strong></p>
+</blockquote>
+<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><ol>
+<li>根据题目的数据范围，二分法搜索的区间是<strong>[0,pos[n]-pos[0]]</strong>;</li>
+<li>二分法的关键就是如何判定某个点是符合的：设k为某个最小的磁力，那么看数组上以k为距离可以放置多少小球，个数&gt;m成立。</li>
+<li>二分法另外一个复杂的点在于边界控制问题。</li>
+</ol>
+<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxMinDist</span><span class="params">(<span class="keyword">int</span>[] position,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">    Arrays.sort(position);</span><br><span class="line">    <span class="keyword">int</span> n = position.length;</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>,r=position[n-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(checkMid(mid,n,m,position))&#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            r = mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkMid</span><span class="params">(<span class="keyword">int</span> mid,<span class="keyword">int</span> n,<span class="keyword">int</span> m,<span class="keyword">int</span>[] position)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>,temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(position[i]-position[temp]&gt;=mid)&#123;</span><br><span class="line">            cnt++;</span><br><span class="line">            temp=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt&gt;=m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Algorithm</category>
+      </categories>
+      <tags>
+        <tag>math</tag>
       </tags>
   </entry>
   <entry>
@@ -516,132 +636,6 @@
       </tags>
   </entry>
   <entry>
-    <title>操作系统之死锁</title>
-    <url>/2020/08/04/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B9%8B%E6%AD%BB%E9%94%81/</url>
-    <content><![CDATA[<h3 id="操作系统之死锁"><a href="#操作系统之死锁" class="headerlink" title="操作系统之死锁"></a>操作系统之死锁</h3><ul>
-<li><h4 id="什么是死锁-Deadlock"><a href="#什么是死锁-Deadlock" class="headerlink" title="什么是死锁(Deadlock)"></a>什么是死锁(Deadlock)</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者相互通信而造成的一种阻塞的现象。</span><br><span class="line">若无外力推动，它们都无法进行下去。</span><br><span class="line">此时系统处于了死锁的状态或产生了死锁。</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h6 id="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"><a href="#举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。" class="headerlink" title="举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。"></a>举个例子：去食堂打饭，所有人只有同时拥有饭勺和饭碗才能进行打饭，现在假设只有一套饭勺和饭碗。如果进程A获得了饭勺，进程B获得了饭碗。那么A等待获得B的饭碗，而B等待A的饭勺。两个进程无休止的等待，进入了死锁状态。</h6></li>
-<li><h4 id="死锁的四个必要条件"><a href="#死锁的四个必要条件" class="headerlink" title="死锁的四个必要条件"></a>死锁的四个必要条件</h4><h5 id="死锁的产生必须具备以下四个条件："><a href="#死锁的产生必须具备以下四个条件：" class="headerlink" title="死锁的产生必须具备以下四个条件："></a>死锁的产生必须具备以下四个条件：</h5><ul>
-<li><h5 id="互斥条件-mutual-exclusion"><a href="#互斥条件-mutual-exclusion" class="headerlink" title="互斥条件(mutual exclusion)"></a>互斥条件(mutual exclusion)</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">指进程对所分配到的资源进行排它性使用，即在一段时间内某资源只由一个进程占用。</span><br><span class="line">如果此时还有其它进程请求资源，则请求者只能等待，直至占有资源的进程用毕释放。</span><br></pre></td></tr></table></figure>
-
-<p>例子中的饭勺和饭碗是竞争的资源，每个饭碗和饭勺在同一时间内只能一个人使用，如果可以同时使用，竞争的条件就不存在了，竞争都不存在，更不会出现死锁了。</p>
-</li>
-<li><h5 id="请求和保持条件-hold-and-wait"><a href="#请求和保持条件-hold-and-wait" class="headerlink" title="请求和保持条件(hold and wait)"></a>请求和保持条件(hold and wait)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已经保持至少一个资源，但又提出了新的资源请求，而该资源已被其它进程占有；</span><br><span class="line">此时请求进程阻塞，但又对自己已获得的其它资源保持不放。</span><br></pre></td></tr></table></figure>
-
-<p>对于所有去打饭的进程，比如作为饭勺的获得者，拿到了饭勺，那么会一直等待饭碗(阻塞)，但是不会主动放弃饭勺。如果可以主动放弃了饭勺，那么又可以继续推动了。</p>
-</li>
-<li><h5 id="不剥夺条件-no-preemption"><a href="#不剥夺条件-no-preemption" class="headerlink" title="不剥夺条件(no preemption)"></a>不剥夺条件(no preemption)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指进程已获得的资源，在未使用完之前，不能被剥夺，只能在使用完时由自己释放。</span><br></pre></td></tr></table></figure>
-
-<p>作为一个资源的持有者，一个进程占据了饭碗，别的进程想要饭碗的时候，虽然占据饭碗的进程还在等待，但是别的进程不可以来抢我的饭碗(笑。就是资源一旦获得，除非使用结束，不能被剥夺。</p>
-</li>
-<li><h5 id="环路等待-circular-waiting"><a href="#环路等待-circular-waiting" class="headerlink" title="环路等待(circular waiting)"></a>环路等待(circular waiting)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">指在发生死锁时，必然存在一个进程——资源的环形链，即进程集合&#123;P0，P1，P2，···，Pn&#125;中的P0正在等待一个P1占用的资源；</span><br><span class="line">P1正在等待P2占用的资源，……，Pn正在等待已被P0占用的资源。</span><br></pre></td></tr></table></figure>
-
-<p>死锁的出现，一定存在循环依赖。勺与碗的例子中就是一个环，A-&gt;B的碗，B-&gt;A的勺。</p>
-</li>
-</ul>
-</li>
-<li><h4 id="死锁的预防"><a href="#死锁的预防" class="headerlink" title="死锁的预防"></a>死锁的预防</h4><h5 id="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"><a href="#死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。" class="headerlink" title="死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。"></a>死锁的产生依赖以上四个必要条件，那么要达到预防死锁的目的，只需要破坏这四个条件之一即可。</h5><ul>
-<li><h5 id="破坏互斥条件"><a href="#破坏互斥条件" class="headerlink" title="破坏互斥条件"></a>破坏互斥条件</h5><p><strong>方法：</strong>如果允许系统资源都能共享使用，则系统不会进入死锁状态。</p>
-<p><strong>缺点：</strong>基本不可能实现，某些资源只能互斥的使用，而且有时还应保护互斥性。</p>
-</li>
-<li><h5 id="破坏请求与保持条件"><a href="#破坏请求与保持条件" class="headerlink" title="破坏请求与保持条件"></a>破坏请求与保持条件</h5><p><strong>方法：</strong>釆用预先静态分配方法，即进程在运行前一次申请完它所需要的全部资源，在它的资源未满足前，不把它投入运行。一旦投入运行后，这些资源就一直归它所有，也不再提出其他资源请求，这样就可以保证系统不会发生死锁。</p>
-<p><strong>缺点：</strong>系统资源被严重浪费，其中有些资源可能仅在运行初期或运行快结束时才使用，甚至根本不使用。而且还会导致“饥饿”现象，当由于个别资源长期被其他进程占用时，将致使等待该资源的进程迟迟不能开始运行。</p>
-</li>
-<li><h5 id="破坏不可剥夺条件"><a href="#破坏不可剥夺条件" class="headerlink" title="破坏不可剥夺条件"></a>破坏不可剥夺条件</h5><p><strong>方法：</strong>当一个已保持了某些不可剥夺资源的进程，请求新的资源而得不到满足时，它必须释放已经保持的所有资源，待以后需要时再重新申请。这意味着，一个进程已占有的资源会被暂时释放，或者说是被剥夺了，或从而破坏了不可剥夺条件。</p>
-<p><strong>缺点：</strong>该策略实现起来比较复杂，释放已获得的资源可能造成前一阶段工作的失效，反复地申请和释放资源会增加系统开销，降低系统吞吐量。这种方法常用于状态易于保存和恢复的资源，如CPU的寄存器及内存资源，一般不能用于打印机之类的资源。</p>
-</li>
-<li><h5 id="破坏循环等待条件"><a href="#破坏循环等待条件" class="headerlink" title="破坏循环等待条件"></a>破坏循环等待条件</h5><p><strong>方法：</strong>可釆用顺序资源分配法。首先给系统中的资源编号，规定每个进程，必须按编号递增的顺序请求资源，同类资源一次申请完。也就是说，只要进程提出申请分配资源Ri，则该进程在以后的资源申请中，只能申请编号大于Ri的资源。</p>
-<p><strong>缺点：</strong> 这种方法存在的问题是，编号必须相对稳定，这就限制了新类型设备的增加；尽管在为资源编号时已考虑到大多数作业实际使用这些资源的顺序，但也经常会发生作业使用资源的顺序与系统规定顺序不同的情况，造成资源的浪费；此外，这种按规定次序申请资源的方法，也必然会给用户的编程带来麻烦。</p>
-</li>
-</ul>
-</li>
-<li><h4 id="死锁的避免"><a href="#死锁的避免" class="headerlink" title="死锁的避免"></a>死锁的避免</h4><h5 id="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"><a href="#在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。" class="headerlink" title="在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。"></a>在进行系统资源分配之前，先计算此次资源分配的安全性，若此次分配不会导致系统进入不安全状态，则将资源分配；否则，让进程等待。</h5><h5 id="Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"><a href="#Dijkstra-的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。" class="headerlink" title="Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。"></a>Dijkstra 的银行家算法是避免死锁最具有代表性的算法。起这样的名字是由于该算法原本是为银行系统设计的。以确保银行在发放现金贷款时，不会发生不能满足所有客户需要的情况。在OS中也可以用它来实现避免死锁。</h5><p>未完待续……..ing</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>操作系统</category>
-      </categories>
-      <tags>
-        <tag>System</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>算法笔记之二分法解决极小化极大</title>
-    <url>/2020/08/16/%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%BA%8C%E5%88%86%E6%B3%95%E8%A7%A3%E5%86%B3%E6%9E%81%E5%B0%8F%E5%8C%96%E6%9E%81%E5%A4%A7/</url>
-    <content><![CDATA[<h3 id="算法笔记之二分法解决极小化极大"><a href="#算法笔记之二分法解决极小化极大" class="headerlink" title="算法笔记之二分法解决极小化极大"></a>算法笔记之二分法解决极小化极大</h3><h4 id="问题引入："><a href="#问题引入：" class="headerlink" title="问题引入："></a>问题引入：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Rick 有 n 个空的篮子，第 i 个篮子的位置在 position[i] ，Morty 想把 m 个球放到这些篮子里，使得任意两球间 最小磁力 最大。</span><br><span class="line">已知两个球如果分别位于 x 和 y ，那么它们之间的磁力为 |x - y| 。</span><br><span class="line">给你一个整数数组 position 和一个整数 m ，请你返回最大化的最小磁力。</span><br><span class="line">n &#x3D;&#x3D; position.length</span><br><span class="line">2 &lt;&#x3D; n &lt;&#x3D; 10^5</span><br><span class="line">1 &lt;&#x3D; position[i] &lt;&#x3D; 10^9</span><br><span class="line">所有 position 中的整数 互不相同 。</span><br><span class="line">2 &lt;&#x3D; m &lt;&#x3D; position.length</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h4 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h4><blockquote>
-<p>题目要求返回最大化的最小磁力，这是这类问题的一个典型的<strong>标志</strong>。</p>
-<p>正向分析题目，很难去解决。利用动态规划，贪心还是DFS都很棘手。</p>
-<p>但是，这个时候反过来从结果出发，能不能枚举所有可能的最小磁力获得最大的磁力呢？</p>
-<p>枚举是可以实现的，以为最小磁力可能出现的区间就是1到数组间隔最大值。</p>
-<p>同时，结果的集合又呈单调性。在某个临界点之前都符合题意，之后的所有可能都不符合。</p>
-<p>对于这种单调性的问题，二分法就是很好的解决方案了。</p>
-<p><strong>结论:从结果出发，二分搜索结果。见到极小化极大，极大化极小的问题，就可以考虑二分法</strong></p>
-</blockquote>
-<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><ol>
-<li>根据题目的数据范围，二分法搜索的区间是<strong>[0,pos[n]-pos[0]]</strong>;</li>
-<li>二分法的关键就是如何判定某个点是符合的：设k为某个最小的磁力，那么看数组上以k为距离可以放置多少小球，个数&gt;m成立。</li>
-<li>二分法另外一个复杂的点在于边界控制问题。</li>
-</ol>
-<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxMinDist</span><span class="params">(<span class="keyword">int</span>[] position,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">    Arrays.sort(position);</span><br><span class="line">    <span class="keyword">int</span> n = position.length;</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>,r=position[n-<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l+r+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(checkMid(mid,n,m,position))&#123;</span><br><span class="line">            l = mid;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            r = mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkMid</span><span class="params">(<span class="keyword">int</span> mid,<span class="keyword">int</span> n,<span class="keyword">int</span> m,<span class="keyword">int</span>[] position)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>,temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(position[i]-position[temp]&gt;=mid)&#123;</span><br><span class="line">            cnt++;</span><br><span class="line">            temp=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt&gt;=m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Algorithm</category>
-      </categories>
-      <tags>
-        <tag>math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>设计模式之单例模式</title>
-    <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
-<a id="more"></a>
-<h5 id="实现一"><a href="#实现一" class="headerlink" title="实现一:"></a>实现一:</h5><pre><code>&gt; 饿汉式
-&gt;
-&gt; 类加载到内存后就实例化一个单例,通过JVM保证了线程安全,简单实用.
-&gt;
-&gt; 缺点:无论单例是否被使用,类加载时就会被实例化(......吹毛求疵)</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt01</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Sgt01 INSTENCE = <span class="keyword">new</span> Sgt01();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span>  <span class="title">Sgt01</span><span class="params">()</span> </span>&#123; <span class="comment">// 将构造方法定义为private,杜绝new.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt01 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现二"><a href="#实现二" class="headerlink" title="实现二"></a>实现二</h5><pre><code>&gt; 懒汉式
-&gt;
-&gt; 实现了使用时才创建的要求
-&gt;
-&gt; 但是线程不安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt02</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt02 INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt02</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt02 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt02();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现三"><a href="#实现三" class="headerlink" title="实现三"></a>实现三</h5><pre><code>&gt; 懒汉式加锁
-&gt;
-&gt; 解决了线程安全,但是效率变低</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt03</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt03 INSTENCE;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt03</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt03 <span class="title">getInstence</span><span class="params">()</span></span>&#123; <span class="comment">//加锁</span></span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt03();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现四"><a href="#实现四" class="headerlink" title="实现四"></a>实现四</h5><pre><code>&gt; 双重检查式
-&gt;
-&gt; 尽可能的提升了加锁之后的效率</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt04</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Sgt04 INSTENCE; <span class="comment">//加入volatile防止JVM指令重排</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt04</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt04 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">//双重检查</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Sgt04<span class="class">.<span class="keyword">class</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">                    INSTENCE = <span class="keyword">new</span> Sgt04();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现五"><a href="#实现五" class="headerlink" title="实现五"></a>实现五</h5><pre><code>&gt; 静态内部类
-&gt;
-&gt; 原理: 虚拟机在加载外部类时候不会加载内部类,只有用到是才加载,实现了懒加载
-&gt;
-&gt; 线程安全的,和饿汉式一样,是JVM保证的线程安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt05</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05Holder</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Sgt05 INSTENCE = <span class="keyword">new</span> Sgt05();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt05 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Sgt05Holder.INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="实现六"><a href="#实现六" class="headerlink" title="实现六"></a>实现六</h5><pre><code>&gt; 枚举单例
-&gt;
-&gt; 不仅可以枚举单例还可以防止反序列化。</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  Sgt06 &#123;</span><br><span class="line">    </span><br><span class="line">    INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">m</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-      <tags>
-        <tag>Singleton</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>设计模式之代理模式</title>
     <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h3 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给某一个对象提供一个代理，并由代理对象控制对原对象的引用。</span><br><span class="line">通俗的讲，就是本来是调用者和被调用者之间的直接交互，现在把调用者和被调用者分离，由代理来负责和调用者之间交互。</span><br></pre></td></tr></table></figure>
@@ -686,6 +680,47 @@
       </categories>
       <tags>
         <tag>proxy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之单例模式</title>
+    <url>/2020/08/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h3 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h3><h5 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h5><pre><code>&gt; 确保一个类只有一个实例，并提供一个类的全局访问点。</code></pre><hr>
+<a id="more"></a>
+<h5 id="实现一"><a href="#实现一" class="headerlink" title="实现一:"></a>实现一:</h5><pre><code>&gt; 饿汉式
+&gt;
+&gt; 类加载到内存后就实例化一个单例,通过JVM保证了线程安全,简单实用.
+&gt;
+&gt; 缺点:无论单例是否被使用,类加载时就会被实例化(......吹毛求疵)</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt01</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Sgt01 INSTENCE = <span class="keyword">new</span> Sgt01();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span>  <span class="title">Sgt01</span><span class="params">()</span> </span>&#123; <span class="comment">// 将构造方法定义为private,杜绝new.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt01 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现二"><a href="#实现二" class="headerlink" title="实现二"></a>实现二</h5><pre><code>&gt; 懒汉式
+&gt;
+&gt; 实现了使用时才创建的要求
+&gt;
+&gt; 但是线程不安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt02</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt02 INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt02</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt02 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt02();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现三"><a href="#实现三" class="headerlink" title="实现三"></a>实现三</h5><pre><code>&gt; 懒汉式加锁
+&gt;
+&gt; 解决了线程安全,但是效率变低</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt03</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Sgt03 INSTENCE;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt03</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt03 <span class="title">getInstence</span><span class="params">()</span></span>&#123; <span class="comment">//加锁</span></span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            INSTENCE = <span class="keyword">new</span> Sgt03();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现四"><a href="#实现四" class="headerlink" title="实现四"></a>实现四</h5><pre><code>&gt; 双重检查式
+&gt;
+&gt; 尽可能的提升了加锁之后的效率</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt04</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Sgt04 INSTENCE; <span class="comment">//加入volatile防止JVM指令重排</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt04</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Sgt04 <span class="title">getInstence</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">//双重检查</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Sgt04<span class="class">.<span class="keyword">class</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(INSTENCE==<span class="keyword">null</span>)&#123;</span><br><span class="line">                    INSTENCE = <span class="keyword">new</span> Sgt04();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现五"><a href="#实现五" class="headerlink" title="实现五"></a>实现五</h5><pre><code>&gt; 静态内部类
+&gt;
+&gt; 原理: 虚拟机在加载外部类时候不会加载内部类,只有用到是才加载,实现了懒加载
+&gt;
+&gt; 线程安全的,和饿汉式一样,是JVM保证的线程安全</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Sgt05</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sgt05Holder</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Sgt05 INSTENCE = <span class="keyword">new</span> Sgt05();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Sgt05 <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Sgt05Holder.INSTENCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现六"><a href="#实现六" class="headerlink" title="实现六"></a>实现六</h5><pre><code>&gt; 枚举单例
+&gt;
+&gt; 不仅可以枚举单例还可以防止反序列化。</code></pre><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span>  Sgt06 &#123;</span><br><span class="line">    </span><br><span class="line">    INSTENCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">m</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>Singleton</tag>
       </tags>
   </entry>
   <entry>
@@ -734,41 +769,6 @@
       </categories>
       <tags>
         <tag>面试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2021-05-16周赛题解</title>
-    <url>/2021/05/16/2021-05-16%E5%91%A8%E8%B5%9B%E9%A2%98%E8%A7%A3/</url>
-    <content><![CDATA[<h3 id="题目一：找出所有子集的异或总和再求和"><a href="#题目一：找出所有子集的异或总和再求和" class="headerlink" title="题目一：找出所有子集的异或总和再求和"></a>题目一：<a href="https://leetcode-cn.com/problems/sum-of-all-subset-xor-totals/" target="_blank" rel="noopener">找出所有子集的异或总和再求和</a></h3><h4 id="方法一：枚举子集"><a href="#方法一：枚举子集" class="headerlink" title="方法一：枚举子集"></a>方法一：枚举子集</h4><p>数据范围有限，直接枚举子集计算异或和。</p>
-<ul>
-<li>时间复杂度 O(mn)</li>
-<li>空间复杂度 O(1)</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subsetXORSum</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.length;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;(<span class="number">1</span>&lt;&lt;len);i++)&#123;</span><br><span class="line">        res += getXOR(nums,i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getXOR</span><span class="params">(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">31</span>;k++)&#123;</span><br><span class="line">        <span class="keyword">if</span>((i&amp;k)!=<span class="number">0</span>) sum^= nums[k];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h3 id="题目二：构成交替字符串需要的最小交换次数"><a href="#题目二：构成交替字符串需要的最小交换次数" class="headerlink" title="题目二：构成交替字符串需要的最小交换次数"></a>题目二：<a href="https://leetcode-cn.com/problems/minimum-number-of-swaps-to-make-the-binary-string-alternating/" target="_blank" rel="noopener">构成交替字符串需要的最小交换次数</a></h3><h4 id="方法一：模拟"><a href="#方法一：模拟" class="headerlink" title="方法一：模拟"></a>方法一：模拟</h4><p>可以交换：abs(OneN-ZeroN)&lt;=1 否则返回-1</p>
-<p>交换次数：字符串只有0，1,最少交换次数一定是最终字符串和当前字符串差异/2</p>
-<ul>
-<li>时间复杂度 O(n)</li>
-<li>空间复杂度 O(1)</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minSwaps</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> OneN = count(s,<span class="string">'1'</span>),ZeorN = count(s,<span class="string">'0'</span>);</span><br><span class="line">    <span class="keyword">if</span>(Math.abs(OneN-ZeorN)&gt;<span class="number">1</span>) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> cnt1 = <span class="number">0</span>,cnt2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(i%<span class="number">2</span>==<span class="number">0</span>) c = <span class="string">'1'</span>;</span><br><span class="line">        <span class="keyword">else</span> c = <span class="string">'0'</span>;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(i)!=c) cnt1++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(i%<span class="number">2</span>==<span class="number">0</span>) c = <span class="string">'0'</span>;</span><br><span class="line">        <span class="keyword">else</span> c = <span class="string">'1'</span>;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(i)!=c) cnt2++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(OneN==ZeorN) <span class="keyword">return</span> Math.min(cnt1,cnt2)/<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span>(OneN &gt;ZeorN) <span class="keyword">return</span> cnt1/<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> cnt2/<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">(String s,<span class="keyword">char</span> c)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">char</span> ch : s.toCharArray())&#123;</span><br><span class="line">        <span class="keyword">if</span>(ch==c) res++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="题目三：找出和为指定值的下标对"><a href="#题目三：找出和为指定值的下标对" class="headerlink" title="题目三：找出和为指定值的下标对"></a>题目三：<a href="https://leetcode-cn.com/problems/finding-pairs-with-a-certain-sum/" target="_blank" rel="noopener">找出和为指定值的下标对</a></h3><h3 id="方法一：-hash"><a href="#方法一：-hash" class="headerlink" title="方法一： hash"></a>方法一： hash</h3><p>设计题，寻找两数之和可以用Map优化查询时间，本题依然可以采用Map优化，关于Add修改数组，只需要修改map即可；</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FindSumPairs</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] nums1;</span><br><span class="line">    <span class="keyword">int</span>[] nums2;</span><br><span class="line">    Map&lt;Integer,Integer&gt; map;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FindSumPairs</span><span class="params">(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.nums1 = nums1;</span><br><span class="line">        <span class="keyword">this</span>.nums2 = nums2;</span><br><span class="line">        <span class="keyword">this</span>.map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i: nums2)&#123;</span><br><span class="line">            map.put(i, map.getOrDefault(i,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> newVal = nums2[index]+val;</span><br><span class="line">        map.put(newVal, map.getOrDefault(newVal,<span class="number">0</span>)+<span class="number">1</span>);</span><br><span class="line">        map.put(nums2[index], map.getOrDefault(nums2[index],<span class="number">0</span>)-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">(<span class="keyword">int</span> tot)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i:nums1)&#123;</span><br><span class="line">            <span class="keyword">if</span>(map.containsKey(tot-i))&#123;</span><br><span class="line">                res += map.get(tot-i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="题目四：恰有-K-根木棍可以看到的排列数目"><a href="#题目四：恰有-K-根木棍可以看到的排列数目" class="headerlink" title="题目四：恰有 K 根木棍可以看到的排列数目"></a>题目四：<a href="https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/" target="_blank" rel="noopener">恰有 K 根木棍可以看到的排列数目</a></h3><h4 id="方法一：DP"><a href="#方法一：DP" class="headerlink" title="方法一：DP"></a>方法一：DP</h4><p>看大佬题解，应该是常见板子题。思路是：由于数组1-n,选择恰好可以看到k个，就是将n个数分成m个集合，有几种分配方式。</p>
-<p>定义：dp[i][j] 为i个数分为j个集合的方案数，dp[i][j] = dp[i-1][j-1] + (i-1)dp[i-1][j], 即：若i-1个数分成了m-1个集合，那么第i个数自己独立成集合，如果i-1个数分配成了m个集合，第i个数任意插入i-1的集合中。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> MOD = <span class="number">1000000000</span>+<span class="number">7</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rearrangeSticks</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span>[][] dp = <span class="keyword">new</span> <span class="keyword">long</span>[n+<span class="number">1</span>][n+<span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=Math.min(i,k);j++)&#123;</span><br><span class="line">                dp[i][j] = dp[i-<span class="number">1</span>][j-<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">if</span>(i-<span class="number">1</span>&gt;=j) dp[i][j] += (i-<span class="number">1</span>)*dp[i-<span class="number">1</span>][j];</span><br><span class="line">                dp[i][j] %= MOD; </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)dp[n][k];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="思考：如果题目要求左看为m，右看为n求组合数，如何解。斯特林数"><a href="#思考：如果题目要求左看为m，右看为n求组合数，如何解。斯特林数" class="headerlink" title="思考：如果题目要求左看为m，右看为n求组合数，如何解。斯特林数"></a>思考：如果题目要求左看为m，右看为n求组合数，如何解。<a href="https://baike.baidu.com/item/%E6%96%AF%E7%89%B9%E6%9E%97%E6%95%B0/4938529?fr=aladdin" target="_blank" rel="noopener">斯特林数</a></h4>]]></content>
-      <categories>
-        <category>Algorithm</category>
-      </categories>
-      <tags>
-        <tag>题解</tag>
       </tags>
   </entry>
 </search>
