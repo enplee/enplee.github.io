@@ -28,7 +28,7 @@
 <meta property="og:description" content="题目一：哪种连续子字符串更长方法一：遍历 时间复杂度 O(n) 空间复杂度 O(1)  12345678910111213141516171819202122public boolean checkZeroOnes(String s) &amp;#123;    int maxOne &#x3D; 0, maxZero &#x3D; 0;    int idx &#x3D; 0;    while (idx&lt;s.length()">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-05-23T03:45:17.000Z">
-<meta property="article:modified_time" content="2021-05-23T14:17:20.362Z">
+<meta property="article:modified_time" content="2021-05-23T14:18:32.494Z">
 <meta property="article:author" content="lee-zee">
 <meta property="article:tag" content="题解">
 <meta name="twitter:card" content="summary">
@@ -228,7 +228,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-05-23 11:45:17 / Modified: 22:17:20" itemprop="dateCreated datePublished" datetime="2021-05-23T11:45:17+08:00">2021-05-23</time>
+              <time title="Created: 2021-05-23 11:45:17 / Modified: 22:18:32" itemprop="dateCreated datePublished" datetime="2021-05-23T11:45:17+08:00">2021-05-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,6 +256,8 @@
 <li>空间复杂度 O(1)</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkZeroOnes</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> maxOne = <span class="number">0</span>, maxZero = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (idx&lt;s.length()) &#123;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(idx)==<span class="string">'1'</span>)&#123;</span><br><span class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (idx&lt;s.length() &amp;&amp; s.charAt(idx) == <span class="string">'1'</span>)&#123;</span><br><span class="line">                idx++;</span><br><span class="line">                temp++;</span><br><span class="line">            &#125;</span><br><span class="line">            maxOne = Math.max(maxOne,temp);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (idx&lt;s.length() &amp;&amp; s.charAt(idx) == <span class="string">'0'</span>)&#123;</span><br><span class="line">                idx++;</span><br><span class="line">                temp++;</span><br><span class="line">            &#125;</span><br><span class="line">            maxZero = Math.max(maxZero,temp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxOne&gt;maxZero;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
 
 <h3 id="题目二：准时到达的列车最小时速"><a href="#题目二：准时到达的列车最小时速" class="headerlink" title="题目二：准时到达的列车最小时速"></a>题目二：<a href="https://leetcode-cn.com/contest/weekly-contest-242/problems/minimum-speed-to-arrive-on-time/" target="_blank" rel="noopener">准时到达的列车最小时速</a></h3><h4 id="解法一：极小化极大"><a href="#解法一：极小化极大" class="headerlink" title="解法一：极小化极大"></a>解法一：极小化极大</h4><p>满足条件的最小正整数：二分法。</p>
 <p>trick: 最后一个路径不用ceil，且浮点数最长两位，所以搜索范围：[1, max(max(dist), dist[-1]*100)]</p>
