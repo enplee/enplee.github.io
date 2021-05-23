@@ -297,6 +297,97 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2021/05/23/2021-05-23%E5%91%A8%E8%B5%9B%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/23/2021-05-23%E5%91%A8%E8%B5%9B%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">2021-05-23周赛题解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-05-23 11:45:17 / Modified: 11:59:52" itemprop="dateCreated datePublished" datetime="2021-05-23T11:45:17+08:00">2021-05-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="题目一：哪种连续子字符串更长"><a href="#题目一：哪种连续子字符串更长" class="headerlink" title="题目一：哪种连续子字符串更长"></a>题目一：<a href="https://leetcode-cn.com/contest/weekly-contest-242/problems/longer-contiguous-segments-of-ones-than-zeros/" target="_blank" rel="noopener">哪种连续子字符串更长</a></h3><h4 id="方法一：遍历"><a href="#方法一：遍历" class="headerlink" title="方法一：遍历"></a>方法一：遍历</h4><ul>
+<li>时间复杂度 O(n)</li>
+<li>空间复杂度 O(1)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkZeroOnes</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> maxOne = <span class="number">0</span>, maxZero = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (idx&lt;s.length()) &#123;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(idx)==<span class="string">'1'</span>)&#123;</span><br><span class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (idx&lt;s.length() &amp;&amp; s.charAt(idx) == <span class="string">'1'</span>)&#123;</span><br><span class="line">                idx++;</span><br><span class="line">                temp++;</span><br><span class="line">            &#125;</span><br><span class="line">            maxOne = Math.max(maxOne,temp);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (idx&lt;s.length() &amp;&amp; s.charAt(idx) == <span class="string">'0'</span>)&#123;</span><br><span class="line">                idx++;</span><br><span class="line">                temp++;</span><br><span class="line">            &#125;</span><br><span class="line">            maxZero = Math.max(maxZero,temp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxOne&gt;maxZero;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="题目二：准时到达的列车最小时速"><a href="#题目二：准时到达的列车最小时速" class="headerlink" title="题目二：准时到达的列车最小时速"></a>题目二：<a href="https://leetcode-cn.com/contest/weekly-contest-242/problems/minimum-speed-to-arrive-on-time/" target="_blank" rel="noopener">准时到达的列车最小时速</a></h3><h4 id="解法一：极小化极大"><a href="#解法一：极小化极大" class="headerlink" title="解法一：极小化极大"></a>解法一：极小化极大</h4><p>满足条件的最小正整数：二分法。</p>
+<p>trick: 最后一个路径不用ceil，且浮点数最长两位，所以搜索范围：[1, max(max(dist), dist[-1]*100)]</p>
+<ul>
+<li>时间复杂度 O(nlgk) </li>
+<li>空间复杂度 O(1)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minSpeedOnTime</span><span class="params">(self, dist, hour)</span>:</span></span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">check</span><span class="params">(dist,speed,hour)</span>:</span></span><br><span class="line">            maxHour = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> idx <span class="keyword">in</span> range(len(dist)):</span><br><span class="line">                <span class="keyword">if</span>(idx!=len(dist)<span class="number">-1</span>):</span><br><span class="line">                    maxHour += math.ceil(dist[idx]/float(speed))</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    maxHour += dist[idx]/float(speed)</span><br><span class="line">            <span class="keyword">return</span> maxHour&lt;=hour</span><br><span class="line">        </span><br><span class="line">        l, r = <span class="number">1</span>, max(max(dist),dist[<span class="number">-1</span>]*<span class="number">100</span>)</span><br><span class="line">        res = r+<span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> l&lt;= r:</span><br><span class="line">            mid = (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> check(dist,mid,hour):</span><br><span class="line">                r = mid<span class="number">-1</span></span><br><span class="line">                res = mid</span><br><span class="line">            <span class="keyword">else</span>: l = mid+<span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span> <span class="keyword">if</span> res==max(max(dist),dist[<span class="number">-1</span>]*<span class="number">100</span>)+<span class="number">1</span> <span class="keyword">else</span> res</span><br></pre></td></tr></table></figure>
+
+<h3 id="题目三：跳跃游戏-VII"><a href="#题目三：跳跃游戏-VII" class="headerlink" title="题目三：跳跃游戏 VII"></a>题目三：<a href="https://leetcode-cn.com/contest/weekly-contest-242/problems/jump-game-vii/" target="_blank" rel="noopener">跳跃游戏 VII</a></h3><h4 id="解法一：遍历-queue"><a href="#解法一：遍历-queue" class="headerlink" title="解法一：遍历+queue"></a>解法一：遍历+queue</h4><p>题目的可行动范围在滑动出现重复检查，为了不重复进队，使用maxLen来标记当前访问的最长距离，检查起始点：min(maxLen,I+minJump)</p>
+<ul>
+<li>时间复杂度 O(n)</li>
+<li>空间复杂度 O(n)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canReach</span><span class="params">(String s, <span class="keyword">int</span> minJump, <span class="keyword">int</span> maxJump)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(s.length()-<span class="number">1</span>)==<span class="string">'1'</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        Deque&lt;Integer&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> maxLen = minJump-<span class="number">1</span>;</span><br><span class="line">        queue.addLast(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">int</span> top = queue.pollFirst();</span><br><span class="line">            <span class="keyword">if</span>(top==s.length()-<span class="number">1</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">int</span> start = Math.max(maxLen+<span class="number">1</span>,top+minJump);</span><br><span class="line">            <span class="keyword">int</span> end =Math.min(s.length()-<span class="number">1</span>,top+maxJump); </span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> idx =start;idx&lt;=end;idx++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(s.charAt(idx)==<span class="string">'0'</span>) &#123;</span><br><span class="line">                    queue.addLast(idx);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            maxLen = Math.max(maxLen,end);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="题目四：-石子游戏-VIII"><a href="#题目四：-石子游戏-VIII" class="headerlink" title="题目四： 石子游戏 VIII"></a>题目四： <a href="https://leetcode-cn.com/contest/weekly-contest-242/problems/stone-game-viii/" target="_blank" rel="noopener">石子游戏 VIII</a></h3><h4 id="解法一："><a href="#解法一：" class="headerlink" title="解法一："></a>解法一：</h4>
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2021/05/16/2021-05-16%E5%91%A8%E8%B5%9B%E9%A2%98%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -953,95 +1044,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/" class="post-title-link" itemprop="url">【模型压缩】CVPR2020-Filter Grafting for Deep Neural Networks</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-09-23 11:02:44" itemprop="dateCreated datePublished" datetime="2020-09-23T11:02:44+08:00">2020-09-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-14 15:11:25" itemprop="dateModified" datetime="2020-10-14T15:11:25+08:00">2020-10-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>本文提出了一种新的学习范式，即滤波器嫁接，旨在提高深度神经网络的表示能力。动机是DNNs具有不重要的(无效的)过滤器(例如，l1norm接近于0)。这些过滤器限制了DNNs的潜力，因为它们被认为对网络的影响很小。当过滤剪枝删除这些无效过滤器的效率考虑，过滤嫁接重新激活他们从准确性提高的观点。通过将外部信息(权重)嫁接到无效的过滤器中来处理激活。为了更好地执行嫁接过程，我们开发了一个基于熵的标准来衡量过滤器的信息，以及一个自适应加权策略来平衡网络间的嫁接信息。接枝操作后，与未接触状态相比，网络的无效滤波器非常少，使模型具有更大的表示能力。我们还对分类和识别任务进行了大量的实验，以证明我们的方法的优越性。例如，在CIFAR-100数据集上，嫁接的MobileNetV2比未嫁接的MobileNetV2性能好约7%。</p>
-<p><a href="https://github.com/fxmeng/filter-grafting.git" target="_blank" rel="noopener">https://github.com/fxmeng/filter-grafting.git</a>.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/23/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Filter%20Grafting%20for%20Deep%20Neural%20Networks/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1108,7 +1114,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1169,7 +1175,7 @@
 <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共24.9k字</span>
+  <span class="post-count">博客全站共25.3k字</span>
   <span class="post-meta-divider">|</span>
   本站总访问量<span id="busuanzi_value_site_pv"></span>次
   <span class="post-meta-divider">|</span>
