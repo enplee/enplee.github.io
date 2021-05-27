@@ -811,4 +811,40 @@
         <tag>题解</tag>
       </tags>
   </entry>
+  <entry>
+    <title>文本提取URL指北(一)</title>
+    <url>/2021/05/26/%E6%96%87%E6%9C%AC%E6%8F%90%E5%8F%96URL%E6%8C%87%E5%8C%97-%E4%B8%80/</url>
+    <content><![CDATA[<h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p>在字节实习的时候遇到了一个需求，简单来说就是支持用户上传音乐链接，并对链接做风险检查。但是考虑到用户可能上传的是文本中蕴含着链接，常用分享的朋友可能经常会见到这种格式的连接分享：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">9微xR52XUVGuBR嘻 https:&#x2F;&#x2F;m.tb.cn&#x2F;h.4HiWOMs?sm&#x3D;c079e2  【淘饱店】Xraypad Aqua Control+ 纯黑纯白鼠标垫AC+粗面多尺寸</span><br></pre></td></tr></table></figure>
+
+<p>当时的状况是，公司内部有团队提供了连接风险检测的接口(实际是结合google的API), 但是只支持纯连接风险检测，不支持以上这种分享格式。同时，前端的同学也希望后端能够帮助提取连接。于是，当时就参考了组内之前使用python提取网易云链接的思路和一些开源的库，使用Go中的regex正则框架实现了一个文本中提取链接的工具库。</p>
+<h3 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h3><p>本身项目设计的初衷，是乐观的认为用户分享的文本格式不会出现极端的案例，而是属于正常的分享行为。所以，并没有对一些特别极端的案例进行覆盖。首先介绍以下整体的设计思路。</p>
+<p>wiki上关于URI的定义如下图所示，变化非常多：</p>
+<p><img src="http://qtpxzi11x.bkt.clouddn.com/URI.png?e=1622085510&token=WlXOFgTT_32I8oo346NL4exS0Z9zu2KE1YLa4vIS:B1eTSy3qwr2_S1pFm8Y2t7HmrjQ=" alt="URI语法图"></p>
+<p>但是一般用户上传的URL，一般呈现出以下格式：</p>
+<h5 id="格式一：-Scheme-Host-PathCont"><a href="#格式一：-Scheme-Host-PathCont" class="headerlink" title="格式一：[Scheme] + [Host] + [PathCont]"></a>格式一：[Scheme] + [Host] + [PathCont]</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;index.html</span><br></pre></td></tr></table></figure>
+
+<h5 id="格式二：-Domain-Top-Level-Domain-PathCont-web-URL-格式"><a href="#格式二：-Domain-Top-Level-Domain-PathCont-web-URL-格式" class="headerlink" title="格式二：[Domain] + [Top Level Domain] + [PathCont]  (web URL 格式)"></a>格式二：[Domain] + [Top Level Domain] + [PathCont]  (web URL 格式)</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">www.example.com&#x2F;index.html</span><br></pre></td></tr></table></figure>
+
+<h5 id="格式三：-hostName-Port-PathCont"><a href="#格式三：-hostName-Port-PathCont" class="headerlink" title="格式三：[hostName] + [Port] + [PathCont]"></a>格式三：[hostName] + [Port] + [PathCont]</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">192.168.178.111:9090&#x2F;index.html</span><br></pre></td></tr></table></figure>
+
+<p>对于URL匹配，我想最关键的是找到起始点和终止点，那么基于以上三种格式，分别设计了不同的正则表达式来进行匹配。</p>
+<p>首先对于格式一特征的URL，这种格式的链接最显著的特点就是Scheme，而且Scheme的构成是固定的，我们可以首先将对所有Scheme集合进行匹配，匹配成功，那么就找到了URL的起点。下面的网址是国际上维护的Scheme列表：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.iana.org&#x2F;assignments&#x2F;uri-schemes&#x2F;uri-schemes-1.csv</span><br></pre></td></tr></table></figure>
+
+<p>对于格式二特征的URL，这种域名格式链接，低等级域名并不固定，但是我们发现顶级域名的注册是固定的，所以还是老方法，先匹配出顶级域名的位置，再根据响应的正则前后进行匹配，具体细节见后文。这两处维护了最新的顶级域名列表(TLDs):</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;https:&#x2F;&#x2F;data.iana.org&#x2F;TLD&#x2F;tlds-alpha-by-domain.txt&quot;</span><br><span class="line">&quot;https:&#x2F;&#x2F;publicsuffix.org&#x2F;list&#x2F;effective_tld_names.dat&quot;</span><br></pre></td></tr></table></figure>
+
+<p>对于格式三特征的URL，hostName有可能是格式二的域名形式，也可能是IP地址，但是无论是以上哪种格式，都是可以圈定范围的。比如IPv4地址的范围和IPv6的地址范围：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;(25[0-5]|2[0-4][0-9]|1[0-9]&#123;2&#125;|[1-9][0-9]|[0-9])&#96;</span><br><span class="line">&#96;([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:[0-9a-fA-F]&#123;0,4&#125;|:[0-9a-fA-F]&#123;1,4&#125;)?|(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,2&#125;)|(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,3&#125;)|(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,4&#125;)|:(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,5&#125;)((:[0-9a-fA-F]&#123;1,4&#125;)&#123;2&#125;|:(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])(\.(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9]))&#123;3&#125;)|(([0-9a-fA-F]&#123;1,4&#125;:)&#123;1,6&#125;|:):[0-9a-fA-F]&#123;1,4&#125;|([0-9a-fA-F]&#123;1,4&#125;:)&#123;7&#125;:&#96;</span><br></pre></td></tr></table></figure>
+
+<p>对于文本URL提取，我们就从以上这三个角度分别做匹配。但是正如我之前所述，这种匹配方式并不能保证完全的匹配，但是在实现的功能完全符合业务的需求。</p>
+]]></content>
+      <categories>
+        <category>extra URLs</category>
+      </categories>
+      <tags>
+        <tag>go</tag>
+      </tags>
+  </entry>
 </search>
