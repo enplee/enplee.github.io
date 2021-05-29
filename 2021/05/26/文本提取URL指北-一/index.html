@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://qtpxzi11x.bkt.clouddn.com/URI.png?e=1622085510&token=WlXOFgTT_32I8oo346NL4exS0Z9zu2KE1YLa4vIS:B1eTSy3qwr2_S1pFm8Y2t7HmrjQ=">
 <meta property="article:published_time" content="2021-05-26T13:14:39.000Z">
-<meta property="article:modified_time" content="2021-05-27T02:18:49.069Z">
+<meta property="article:modified_time" content="2021-05-29T07:22:54.653Z">
 <meta property="article:author" content="lee-zee">
 <meta property="article:tag" content="go">
 <meta name="twitter:card" content="summary">
@@ -236,7 +236,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-05-27 10:18:49" itemprop="dateModified" datetime="2021-05-27T10:18:49+08:00">2021-05-27</time>
+                <time title="Modified: 2021-05-29 15:22:54" itemprop="dateModified" datetime="2021-05-29T15:22:54+08:00">2021-05-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,6 +263,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">9微xR52XUVGuBR嘻 https:&#x2F;&#x2F;m.tb.cn&#x2F;h.4HiWOMs?sm&#x3D;c079e2  【淘饱店】Xraypad Aqua Control+ 纯黑纯白鼠标垫AC+粗面多尺寸</span><br></pre></td></tr></table></figure>
 
 <p>当时的状况是，公司内部有团队提供了连接风险检测的接口(实际是结合google的API), 但是只支持纯连接风险检测，不支持以上这种分享格式。同时，前端的同学也希望后端能够帮助提取连接。于是，当时就参考了组内之前使用python提取网易云链接的思路和一些开源的库，使用Go中的regex正则框架实现了一个文本中提取链接的工具库。</p>
+<a id="more"></a>
+
 <h3 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h3><p>本身项目设计的初衷，是乐观的认为用户分享的文本格式不会出现极端的案例，而是属于正常的分享行为。所以，并没有对一些特别极端的案例进行覆盖。首先介绍以下整体的设计思路。</p>
 <p>wiki上关于URI的定义如下图所示，变化非常多：</p>
 <p><img src="http://qtpxzi11x.bkt.clouddn.com/URI.png?e=1622085510&token=WlXOFgTT_32I8oo346NL4exS0Z9zu2KE1YLa4vIS:B1eTSy3qwr2_S1pFm8Y2t7HmrjQ=" alt="URI语法图"></p>
@@ -284,6 +286,16 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#96;(25[0-5]|2[0-4][0-9]|1[0-9]&#123;2&#125;|[1-9][0-9]|[0-9])&#96;</span><br><span class="line">&#96;([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:([0-9a-fA-F]&#123;1,4&#125;:[0-9a-fA-F]&#123;0,4&#125;|:[0-9a-fA-F]&#123;1,4&#125;)?|(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,2&#125;)|(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,3&#125;)|(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,4&#125;)|:(:[0-9a-fA-F]&#123;1,4&#125;)&#123;0,5&#125;)((:[0-9a-fA-F]&#123;1,4&#125;)&#123;2&#125;|:(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])(\.(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9]))&#123;3&#125;)|(([0-9a-fA-F]&#123;1,4&#125;:)&#123;1,6&#125;|:):[0-9a-fA-F]&#123;1,4&#125;|([0-9a-fA-F]&#123;1,4&#125;:)&#123;7&#125;:&#96;</span><br></pre></td></tr></table></figure>
 
 <p>对于文本URL提取，我们就从以上这三个角度分别做匹配。但是正如我之前所述，这种匹配方式并不能保证完全的匹配，但是在实现的功能完全符合业务的需求。</p>
+<h3 id="正则表达式基础"><a href="#正则表达式基础" class="headerlink" title="正则表达式基础"></a>正则表达式基础</h3><p>正则表达式描述了一种字符串匹配模式，通过这种模式来检验字符串中是否含有对应模式的子串，子串替换，取出子串等操作。</p>
+<p><a href="https://www.regular-expressions.info/" target="_blank" rel="noopener">https://www.regular-expressions.info/</a></p>
+<h4 id="普通字符"><a href="#普通字符" class="headerlink" title="普通字符"></a>普通字符</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[ABCD]:允许匹配[]中所有的字符</span><br><span class="line">[^ABC]:^表示取反，除了[^……]，都可以匹配</span><br><span class="line">[A-Z]: 区间表示,允许匹配ABC...Z所有字符</span><br><span class="line">[\s\S]: 匹配所有字符，\s表示空白字符，\S表示非空白字符 </span><br><span class="line">+++++++++++基于Unicode特性的匹配方案+++++++++++++++</span><br><span class="line">\p&#123;L&#125;: 匹配属于字母的单个字符 letter</span><br><span class="line">\p&#123;M&#125;: 匹配à之类组合标记的码点 mark</span><br><span class="line">\p&#123;N&#125;: 匹配数字字符</span><br><span class="line">\p&#123;Sc&#125;:Currency_Symbol 任何货币符号</span><br><span class="line">\P&#123;So&#125;:Other_Symbol 不是数学符号、货币符号、组合字符的各种符号</span><br></pre></td></tr></table></figure>
+
+<h4 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(): 标记子表达式的起始位置 \进行转义</span><br><span class="line">*: 匹配前面的子表达式零次或多次。要匹配 * 字符，请使用 \*</span><br><span class="line">+: 匹配前面的子表达式一次或多次。要匹配 + 字符，请使用 \+</span><br><span class="line">.: 匹配除换行符 \n 之外的任何单字符。要匹配 . ，请使用 \. </span><br><span class="line">?: 匹配前面的子表达式零次或一次，或指明一个非贪婪限定符</span><br><span class="line">|: 指明两项之间的一个选择。</span><br></pre></td></tr></table></figure>
+
+<h4 id="限定符"><a href="#限定符" class="headerlink" title="限定符"></a>限定符</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">限定符用来指定一个组件满足要求的匹配次数</span><br><span class="line">*: 任意次数</span><br><span class="line">+: 一次或者多次</span><br><span class="line">?: 一次或者零次</span><br><span class="line">&#123;n&#125;: 匹配n次</span><br><span class="line">&#123;n,&#125;: 至少匹配n次</span><br><span class="line">&#123;n,m&#125;: 匹配n-m次</span><br></pre></td></tr></table></figure>
+
+<h4 id="定位符"><a href="#定位符" class="headerlink" title="定位符"></a>定位符</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">^: 匹配输入字符串开始的位置。</span><br><span class="line">$: 匹配输入字符串结尾的位置</span><br><span class="line">\b: 匹配一个单词边界，即字与空格间的位置。</span><br><span class="line">\B: 非单词边界匹配。</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -332,7 +344,10 @@
     <a href="/2021/05/23/2021-05-23%E5%91%A8%E8%B5%9B%E9%A2%98%E8%A7%A3/" rel="prev" title="2021-05-23周赛题解">
       <i class="fa fa-chevron-left"></i> 2021-05-23周赛题解
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/05/27/%E6%96%87%E6%9C%AC%E6%8F%90%E5%8F%96URL%E6%8C%87%E5%8C%97-%E4%B8%80/QA/" rel="next" title="文本提取URL指北-一/QA">
+      文本提取URL指北-一/QA <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -391,7 +406,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#项目背景"><span class="nav-number">1.</span> <span class="nav-text">项目背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计思路"><span class="nav-number">2.</span> <span class="nav-text">设计思路</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#格式一：-Scheme-Host-PathCont"><span class="nav-number">2.0.1.</span> <span class="nav-text">格式一：[Scheme] + [Host] + [PathCont]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#格式二：-Domain-Top-Level-Domain-PathCont-web-URL-格式"><span class="nav-number">2.0.2.</span> <span class="nav-text">格式二：[Domain] + [Top Level Domain] + [PathCont]  (web URL 格式)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#格式三：-hostName-Port-PathCont"><span class="nav-number">2.0.3.</span> <span class="nav-text">格式三：[hostName] + [Port] + [PathCont]</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#项目背景"><span class="nav-number">1.</span> <span class="nav-text">项目背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计思路"><span class="nav-number">2.</span> <span class="nav-text">设计思路</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#格式一：-Scheme-Host-PathCont"><span class="nav-number">2.0.1.</span> <span class="nav-text">格式一：[Scheme] + [Host] + [PathCont]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#格式二：-Domain-Top-Level-Domain-PathCont-web-URL-格式"><span class="nav-number">2.0.2.</span> <span class="nav-text">格式二：[Domain] + [Top Level Domain] + [PathCont]  (web URL 格式)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#格式三：-hostName-Port-PathCont"><span class="nav-number">2.0.3.</span> <span class="nav-text">格式三：[hostName] + [Port] + [PathCont]</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式基础"><span class="nav-number">3.</span> <span class="nav-text">正则表达式基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#普通字符"><span class="nav-number">3.1.</span> <span class="nav-text">普通字符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特殊字符"><span class="nav-number">3.2.</span> <span class="nav-text">特殊字符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#限定符"><span class="nav-number">3.3.</span> <span class="nav-text">限定符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定位符"><span class="nav-number">3.4.</span> <span class="nav-text">定位符</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -406,7 +421,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -467,7 +482,7 @@
 <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共26.4k字</span>
+  <span class="post-count">博客全站共27.1k字</span>
   <span class="post-meta-divider">|</span>
   本站总访问量<span id="busuanzi_value_site_pv"></span>次
   <span class="post-meta-divider">|</span>
