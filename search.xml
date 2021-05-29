@@ -822,7 +822,7 @@
 
 <h3 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h3><p>本身项目设计的初衷，是乐观的认为用户分享的文本格式不会出现极端的案例，而是属于正常的分享行为。所以，并没有对一些特别极端的案例进行覆盖。首先介绍以下整体的设计思路。</p>
 <p>wiki上关于URI的定义如下图所示，变化非常多：</p>
-<p><img src="http://qtpxzi11x.bkt.clouddn.com/URI.png?e=1622085510&token=WlXOFgTT_32I8oo346NL4exS0Z9zu2KE1YLa4vIS:B1eTSy3qwr2_S1pFm8Y2t7HmrjQ=" alt="URI语法图"></p>
+<p><img src="/.io//URI.png" alt="URI语法图"></p>
 <p>但是一般用户上传的URL，一般呈现出以下格式：</p>
 <h5 id="格式一：-Scheme-Host-PathCont"><a href="#格式一：-Scheme-Host-PathCont" class="headerlink" title="格式一：[Scheme] + [Host] + [PathCont]"></a>格式一：[Scheme] + [Host] + [PathCont]</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;index.html</span><br></pre></td></tr></table></figure>
 
@@ -858,14 +858,5 @@
       <tags>
         <tag>go</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>文本提取URL指北-一/QA</title>
-    <url>/2021/05/27/%E6%96%87%E6%9C%AC%E6%8F%90%E5%8F%96URL%E6%8C%87%E5%8C%97-%E4%B8%80/QA/</url>
-    <content><![CDATA[<p>基于你的讲述，我理解的是你主要的研究是针对小样本或者零样本学习中，数据集的扩充问题。一个是使用了改进GAN的方式，一个是使用了数据增强的方式。</p>
-<p>我这里有几个问题：</p>
-<p>一.  我看介绍数据增强技术实验时，没介绍生成的数据集图片数量，能介绍以下这种技术对于生成数据的数量有限制么，我个人理解是只能生成少量的数据图片。</p>
-<p>二. 我理解的是两种方法都是数据扩充的方案，有没有考虑过两者的结合？当然，GAN的方式还是需要一部分样本的，比如可以先用数据增强的算法生成少量数据集，然后再用改进的GAN方式对抗生成图片，是不是能产生更丰富的数据。</p>
-]]></content>
   </entry>
 </search>
