@@ -297,6 +297,97 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2021/05/29/%E6%96%87%E6%9C%AC%E6%8F%90%E5%8F%96URL%E6%8C%87%E5%8C%97-%E4%BA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/29/%E6%96%87%E6%9C%AC%E6%8F%90%E5%8F%96URL%E6%8C%87%E5%8C%97-%E4%BA%8C/" class="post-title-link" itemprop="url">文本提取URL指北(二)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-05-29 15:59:47" itemprop="dateCreated datePublished" datetime="2021-05-29T15:59:47+08:00">2021-05-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-05-30 14:40:49" itemprop="dateModified" datetime="2021-05-30T14:40:49+08:00">2021-05-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/extra-URLs/" itemprop="url" rel="index"><span itemprop="name">extra URLs</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>上一篇指北，大致介绍了设计背景和思路，然后科普了一下正则表达式的基本常识，在这一篇中，将详细介绍整个URL提取的详细实现。包括获取Scheme和TLDs，Schemes、Domain、IP+Port….等URL模式的regex表达式拼接。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[协议类型]:&#x2F;&#x2F;[服务器地址]:[端口号]&#x2F;[资源层级UNIX文件路径][文件名]?[查询]#[片段ID]</span><br></pre></td></tr></table></figure>
+
+<h3 id="资源准备"><a href="#资源准备" class="headerlink" title="资源准备"></a>资源准备</h3><p><a href="https://www.iana.org/about" target="_blank" rel="noopener">IANA</a>全称为Internet Assigned Numbers Authority, 负责分配和维护用于驱动互联网的技术标准（“协议”）的唯一代码和编号系统。</p>
+<p>IANA的官网上可以获取到官方的Schemes和TLDs的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Schemes: &quot;https:&#x2F;&#x2F;www.iana.org&#x2F;assignments&#x2F;uri-schemes&#x2F;uri-schemes-1.csv&quot;</span><br><span class="line">TLDs: &quot;https:&#x2F;&#x2F;data.iana.org&#x2F;TLD&#x2F;tlds-alpha-by-domain.txt&quot;</span><br></pre></td></tr></table></figure>
+
+<p>将资源get下来，并利用go的template模板库生成go文件，文件内容是string[]的常量。Scheme.go生成代码如下：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/05/29/%E6%96%87%E6%9C%AC%E6%8F%90%E5%8F%96URL%E6%8C%87%E5%8C%97-%E4%BA%8C/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2021/05/26/%E6%96%87%E6%9C%AC%E6%8F%90%E5%8F%96URL%E6%8C%87%E5%8C%97-%E4%B8%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -968,76 +1059,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2020/10/04/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Towards%20Efficient%20Model%20Compression%20via%20Learned%20Global%20Ranking/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/head.jpg">
-      <meta itemprop="name" content="lee-zee">
-      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Enplee's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/04/%E3%80%90%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E3%80%91CVPR2020-Towards%20Efficient%20Model%20Compression%20via%20Learned%20Global%20Ranking/" class="post-title-link" itemprop="url">【模型压缩】CVPR2020-Towards Efficient Model Compression via Learned Global Ranking</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-10-04 21:04:51 / Modified: 21:34:13" itemprop="dateCreated datePublished" datetime="2020-10-04T21:04:51+08:00">2020-10-04</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3>
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1108,7 +1129,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1169,7 +1190,7 @@
 <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共26.9k字</span>
+  <span class="post-count">博客全站共28.8k字</span>
   <span class="post-meta-divider">|</span>
   本站总访问量<span id="busuanzi_value_site_pv"></span>次
   <span class="post-meta-divider">|</span>
