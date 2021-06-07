@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon3.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon3.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"enplee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在心跳机制中提到，RPC框架中是维护了一个长连接的，多个请求包会复用这个全双工的长连接。这种情况下就会先拆包与粘包的问题。下面将对拆包和粘包问题进行详细的介绍。 拆包与粘包 什么是拆包和粘包、产生原因  TCP协议是面向字节流的，对于应用层的数据，TCP协议没有应用层级别的数据包概念，他只会根据缓冲区、窗口大小等，将这个二进制流分割成若干个包进行可靠传输。那么带来的后果就是，如果应用层不能预先指定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零实现RPC之传输协议与拆包粘包">
+<meta property="og:url" content="https://enplee.github.io/2021/06/07/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0RPC%E4%B9%8B%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%8B%86%E5%8C%85%E7%B2%98%E5%8C%85/index.html">
+<meta property="og:site_name" content="Enplee&#39;s blog">
+<meta property="og:description" content="在心跳机制中提到，RPC框架中是维护了一个长连接的，多个请求包会复用这个全双工的长连接。这种情况下就会先拆包与粘包的问题。下面将对拆包和粘包问题进行详细的介绍。 拆包与粘包 什么是拆包和粘包、产生原因  TCP协议是面向字节流的，对于应用层的数据，TCP协议没有应用层级别的数据包概念，他只会根据缓冲区、窗口大小等，将这个二进制流分割成若干个包进行可靠传输。那么带来的后果就是，如果应用层不能预先指定">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-06-07T08:48:04.000Z">
+<meta property="article:modified_time" content="2021-06-07T12:09:27.868Z">
+<meta property="article:author" content="lee-zee">
+<meta property="article:tag" content="RPC">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://enplee.github.io/2021/06/07/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0RPC%E4%B9%8B%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%8B%86%E5%8C%85%E7%B2%98%E5%8C%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<!-- 打字礼花及震动特效 -->
+
+<div id="append_parent"></div><div id="ajaxwaitid"></div>
+<script type="text/javascript" src="/lib/activate-power-mode/activate-power-mode.js"></script>
+<script>
+	POWERMODE.colorful = true;
+	POWERMODE.shake = true;
+	document.body.addEventListener('input',POWERMODE);
+</script>
+
+<!-- jquery -->
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+  <title>从零实现RPC之传输协议与拆包粘包 | Enplee's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Enplee's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">饮岭南茶 恋塞北家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>主页</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://enplee.github.io/2021/06/07/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0RPC%E4%B9%8B%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%8B%86%E5%8C%85%E7%B2%98%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="lee-zee">
+      <meta itemprop="description" content="我们都是阴沟里的虫子,但总还是得有人仰望星空.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Enplee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从零实现RPC之传输协议与拆包粘包
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-06-07 16:48:04 / Modified: 20:09:27" itemprop="dateCreated datePublished" datetime="2021-06-07T16:48:04+08:00">2021-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RPC%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">RPC设计</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在心跳机制中提到，RPC框架中是维护了一个长连接的，多个请求包会复用这个全双工的长连接。这种情况下就会先拆包与粘包的问题。下面将对拆包和粘包问题进行详细的介绍。</p>
+<h3 id="拆包与粘包"><a href="#拆包与粘包" class="headerlink" title="拆包与粘包"></a>拆包与粘包</h3><ul>
+<li>什么是拆包和粘包、产生原因</li>
+</ul>
+<p>TCP协议是面向字节流的，对于应用层的数据，TCP协议没有应用层级别的数据包概念，他只会根据缓冲区、窗口大小等，将这个二进制流分割成若干个包进行可靠传输。那么带来的后果就是，如果应用层不能预先指定好相应的协议，在read的时候，就可能一次read到多个包粘连在一块(粘包)，也可能读取到不完整的包(拆包)。</p>
+<ul>
+<li>如何解决拆包与粘包</li>
+</ul>
+<p>TCP协议是无法理解和感知道上层的业务逻辑，所以在TCP层是无法保证数据包不被拆分和重组的。所以，只能通过应用层协议栈来解决，目前有以下几种解决策略:</p>
+<ul>
+<li>固定消息的长度，读取到了一定的长度才认为是一个完成的消息。不足就缓存和之后的拼接。</li>
+<li>将回车作为消息结束符</li>
+<li>使用特使的消息结束符</li>
+<li>长度不固定的消息，通过在消息头中定义长度字段辅助解析</li>
+</ul>
+<p>Netty框架中提供了上述四种方案对应的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FixedLengthFrameDecoder</span> <span class="keyword">extends</span> <span class="title">ByteToMessageDecoder</span></span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">LineBasedFrameDecoder</span> <span class="keyword">extends</span> <span class="title">ByteToMessageDecoder</span></span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">DelimiterBasedFrameDecoder</span> <span class="keyword">extends</span> <span class="title">ByteToMessageDecoder</span>    </span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">LengthFieldBasedFrameDecoder</span> <span class="keyword">extends</span> <span class="title">ByteToMessageDecoder</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这四个类统一继承与ByteToMessageDecoder。负责将二进制流解析成明消息。</p>
+<p>在RPC协议中，显然请求不可能是固定长度的，而使用特定字符又不够灵活，存在限制。所以，使用基于消息头长度字段的方式，来进行包的解析。</p>
+<p>LengthFieldBasedFrameDecoder的构造函数如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LengthFieldBasedFrameDecoder</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> maxFrameLength,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> lengthFieldOffset, <span class="keyword">int</span> lengthFieldLength,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> lengthAdjustment, <span class="keyword">int</span> initialBytesToStrip</span></span></span><br><span class="line"><span class="function"><span class="params">&#125;</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>maxFrameLength：实现约定帧的最大长度。</li>
+<li>lengthFieldOffset: 消息包中，长度域所在的指针偏移量。</li>
+<li>lengthFieldLength: 长度域的长度，多少字节</li>
+<li>lengthAdjustment: 指针需要调整的长度</li>
+<li>initialBytesToStrip: 舍弃的长度</li>
+</ul>
+<p>整个机制的原理就是，首先定位到长度域其实点，根据长度读取并解析消息长度，将指针偏移会开始位置，然后读取指定长度的字节。余下的信息会进行缓存和后续的流拼接进行重新读取。</p>
+<h3 id="RPC传输协议Frame设计"><a href="#RPC传输协议Frame设计" class="headerlink" title="RPC传输协议Frame设计"></a>RPC传输协议Frame设计</h3><p>Frame结构参考HTTP协议，可以设计为消息头+消息体，消息头中包含了请求的基本和必要信息。比如，无论请求体是request还是response，都需要序列化和压缩流程，那么在消息头中就要包含是哪种序列化方式和压缩方式。目前的必要信息有: 版本号、长度、压缩方式、序列化方式、requestId、消息类型。所以整个消息结构设计为如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"> * &lt;pre&gt;</span><br><span class="line"> *   <span class="number">0</span>     <span class="number">1</span>     <span class="number">2</span>     <span class="number">3</span>     <span class="number">4</span>        <span class="number">5</span>     <span class="number">6</span>     <span class="number">7</span>     <span class="number">8</span>         <span class="number">9</span>          <span class="number">10</span>      <span class="number">11</span>     <span class="number">12</span>  <span class="number">13</span>  <span class="number">14</span>   <span class="number">15</span> <span class="number">16</span></span><br><span class="line"> *   +-----+-----+-----+-----+--------+----+----+----+------+-----------+-------+----- --+-----+-----+-------+</span><br><span class="line"> *   |   magic   code        |version | full length         | messageType| codec|compress|    RequestId       |</span><br><span class="line"> *   +-----------------------+--------+---------------------+-----------+-----------+-----------+------------+</span><br><span class="line"> *   |                                                                                                       |</span><br><span class="line"> *   |                                         body                                                          |</span><br><span class="line"> *   |                                                                                                       |</span><br><span class="line"> *   |                                        ... ...                                                        |</span><br><span class="line"> *   +-------------------------------------------------------------------------------------------------------+</span><br><span class="line"> * <span class="number">4</span>B  magic code（魔法数）   <span class="number">1</span>B version（版本）   <span class="number">4</span>B full length（消息长度）    <span class="number">1</span>B messageType（消息类型）</span><br><span class="line"> * <span class="number">1</span>B compress（压缩类型） <span class="number">1</span>B codec（序列化类型）    <span class="number">4</span>B  requestId（请求的Id）</span><br><span class="line"> * body（object类型数据）</span><br><span class="line"> * &lt;/pre&gt;</span><br><span class="line">     </span><br><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RpcMessage</span> </span>&#123;</span><br><span class="line">    <span class="comment">// message type: HEARTBEAT_REQUEST_TYPE  HEARTBEAT_RESPONCE_TYPE NORMAL_TYPE</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span> messageType;</span><br><span class="line">    <span class="comment">// serialization type</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span> codec;</span><br><span class="line">    <span class="comment">// compress type</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span> compress;</span><br><span class="line">    <span class="comment">// request ID</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> requestId;</span><br><span class="line">    <span class="comment">// message Body (RpcReq,RpcResp)</span></span><br><span class="line">    <span class="keyword">private</span> Object body;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，magic_code参考java的”cafebaby”，定义的是”lrpc”，长度为4byte。full_length定义为4个字节。所以，根据协议Frame的设计，我们可以通过LengthFieldBasedFrameDecoder提供的方式来解析Frame:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RpcMessageDecoder</span> <span class="keyword">extends</span> <span class="title">LengthFieldBasedFrameDecoder</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">RpcMessageDecoder</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         *  lengthFieldOffset = magic code (4B) + version(1B) = 5B</span></span><br><span class="line"><span class="comment">         *  lengthFieldLength = full lenth is 4B</span></span><br><span class="line"><span class="comment">         *  lengthAdjustment = start offset = -4B -5B</span></span><br><span class="line"><span class="comment">         *  initialBytesToStrip = we need magic code and version,so do not need trip. 0B</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">this</span>(RpcConstants.MAX_FRAME_LENGTH,<span class="number">5</span>,<span class="number">4</span>,-<span class="number">9</span>,<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">RpcMessageDecoder</span><span class="params">(<span class="keyword">int</span> maxFrameLength, <span class="keyword">int</span> lengthFieldOffset, <span class="keyword">int</span> lengthFieldLength, <span class="keyword">int</span> lengthAdjustment, <span class="keyword">int</span> initialBytesToStrip)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(maxFrameLength, lengthFieldOffset, lengthFieldLength, lengthAdjustment, initialBytesToStrip);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自己定义了RpcMessageDecoder继承自LengthFieldBasedFrameDecoder，并且构造方式实际上是调用的父类的构造方法。之后，我们需要重写LengthFieldBasedFrameDecoder的decode方法。在decode方法中，我们首先调用父类的方法，将frame提取出来，之后按照RpcMessage的格式将Frame解码成对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">decode</span><span class="params">(ChannelHandlerContext ctx, ByteBuf in)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    log.info(<span class="string">"ByteBuf in size &#123;&#125;"</span>,in);</span><br><span class="line">    Object decoded = <span class="keyword">super</span>.decode(ctx, in);</span><br><span class="line">    <span class="keyword">if</span>(decoded <span class="keyword">instanceof</span> ByteBuf) &#123;</span><br><span class="line">        ByteBuf frame = (ByteBuf) decoded;</span><br><span class="line">        <span class="keyword">if</span>(frame.readableBytes() &gt;= RpcConstants.TOTAL_LENGTH) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> decodeFrame(frame);</span><br><span class="line">            &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">                log.error(<span class="string">"Decode frame error!"</span>,e);</span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                frame.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> decoded;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>frame封装成RpcMessage的过程，主要是在decodeFrame方法中实现。主要实现过程是，首先检查MagicNumber和Version，检查通过，将消息头中的字段提取出来，根据MessageType分别处理: HEARTBEAT_REQUEST_TYPE、HEARTBEAT_RESPONCE_TYPE和正常反序列化和解压缩body对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先检查版本和MagicNumber </span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">checkVersion</span><span class="params">(ByteBuf in)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span> version = in.readByte();</span><br><span class="line">        <span class="keyword">if</span> (version != RpcConstants.VERSION)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"version isn`t compatible"</span> + version);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">checkMagicNumber</span><span class="params">(ByteBuf in)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = RpcConstants.MAGIC_NUMBER.length;</span><br><span class="line">        <span class="keyword">byte</span>[] read = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">        in.readBytes(read);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(read[i] != RpcConstants.MAGIC_NUMBER[i]) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unknow magic code"</span> + Arrays.toString(read));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 之后解析消息头，并解压缩和发序列化body，最后封装成RpcMessage，向PipeLine下游传导。    </span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Object <span class="title">decodeFrame</span><span class="params">(ByteBuf in)</span> </span>&#123;</span><br><span class="line">        checkMagicNumber(in);</span><br><span class="line">        checkVersion(in); <span class="comment">//  offset -&gt; 5</span></span><br><span class="line">        <span class="keyword">int</span> fullLength = in.readInt();</span><br><span class="line">        <span class="keyword">byte</span> messageType = in.readByte();</span><br><span class="line">        <span class="keyword">byte</span> codec = in.readByte();</span><br><span class="line">        <span class="keyword">byte</span> compress = in.readByte();</span><br><span class="line">        <span class="keyword">int</span> requestId = in.readInt();</span><br><span class="line">        RpcMessage rpcMessage = RpcMessage.builder().messageType(messageType).codec(codec).compress(compress).requestId(requestId).build();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(messageType == RpcConstants.HEARTBEAT_REQUEST_TYPE)&#123;</span><br><span class="line">            rpcMessage.setBody(RpcConstants.PING);</span><br><span class="line">            <span class="keyword">return</span> rpcMessage;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(messageType == RpcConstants.HEARTBEAT_RESPONCE_TYPE)&#123;</span><br><span class="line">            rpcMessage.setBody(RpcConstants.PONG);</span><br><span class="line">            <span class="keyword">return</span> rpcMessage;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> bodyLength = fullLength-RpcConstants.MAX_HEAD_LENGTH;</span><br><span class="line">        <span class="keyword">if</span>(bodyLength &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[bodyLength];</span><br><span class="line">            in.readBytes(bytes);</span><br><span class="line">            <span class="comment">//<span class="doctag">TODO:</span> 使用SPI机制，让接口和实现解耦</span></span><br><span class="line">            <span class="comment">//decompress the bytes accoding to the compressType</span></span><br><span class="line">            Compressor compressor = <span class="keyword">new</span> GzipCompressor();</span><br><span class="line">            <span class="keyword">byte</span>[] decompress = compressor.decompress(bytes);</span><br><span class="line">            <span class="comment">//deserialize the bytes accoding to the codec</span></span><br><span class="line">            Serializer serializer = <span class="keyword">new</span> ProtoStuffSerializer();</span><br><span class="line">            <span class="keyword">if</span>(messageType == RpcConstants.REQUEST_TYPE)&#123;</span><br><span class="line">                RpcRequest rpcRequest = serializer.deSerialize(decompress, RpcRequest<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">                rpcMessage.setBody(rpcRequest);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(messageType == RpcConstants.RESPONCE_TYPE)&#123;</span><br><span class="line">                RpcResponce rpcResponce = serializer.deSerialize(decompress, RpcResponce<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">                rpcMessage.setBody(rpcResponce);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> rpcMessage;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>到此，整个Rpc框架的Frame设计和粘包拆包处理已经完成了。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>lee-zee
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://enplee.github.io/2021/06/07/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0RPC%E4%B9%8B%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%8B%86%E5%8C%85%E7%B2%98%E5%8C%85/" title="从零实现RPC之传输协议与拆包粘包">https://enplee.github.io/2021/06/07/从零实现RPC之传输协议与拆包粘包/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RPC/" rel="tag"># RPC</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/07/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0RPC%E4%B9%8B%E8%AE%BE%E8%AE%A1%E5%BF%83%E8%B7%B3%E6%9C%BA%E5%88%B6/" rel="prev" title="从零实现RPC之设计心跳机制">
+      <i class="fa fa-chevron-left"></i> 从零实现RPC之设计心跳机制
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#拆包与粘包"><span class="nav-number">1.</span> <span class="nav-text">拆包与粘包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RPC传输协议Frame设计"><span class="nav-number">2.</span> <span class="nav-text">RPC传输协议Frame设计</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="lee-zee"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">lee-zee</p>
+  <div class="site-description" itemprop="description">我们都是阴沟里的虫子,但总还是得有人仰望星空.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/enplee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;enplee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lizhe_1814@136.com" title="E-Mail → mailto:lizhe_1814@136.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+  
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lee-zee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共31.3k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+/* 鼠标点击特效 - 7Core.CN */
+var a_idx = 0;
+jQuery(document).ready(function($) {
+    $("body").click(function(e) {
+        var a = new Array("杨老师","棒棒!");
+        var $i = $("<span/>").text(a[a_idx]);
+        a_idx = (a_idx + 1) % a.length;
+        var x = e.pageX,
+        y = e.pageY;
+        $i.css({
+            "z-index": 100000000,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": "#ff6651"
+        });
+        $("body").append($i);
+        $i.animate({
+            "top": y - 180,
+            "opacity": 0
+        },
+        1500,
+        function() {
+            $i.remove();
+        });
+    });
+});
+</script>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
